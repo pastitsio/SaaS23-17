@@ -1,0 +1,8 @@
+.navbar-sign_buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.navbar-sign_buttons-up {
+    background-color: green;
+}
