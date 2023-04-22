@@ -1,8 +1,25 @@
-.navbar-sign_buttons {
+#navbar-container{
     display: flex;
-    gap: 5px;
+    justify-content: center;
+    padding: 10px;
 }
 
-.navbar-sign_buttons-up {
-    background-color: green;
+.navbar_entry:hover {
+    /* text-decoration: underline; */
+    color: white;
+    background-color: var(--color-text-alt2);
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.navbar_entry {
+    text-decoration: none;
+    color: rgb(202, 19, 19);
+    margin: 0 1rem;
+
+    font-weight: 450;
+    font-size: 22px;
+    font-family: var(--font-family);
+    padding: 5px;
+    /* position: fixed; */
 }

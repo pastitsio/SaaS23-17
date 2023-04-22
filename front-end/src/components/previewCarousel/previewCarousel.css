@@ -1,0 +1,44 @@
+.header-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+  color: var(--color-text-alt);
+  font-family: var(--font-family);
+}
+
+.carousel-item {
+  height: 400px;
+}
+
+.my-carousel-caption {
+  padding-top: 2rem;
+  text-align: center;
+  color: var(--color-text-alt);
+}
+
+.carousel-img {
+  display: flex;
+  justify-content: center;
+  height: 260px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  /* height: 100px;
+  width: 100px; */
+  outline: black;
+  background-size: 100%, 100%;
+  background-image: none;
+}
+
+.carousel-control-next-icon:after {
+  content: '>';
+  font-size: 23px;
+  color: var(--color-text);
+}
+
+.carousel-control-prev-icon:after {
+  content: '<';
+  font-size: 23px;
+  color: var(--color-text);
+}

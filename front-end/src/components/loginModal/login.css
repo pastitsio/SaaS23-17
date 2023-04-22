@@ -1,0 +1,12 @@
+#login_button {
+    background-color: var(--color-button);
+    border: none;
+}
+
+#login_button:hover {
+    background-color: var(--color-button-hover);
+}
+
+.modal-title {
+    color: var(--color-text);
+}
