@@ -2,11 +2,11 @@ const express = require("express");
 const app = express();
 const router = require("./routes/authRouter");
 const cors = require("cors");
+require("dotenv").config();
 const port = process.env.PORT || 5000;
 const host = process.env.HOST || "localhost";
 
-
-//---------------KEYCLOAK--------------------
+//---------------KEYCLOAK-veskoukis--------------------
 const session = require("express-session");
 const Keycloak = require("keycloak-connect");
 const memoryStore = new session.MemoryStore();
@@ -36,8 +36,21 @@ app.get("/service/admin", keycloak.protect("realm:admin"), function (req, res) {
   res.json({ message: "admin" });
 });
 
-//-----------------------------------
+// -------------------KEYCLOAK-chagpt------------------------------
+// const Keycloak = require("keycloak-connect");
+// const session = require("express-session");
 
+// const keycloak = new Keycloak({
+//   store: new session.MemoryStore(),
+//   scope: "openid",
+// });
+
+// app.use(keycloak.init());
+// app.get("/secured", keycloak.protect(), (req, res) => {
+//   const { email } = req.kauth.grant.access_token.content;
+//   console.log(email);
+// });
+//-----------------------------------
 
 // middleware
 app.use(express.json());
