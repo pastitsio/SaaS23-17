@@ -2,6 +2,8 @@
     display: flex;
     justify-content: center;
     padding: 10px;
+    margin-top: 5px;
+    border-radius: 20px;
 }
 
 .navbar_entry:hover {
@@ -31,4 +33,19 @@
 
 #navbar-logout:hover {
     background-color: var(--color-button-hover);
+}
+
+#navbar-username {
+    background-color: var(--color-button-hover);
+    color: var(--color-text);
+    justify-content: flex-end;
+    width: min-content;
+    
+    font-weight: 800;
+
+    margin-right: .3rem;
+    padding: .4rem .6rem;
+
+    border-radius: 7px;
+    border-color: var(--color-button-hover);
 }

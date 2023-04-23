@@ -37,7 +37,7 @@ const LoginForm = () => {
       <Container className="text-center">
         <p>Not a member? Sign up with:</p>
         {/* <a href="#!">Register</a> */}
-        <Button tag='a' color='none' className='m-1' style={{ background: '#ffffff' }}>
+        <Button onClick={() => UserService.doLogin() } tag='a' color='none' className='m-1' style={{ background: '#ffffff' }}>
           <img src={google_logo} alt='Google' size="sm" />
         </Button>
       </Container>

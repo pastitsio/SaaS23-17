@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { About, Home } from './pages'
-import { NavBar, RenderOnAnonymous, RenderOnAuth } from './components'
+import { NavBar, RenderOnAuth } from './components'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -12,9 +12,11 @@ const App = () => {
       <NavBar />
       <Routes>
         <Route index element={<Home />} />
-        <RenderOnAuth>
-          <Route path='/about' element={<About />} />
-        </RenderOnAuth>
+        <Route path='/about' element={
+          <RenderOnAuth>
+            <About />
+          </RenderOnAuth>
+        } />
       </Routes>
       {/* <Route path='*' element={<PageNotFound />} /> */}
     </BrowserRouter>

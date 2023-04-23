@@ -15,7 +15,7 @@ const LoginModal = () => {
   return (
     <>
       <Button id="login_button" onClick={handleShow}>
-        Sign In/Sign up
+        Sign In / Sign up
       </Button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
