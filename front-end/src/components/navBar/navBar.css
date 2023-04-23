@@ -23,3 +23,12 @@
     padding: 5px;
     /* position: fixed; */
 }
+
+#navbar-logout {
+    background-color: var(--color-button);
+    border: none;
+}
+
+#navbar-logout:hover {
+    background-color: var(--color-button-hover);
+}

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Home } from './pages'
-import { NavBar } from './components'
+import { About, Home } from './pages'
+import { NavBar, RenderOnAnonymous, RenderOnAuth } from './components'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -10,12 +10,13 @@ const App = () => {
   return (
     <BrowserRouter>
       <NavBar />
-      {/* <div className="gradient__bg ">
-      </div> */}
       <Routes>
         <Route index element={<Home />} />
-        {/* <Route path='*' element={<PageNotFound />} /> */}
+        <RenderOnAuth>
+          <Route path='/about' element={<About />} />
+        </RenderOnAuth>
       </Routes>
+      {/* <Route path='*' element={<PageNotFound />} /> */}
     </BrowserRouter>
   );
 }

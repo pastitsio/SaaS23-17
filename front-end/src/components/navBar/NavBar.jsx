@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { Nav, Navbar } from 'react-bootstrap'
+import { Button, Nav, Navbar } from 'react-bootstrap'
 
 import './navBar.css'
 
+import { LoginModal, RenderOnAnonymous, RenderOnAuth } from '..'
 import logo from '../../assets/logo.svg'
-import { LoginModal } from '..'
+import { UserService } from '../../services'
 
 const NavBar = () => {
 
@@ -20,10 +21,16 @@ const NavBar = () => {
         <Nav className="me-auto navbar_entries">
           <Link className='navbar_entry' to="/">Home</Link>
           <Link className='navbar_entry' to="/">Pricing</Link>
-          <Link className='navbar_entry' to="/">About</Link>
+          <Link className='navbar_entry' to="/about">About</Link>
         </Nav>
       </Navbar.Collapse>
-      <LoginModal />
+      <RenderOnAnonymous>
+        <LoginModal />
+      </RenderOnAnonymous>
+      <RenderOnAuth>
+        <p>Welcome <u>{UserService.getUsername()}</u> </p>
+        <Button id="navbar-logout" onClick={() => UserService.doLogout()}>Logout</Button>
+      </RenderOnAuth>
     </Navbar>
   )
 }

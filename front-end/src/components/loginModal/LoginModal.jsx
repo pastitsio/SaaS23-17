@@ -1,10 +1,10 @@
-import { React, useState } from "react"
+import { React, useState } from "react";
 
-import { Button, Modal } from "react-bootstrap"
+import { Button, Modal } from "react-bootstrap";
 
-import LoginForm from './LoginForm'
+import LoginForm from './LoginForm';
 
-import './login.css'
+import './login.css';
 
 const LoginModal = () => {
   const [show, setShow] = useState(false);
@@ -15,7 +15,7 @@ const LoginModal = () => {
   return (
     <>
       <Button id="login_button" onClick={handleShow}>
-        Sign In / Sign Up
+        Sign In/Sign up
       </Button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
