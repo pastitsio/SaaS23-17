@@ -13,26 +13,22 @@ const NavBar = () => {
 
   return (
     // <Container id="navbar-container">
-      <Navbar bg="light">
-        <Link to="/"><Navbar.Brand>
-          <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="logo" />
-        </Navbar.Brand></Link>
-        <Navbar.Toggle aria-controls="navbarScroll" data-bs-target="#navbarScroll" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto" id="navbar-entries">
-            <Link className='navbar_entry' to="/">Home</Link>
-            <Link className='navbar_entry' to="/">Pricing</Link>
-            <Link className='navbar_entry' to="/about">About</Link>
-          </Nav>
-        </Navbar.Collapse>
+    <Navbar bg="light">
+      <Link to="/"><Navbar.Brand>
+        <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="logo" />
+      </Navbar.Brand></Link>
+      <Navbar.Toggle aria-controls="navbarScroll" data-bs-target="#navbarScroll" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="me-auto" id="navbar-entries">
+          <Link className='navbar_entry' to="/">Home</Link>
+          <Link className='navbar_entry' to="/">Pricing</Link>
+          <Link className='navbar_entry' to="/about">About</Link>
+        </Nav>
+      </Navbar.Collapse>
 
-        <RenderOnAuth>
-          <Container id='navbar-username'><u>{UserService.getUsername()}</u></Container>
-        </RenderOnAuth>
+      <LoginModal id='navbar-login' />
 
-        <LoginModal id='navbar-login'/>
-
-      </Navbar>
+    </Navbar>
     // </Container>
   )
 }

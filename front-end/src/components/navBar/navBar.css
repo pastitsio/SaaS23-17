@@ -29,17 +29,6 @@
     padding: 5px;
 }
 
-#navbar-username {
-    background-color: var(--color-button-bg-username);
-    color: var(--color-text-alt);
-    justify-content: flex-end;
-    width: min-content;
-    
-    font-weight: 800;
-
-    border: none;
-    border-radius: var(--border-radius);
-}
 
 #navbar-login {
     margin-right: 5px;   

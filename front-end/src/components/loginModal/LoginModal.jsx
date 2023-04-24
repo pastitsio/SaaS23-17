@@ -17,17 +17,18 @@ const LoginModal = () => {
   return (
     <>
       <RenderOnAuth>
+        <Container id='navbar-username'><u>{UserService.getUsername()}</u></Container>
         <Button id="navbar-logout" onClick={() => UserService.doLogout()}>
           Logout
         </Button>
       </RenderOnAuth>
 
       <RenderOnAnonymous>
-        <Button id="navbar-login" onClick={handleShow}>
+        <Button id="navbar-login" onClick={() => UserService.doLogin()}>
           Sign In / Sign up
         </Button>
 
-        <Modal show={show} onHide={handleClose}>
+        { /* <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title> Sign In
               <p className="text-muted">
@@ -36,9 +37,9 @@ const LoginModal = () => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <LoginForm /> {/* Login Here */}
+            <LoginForm />
           </Modal.Body>
-        </Modal>
+        </Modal> */ }
 
       </RenderOnAnonymous>
     </>
