@@ -17,7 +17,7 @@ const LoginForm = () => {
         console.log('form_password :>> ', event.target.elements.form_password.value);
         UserService.doLogin();
       }}>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
+        <Form.Group className="mb-3">
           <Form.Label>Email address</Form.Label>
           <Form.Control name="form_email" type="email" placeholder="Enter email" />
           <Form.Text className="text-muted">
@@ -25,11 +25,11 @@ const LoginForm = () => {
           </Form.Text>
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group className="mb-3">
           <Form.Label>Password</Form.Label>
           <Form.Control name="form_password" type="password" placeholder="Password" />
         </Form.Group>
-        <Button id="login_button" type="submit" >
+        <Button id="navbar-login" type="submit" >
           Let's Go!
         </Button>
       </Form>

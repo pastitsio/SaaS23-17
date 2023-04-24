@@ -1,9 +1,16 @@
-.header-container {
+#main-container {
+  border-radius: 12px;
+  background-color: var(--color-bg-front);
+  width: 70%;
+  margin: auto;
+}
+
+#header-container{
   display: flex;
   justify-content: center;
-  margin: 1rem;
+  margin: 1rem 0;
+  padding: 1rem 0 0 0 ;
   color: var(--color-text-alt);
-  font-family: var(--font-family);
 }
 
 .carousel-item {
@@ -14,31 +21,11 @@
   padding-top: 2rem;
   text-align: center;
   color: var(--color-text-alt);
+  font-size: 15px;
 }
 
 .carousel-img {
   display: flex;
   justify-content: center;
   height: 260px;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  /* height: 100px;
-  width: 100px; */
-  outline: black;
-  background-size: 100%, 100%;
-  background-image: none;
-}
-
-.carousel-control-next-icon:after {
-  content: '>';
-  font-size: 23px;
-  color: var(--color-text);
-}
-
-.carousel-control-prev-icon:after {
-  content: '<';
-  font-size: 23px;
-  color: var(--color-text);
 }

@@ -1,51 +1,46 @@
-#navbar-container{
+
+.navbar{
     display: flex;
     justify-content: center;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 20px;
+    margin: 10px auto;
+    border-radius: var(--border-radius);
+    width: 70%;
+}
+
+.navbar a {
+    margin-left: 10px;
+}
+
+.navbar_entry {
+    text-decoration: none;
+    color: var(--color-text-alt);
+    margin: 0 1rem;
+
+    font-weight: 450;
+    font-size: 22px;
+    padding: 5px;
 }
 
 .navbar_entry:hover {
     /* text-decoration: underline; */
     color: white;
-    background-color: var(--color-text-alt2);
-    border-radius: 5px;
+    background-color: var(--color-text);
+    border-radius: var(--border-radius);
     padding: 5px;
-}
-
-.navbar_entry {
-    text-decoration: none;
-    color: rgb(202, 19, 19);
-    margin: 0 1rem;
-
-    font-weight: 450;
-    font-size: 22px;
-    font-family: var(--font-family);
-    padding: 5px;
-    /* position: fixed; */
-}
-
-#navbar-logout {
-    background-color: var(--color-button);
-    border: none;
-}
-
-#navbar-logout:hover {
-    background-color: var(--color-button-hover);
 }
 
 #navbar-username {
-    background-color: var(--color-button-hover);
-    color: var(--color-text);
+    background-color: var(--color-button-bg-username);
+    color: var(--color-text-alt);
     justify-content: flex-end;
     width: min-content;
     
     font-weight: 800;
 
-    margin-right: .3rem;
-    padding: .4rem .6rem;
+    border: none;
+    border-radius: var(--border-radius);
+}
 
-    border-radius: 7px;
-    border-color: var(--color-button-hover);
+#navbar-login {
+    margin-right: 5px;   
 }

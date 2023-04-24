@@ -3,13 +3,18 @@
 :root {
   --font-family: 'Roboto', sans-serif;
 
-  --gradient-text: linear-gradient(89.97deg, #AE67FA 1.84%, #F49867 202.67%);
+  --gradient-text: linear-gradient(#e66465, #9198e5);
 
-  --color-bg: #fbecd5;
-  --color-text: #430c07;
-  --color-text-alt: #8c140c;
-  --color-text-alt2: #cb443a;
-  
+  --border-radius: 12px;
+
+  --color-bg: #4d1111e7;
+  --color-bg-front: #e6b1b1f1;
+
+  --color-text: #cb443a;
+  --color-text-alt: #961f16;
+  --color-text-light: #f0d6d4;
+  --color-text-light-alt: #bd9b98;
+
   --color-button: #961f16;
-  --color-button-hover: #d6a09c;
+  --color-button-bg-username: #c0d9ba;
 }
