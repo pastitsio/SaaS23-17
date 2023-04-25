@@ -1,0 +1,15 @@
+{
+  "name": "saas23_17",
+  "version": "1.0.0",
+  "description": "Μύτης Γιάννης - el**13133**",
+  "main": "index.js",
+  "scripts": {
+    "start:user-info-manager": "nodemon -L ./user-info-manager/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

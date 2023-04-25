@@ -11,7 +11,8 @@ const UserSchema = new mongoose.Schema({
     unique: true
   },
   last_login: {
-    type: Date
+    type: Date,
+    default: Date.now()
   },
   number_of_charts: {
     type: Number,

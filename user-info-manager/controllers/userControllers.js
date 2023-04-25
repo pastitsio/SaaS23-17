@@ -3,26 +3,22 @@ const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 
 /**
+ * @description gets user data from database and checks if its a new user or not
  * @param {*} req.params.email
  * @returns {JSON} {new_user:false, _id: String, email:String, number_of_charts: Number, credits: Number, last_login: Timestamp}
  * @returns {JSON} {new_user:true, email: String, last_login: Timestamp}
  */
+// TODO: publish user udpated to kafka
 const userData = async (req, res) => {
   const email = req.params.email;
   const user = await User.findOne({ email });
-  const timestamp = Date.now();
   if (!user) {
     return res.status(StatusCodes.OK).json({
       new_user: true,
       email,
-      last_login: timestamp,
+      last_login: Date.now(),
     });
   }
-
-  await User.updateOne(
-    { _id: user._id },
-    { $set: { last_login: timestamp } }
-  );
 
   res.status(StatusCodes.OK).json({
     new_user: false,
@@ -30,18 +26,17 @@ const userData = async (req, res) => {
     email: user.email,
     number_of_charts: user.number_of_charts,
     credits: user.credits,
-    last_login: timestamp,
+    last_login: user.last_login,
   });
 
-  // TODO: publish user udpated to kafka
-  // TODO: error logging when asking things from db
 };
 
 /**
- *
+ * @description saves user to database if found its a new user
  * @param {*} req.body {"new_user": "", "email": "", "last_login":""}
- * @returns {JSON} {success: Boolean, user: Object}
- */
+ * @returns {JSON} {success: Boolean, msg: String}
+*/
+// TODO: publish user udpated to kafka
 const saveUser = async (req, res) => {
   const { new_user, email, last_login } = req.body;
 
@@ -53,9 +48,33 @@ const saveUser = async (req, res) => {
   }
 
   const user = await User.create({ email, last_login });
-  res.status(StatusCodes.OK).json({ success: true, user });
-  // TODO: publish user udpated to kafka
-  // TODO: error logging more friendly to user
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, msg: "user saved to db successfully" });
 };
 
-module.exports = { userData, saveUser };
+/**
+ * @description logs out user and updates last login attribute
+ * @param {email} req.params.email
+ * @returns {JSON} {success: Boolean, msg: String}
+ */
+//TODO: should backend handle the deletion of token?? => no
+//TODO: publish user new last login 
+const logout = async (req, res) => {
+  const user = await User.findOne({ email: req.params.email });
+
+  if (!user) {
+    throw new CustomAPIError(
+      "User doesn't exist in database",
+      StatusCodes.BAD_REQUEST
+    );
+  }
+
+  await User.updateOne({ _id: user._id }, { $set: { last_login: Date.now() } });
+  console.log(Date.now());
+  res
+    .status(StatusCodes.OK)
+    .json({ success: true, msg: "User logged out successfully" });
+};
+
+module.exports = { userData, saveUser, logout };
