@@ -2,11 +2,11 @@ import { React } from "react";
 
 import { Button, Container, Dropdown } from "react-bootstrap";
 
-import { RenderOnAnonymous, RenderOnAuth } from "..";
-import { UserService } from "../../services";
-import './loginControl.css';
+import { RenderOnAnonymous, RenderOnAuth } from "../..";
+import { UserService } from "../../../services";
+import './accountControl.css';
 
-const LoginControl = () => {
+const AccountControl = () => {
 
   return (
     <Container id='login-control-container'>
@@ -36,4 +36,4 @@ const LoginControl = () => {
 
 };
 
-export default LoginControl;
+export default AccountControl;

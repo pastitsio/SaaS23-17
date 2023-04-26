@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
 import { Nav, Navbar } from 'react-bootstrap'
+
+import AccountControl from './accountControl/AccountControl';
 
 import './navBar.css'
 
-import { LoginControl } from '..'
 import logo from '../../assets/logo.svg'
+
 
 const NavBar = () => {
 
@@ -24,7 +25,7 @@ const NavBar = () => {
         </Nav>
       </Navbar.Collapse>
 
-      <LoginControl/>
+      <AccountControl />
 
     </Navbar>
   )
