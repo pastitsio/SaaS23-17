@@ -5,7 +5,7 @@
 
   --gradient-text: linear-gradient(#e66465, #9198e5);
 
-  --border-radius: 12px;
+  --border-radius: 9px;
 
   --color-bg: #4d1111e7;
   --color-bg-front: #e6b1b1f1;
@@ -16,5 +16,6 @@
   --color-text-light-alt: #bd9b98;
 
   --color-button: #961f16;
+  --color-button-hover: rgb(222, 178, 178);
   --color-button-bg-username: #c0d9ba;
 }

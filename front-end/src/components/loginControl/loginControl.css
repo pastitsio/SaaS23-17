@@ -1,37 +1,27 @@
-#navbar-login, #navbar-logout {
+#login-control-container {
+    justify-content: flex-end;
+    padding-right: .5rem;
+}
+
+#navbar-login {
     background-color: var(--color-button);
     border: none;
     font-weight: 500;
 }
 
-#navbar-login:hover, #navbar-logout:hover {
+#navbar-login:hover {
+    background-color: var(--color-button-hover);
     color: var(--color-button);
-    background-color: rgb(222, 178, 178);
-}
-
-#navbar-logout {
-    margin: auto 5px;
 }
 
 #navbar-username {
     background-color: var(--color-button-bg-username);
     color: var(--color-text-alt);
-    
-    justify-content: flex-end;
-    
+
     line-height: 2.2rem;
-    width: min-content;
-    
+
     font-weight: 800;
 
     border: none;
     border-radius: 6px;
-}
-
-.text-muted {
-    font-size: .5em;
-}
-
-.modal-title {
-    color: var(--color-text);
 }

@@ -15,7 +15,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
   })
     .then((authenticated) => {
       if (!authenticated) {
-        console.log("user is not authenticated..!");
+        console.log("user is not authenticated.!");
       }
       onAuthenticatedCallback();
     })
@@ -35,7 +35,7 @@ const updateToken = (successCallback) =>
     .then(successCallback)
     .catch(doLogin);
 
-const getUsername = () => _kc.tokenParsed?.preferred_username;
+const getUsername = () => _kc.tokenParsed?.preferred_username.split('@')[0];
 
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 

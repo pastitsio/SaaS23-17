@@ -1,6 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { About, Home } from './pages'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+
+import { Container } from 'react-bootstrap'
+
 import { NavBar, RenderOnAuth } from './components'
+import { About, Home, PageNotAuthorized, PageNotFound } from './pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -10,15 +13,17 @@ const App = () => {
   return (
     <BrowserRouter>
       <NavBar />
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path='/about' element={
-          <RenderOnAuth>
-            <About />
-          </RenderOnAuth>
-        } />
-      </Routes>
-      {/* <Route path='*' element={<PageNotFound />} /> */}
+      <Container id='main-container'>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path='/about' element={
+            <RenderOnAuth altComponent={<PageNotAuthorized />}>
+              <About />
+            </RenderOnAuth>
+          } />
+          <Route path='*' element={<PageNotFound />} />
+        </Routes>
+      </Container>
     </BrowserRouter>
   );
 }

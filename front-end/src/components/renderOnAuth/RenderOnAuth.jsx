@@ -1,5 +1,5 @@
 import { UserService } from '../../services'
 
-const RenderOnAuth = ({ children }) => (UserService.isLoggedIn()) ? children : null;
+const RenderOnAuth = ({ children, altComponent }) => (UserService.isLoggedIn()) ? children : altComponent;
 
 export default RenderOnAuth

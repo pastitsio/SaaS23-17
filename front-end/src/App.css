@@ -9,3 +9,10 @@
 body {
     background: var(--color-bg);
 }
+
+#main-container {
+    border-radius: 12px;
+    background-color: var(--color-bg-front);
+    width: 70%;
+    margin: auto;
+  }
