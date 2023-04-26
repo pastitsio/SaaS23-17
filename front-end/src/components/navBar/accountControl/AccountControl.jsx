@@ -17,6 +17,9 @@ const AccountControl = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
+            <Dropdown.Item>
+              Created charts
+            </Dropdown.Item>
             <Dropdown.Item onClick={() => UserService.doLogout()}>
               Logout
             </Dropdown.Item>
