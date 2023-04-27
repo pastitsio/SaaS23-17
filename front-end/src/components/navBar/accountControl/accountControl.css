@@ -1,0 +1,31 @@
+#login-control-container {
+    justify-content: flex-end;
+    padding-right: .5rem;
+}
+
+#navbar-login {
+    background-color: var(--color-button);
+    border: none;
+    font-weight: 500;
+}
+
+#navbar-login:hover {
+    background-color: var(--color-button-hover);
+    color: var(--color-button);
+}
+
+#navbar-username {
+    background-color: var(--color-button-bg-username);
+    color: var(--color-text-alt);
+
+    line-height: 2.2rem;
+
+    font-weight: 800;
+
+    border: none;
+    border-radius: 6px;
+}
+
+.dropdown-menu > a:active {
+	background-color: var(--color-button);
+}

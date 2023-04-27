@@ -1,13 +1,20 @@
-import React from 'react'
+import React from 'react';
+
+import { Container } from 'react-bootstrap';
 
 import { PreviewCarousel } from '../../components';
 
-import './home.css';
+import './home.css'
 
 const Home = () => {
 
   return (
-    <PreviewCarousel />
+    <>
+      <Container id='header-container'>
+        <h2>Welcome to MyCharts!</h2>
+      </Container>
+      <PreviewCarousel />
+    </>
   );
 
 }
