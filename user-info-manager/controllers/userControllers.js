@@ -39,12 +39,12 @@ const userData = async (req, res) => {
 
 /**
  * @description saves user to database if found its a new user
- * @param {*} req.body {"newUser": Boolean, "email": String, "last_login": timestamp}
+ * @param {*} req.body {"newUser": Boolean, "email": String, "lastLoginTimestamp": timestamp}
  * @returns {JSON} {success: Boolean, msg: String}
  */
 // TODO: publish user udpated to kafka
 const saveUser = async (req, res) => {
-  const { newUser, email, last_login } = req.body;
+  const { newUser, email, lastLoginTimestamp: last_login } = req.body;
   if (!newUser || !email || !last_login) {
     throw new CustomAPIError(
       "Fields newUser: Boolean, email: String, last_login: timestamp are required",
@@ -52,7 +52,7 @@ const saveUser = async (req, res) => {
     );
   }
 
-  const user = await User.create({ email, last_login });
+  const user = await User.create({ email: email, last_login: last_login });
   res
     .status(StatusCodes.OK)
     .json({ success: true, msg: "user saved to db successfully" });
@@ -74,7 +74,7 @@ const lastLoginUpdate = async (req, res) => {
     );
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email: email });
   if (!user) {
     throw new CustomAPIError(
       "User doesn't exist in database",
@@ -82,7 +82,7 @@ const lastLoginUpdate = async (req, res) => {
     );
   }
 
-  await User.updateOne({ _id: user._id }, { $set: { last_login } });
+  await User.updateOne({ _id: user._id }, { $set: { last_login: last_login } });
   res
     .status(StatusCodes.OK)
     .json({ success: true, msg: "User last login timestamp updated" });
