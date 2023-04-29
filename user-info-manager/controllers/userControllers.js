@@ -1,7 +1,11 @@
 const User = require("../models/User");
 const CustomAPIError = require("../errors/custom-error");
 const { StatusCodes } = require("http-status-codes");
-// const queueMessage = require("../choreographer/kafka-publisher");
+const queueMessage = require("../../choreographer/kafka/kafka-publisher");
+const { producerCreate } = require("../../choreographer/kafka/kafka-connect");
+
+// connect to kafka as a publisher
+const stream = producerCreate("user-data");
 
 /**
  * @description gets user data from database and checks if its a new user or not
@@ -56,6 +60,8 @@ const saveUser = async (req, res) => {
   res
     .status(StatusCodes.OK)
     .json({ success: true, msg: "user saved to db successfully" });
+
+  // queueMessage({ _id: user._id ,email: email, last_login: last_login }, stream);
 };
 
 /**
@@ -87,7 +93,7 @@ const lastLoginUpdate = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ success: true, msg: "User last login timestamp updated" });
 
-  // queueMessage({_id: user._id, last_login});
+  queueMessage({ email, last_login: Number(last_login) }, stream);
 };
 
 module.exports = { userData, saveUser, lastLoginUpdate };

@@ -41,7 +41,7 @@ app.use(
 // routes
 app.use("/api/v1/", keycloak.protect("realm:user"), router);
 app.get("/",  keycloak.protect("realm:user"), (req, res) => {
-  res.send(req.kauth.grant.access_token.token);
+  res.json({token: req.kauth.grant.access_token.token});
 });
 app.use("*", pageNotFound);
 
