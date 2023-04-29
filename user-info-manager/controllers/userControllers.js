@@ -46,7 +46,6 @@ const userData = async (req, res) => {
  * @param {*} req.body {"newUser": Boolean, "email": String, "lastLoginTimestamp": timestamp}
  * @returns {JSON} {success: Boolean, msg: String}
  */
-// TODO: publish user udpated to kafka
 const saveUser = async (req, res) => {
   const { newUser, email, lastLoginTimestamp: last_login } = req.body;
   if (!newUser || !email || !last_login) {
@@ -61,7 +60,7 @@ const saveUser = async (req, res) => {
     .status(StatusCodes.OK)
     .json({ success: true, msg: "user saved to db successfully" });
 
-  // queueMessage({ _id: user._id ,email: email, last_login: last_login }, stream);
+  queueMessage({ email, last_login: Number(last_login) }, stream);
 };
 
 /**
@@ -70,7 +69,6 @@ const saveUser = async (req, res) => {
  * @returns {JSON} {success: Boolean, msg: String}
  * @publishes {_id: String, last_login: timestamp}
  */
-// TODO: publish user new last login timestamp
 const lastLoginUpdate = async (req, res) => {
   const { email, lastLoginTimestamp: last_login } = req.body;
   if (!email || !last_login) {
