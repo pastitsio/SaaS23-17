@@ -23,7 +23,7 @@
     font-weight: 800;
 
     border: none;
-    border-radius: 6px;
+    border-radius: calc(var(--border-radius) / 2);;
 }
 
 .dropdown-menu > a:active {

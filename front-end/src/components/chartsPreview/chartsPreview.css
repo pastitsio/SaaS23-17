@@ -1,0 +1,114 @@
+* {
+    border-radius: calc(var(--border-radius)/2);
+}
+
+#charts-preview-container {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+}
+
+#info-container {
+    flex: 0 0 40%;
+    max-height: 85vh;
+    overflow: hidden;
+}
+
+/* table */
+#table-container {
+    overflow: auto;
+    display: inline-block;
+}
+
+#preview-image-container {
+    flex: 0 0 60%;
+    max-height: 85vh;
+    background-color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#preview-card {
+    border: none;
+}
+
+.max-height-card {
+    height: 100% !important;
+}
+
+#preview-card > p, img {
+    max-height: 500px;
+    max-width: auto;
+}
+
+#select-prompt {
+    font-weight: 700;
+}
+
+table {
+    font-family: var(--font-family-mono) !important;
+    font-weight: 400;
+    background-color: var(--color-text-light);
+    border-radius: calc(var(--border-radius)/2);
+}
+
+thead {
+    background-color: var(--color-button);
+    color: var(--color-text-light);
+
+    position: sticky;
+    top: 0;
+}
+
+tr:hover {
+    cursor: pointer;
+}
+
+tr:nth-child(n) {
+    border-bottom: 2px solid var(--color-text);
+}
+
+/* export control */
+#export-label {
+    color: var(--color-button);
+    font-weight: 700;
+    /* display: flex; */
+    padding-top: 10px;
+}
+
+#export-buttons {
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 1px;
+}
+
+#export-buttons button {
+    font-size: smaller;
+    font-weight: 400;
+    border-radius: calc(var(--border-radius)*2);
+    background-color: var(--color-text-alt);
+    border: none;
+}
+
+#export-buttons button:hover {
+    background-color: var(--color-text-light);
+    color: var(--color-button);
+}
+
+#interactive-button {
+    background-color: var(--color-button) !important;
+    border: none !important;
+}
+
+#interactive-button:hover {
+    background-color: var(--color-text-light-alt) !important;
+    color: var(--color-bg) !important;
+}
+
+#button-divider {
+    height: min-content;
+    width: min-content;
+}

@@ -15,16 +15,32 @@ const initKeycloak = (onAuthenticatedCallback) => {
   })
     .then((authenticated) => {
       if (!authenticated) {
-        console.log("user is not authenticated.!");
+        console.log("User is not authenticated!");
       }
       onAuthenticatedCallback();
     })
     .catch(console.error);
 };
 
+const getUserProfile = async () => {
+  const profile = await _kc.loadUserProfile();
+  console.log('profile :>> ', _kc.tokenParsed);
+  return profile;
+};
+
+const getUsername = () => _kc.tokenParsed?.preferred_username;
+
+const getEmail = () => _kc.tokenParsed?.email;
+
 const doLogin = _kc.login;
 
-const doLogout = _kc.logout;
+const doLogout = async () => {
+  await _kc.logout();
+  const requestBody = { email: getEmail(), lastLogoutTimestamp: Date.now() };
+  // dbConnector.saveMailTimestamp(requestBody);
+};
+
+const getId = () => _kc.tokenParsed?.sub;
 
 const getToken = () => _kc.token;
 
@@ -35,8 +51,6 @@ const updateToken = (successCallback) =>
     .then(successCallback)
     .catch(doLogin);
 
-const getUsername = () => _kc.tokenParsed?.preferred_username.split('@')[0];
-
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 
 const UserService = {
@@ -44,9 +58,10 @@ const UserService = {
   doLogin,
   doLogout,
   isLoggedIn,
-  getToken,
-  updateToken,
+  getId,
+  getUserProfile,
   getUsername,
+  updateToken,
   hasRole,
 };
 

@@ -31,7 +31,10 @@ const renderApp = () => {
     // </React.StrictMode>
   );
 }
-UserService.initKeycloak(renderApp);
+
+UserService.initKeycloak(() => {
+  renderApp();
+});
 
 
 // If you want to start measuring performance in your app, pass a function

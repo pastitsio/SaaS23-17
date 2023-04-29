@@ -17,7 +17,7 @@ const AccountControl = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item>
+            <Dropdown.Item userid={UserService.getId()} href="/mycharts">
               Created charts
             </Dropdown.Item>
             <Dropdown.Item onClick={() => UserService.doLogout()}>

@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { Container } from 'react-bootstrap'
 
-import { NavBar, RenderOnAuth } from './components'
+import { ChartsPreview, NavBar, RenderOnAuth } from './components'
 import { About, Home, PageNotAuthorized, PageNotFound } from './pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 
 const App = () => {
+
   return (
     <BrowserRouter>
       <NavBar />
@@ -19,6 +20,11 @@ const App = () => {
           <Route path='/about' element={
             <RenderOnAuth altComponent={<PageNotAuthorized />}>
               <About />
+            </RenderOnAuth>
+          } />
+          <Route path='/mycharts' element={
+            <RenderOnAuth altComponent={<PageNotAuthorized />}>
+              <ChartsPreview />
             </RenderOnAuth>
           } />
           <Route path='*' element={<PageNotFound />} />

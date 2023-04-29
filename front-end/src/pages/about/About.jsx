@@ -1,8 +1,9 @@
 import React from 'react'
+import { UserService } from '../../services'
 
 const About = () => {
   return (
-    <div>About</div>
+    <div>{JSON.stringify(UserService.getUserProfile())}</div>
   )
 }
 
