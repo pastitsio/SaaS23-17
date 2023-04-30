@@ -1,0 +1,10 @@
+#about-container {
+    border-radius: var(--border-radius);
+    background-color: var(--color-text-light);
+    
+    height: calc(100% - 1rem);
+    width: calc(100% - 1rem);
+
+    position: relative;
+    top: .5rem;
+}

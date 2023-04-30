@@ -54,7 +54,20 @@ const updateToken = (successCallback) =>
 
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 
+const checkNewUser = () => {
+  return new Promise((resolve) => {
+    // Simulate an API call
+    setTimeout(() => {
+      resolve({ 
+        newUser: true, 
+        msg: 'value2'
+      });
+    }, 2500);
+  });
+}
+
 const UserService = {
+  checkNewUser,
   doLogin,
   doLogout,
   getId,

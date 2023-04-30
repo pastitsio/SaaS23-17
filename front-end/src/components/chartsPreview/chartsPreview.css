@@ -37,16 +37,19 @@
     height: 100% !important;
 }
 
-#preview-card > p, img {
+#preview-card>p,
+img {
     max-height: 500px;
     max-width: auto;
     margin-top: 1rem;
 }
 
-#select-prompt, #card-text{
+#select-prompt,
+#card-text {
     font-weight: 700;
     color: var(--color-text-light);
 }
+
 #card-title {
     color: whitesmoke;
 }
@@ -115,4 +118,12 @@ tr:nth-child(n) {
 #button-divider {
     height: min-content;
     width: min-content;
+}
+
+.table-loading {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    top: calc(50% - 35px);
+    left: calc(50% - 35px);
 }

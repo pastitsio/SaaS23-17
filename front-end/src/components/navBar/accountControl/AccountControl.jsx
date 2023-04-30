@@ -34,10 +34,13 @@ const AccountControl = () => {
               Buy Credits
             </Dropdown.Item>
             <BuyCreditsModal show={showBuyCredits} onHide={handleClose} />
+            
             <Dropdown.Item as='li' userid={UserService.getId()}>
               <Link to="/mycharts">Created charts</Link>
             </Dropdown.Item>
+
             <Dropdown.Divider />
+
             <Dropdown.Item as='li' onClick={() => UserService.doLogout()}>
               Logout
             </Dropdown.Item>
