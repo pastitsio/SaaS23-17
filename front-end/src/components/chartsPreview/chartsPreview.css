@@ -1,7 +1,3 @@
-* {
-    border-radius: calc(var(--border-radius)/2);
-}
-
 #charts-preview-container {
     display: flex;
     flex-direction: row;
@@ -10,7 +6,7 @@
 
 #info-container {
     flex: 0 0 40%;
-    max-height: 85vh;
+    max-height: 60vh;
     overflow: hidden;
 }
 
@@ -22,12 +18,14 @@
 
 #preview-image-container {
     flex: 0 0 60%;
-    max-height: 85vh;
+    max-height: 60vh;
     background-color: var(--color-button);
 
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: var(--border-radius);
+    margin-left: 5px;
 }
 
 #preview-card {
@@ -42,22 +40,21 @@
 #preview-card > p, img {
     max-height: 500px;
     max-width: auto;
-    padding-top: 1rem;
+    margin-top: 1rem;
 }
 
-#select-prompt, .card-title {
+#select-prompt, #card-text{
     font-weight: 700;
     color: var(--color-text-light);
 }
-.card-text {
-    color: white`;
+#card-title {
+    color: whitesmoke;
 }
 
 table {
     font-family: var(--font-family-mono) !important;
     font-weight: 400;
     background-color: var(--color-text-light);
-    border-radius: calc(var(--border-radius)/2);
 }
 
 thead {
@@ -87,8 +84,9 @@ tr:nth-child(n) {
 #export-buttons {
     padding: 0;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1px;
+    gap: 3px;
 }
 
 #export-buttons button {

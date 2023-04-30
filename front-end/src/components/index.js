@@ -1,3 +1,4 @@
+export { default as BuyCreditsModal } from './buyCreditsModal/BuyCreditsModal'
 export { default as ChartsPreview } from './chartsPreview/ChartsPreview'
 export { default as NavBar } from './navBar/NavBar'
 export { default as PreviewCarousel } from './previewCarousel/PreviewCarousel'

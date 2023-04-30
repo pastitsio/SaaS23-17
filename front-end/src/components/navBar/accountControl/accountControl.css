@@ -1,4 +1,4 @@
-#login-control-container {
+#account-control-container {
     justify-content: flex-end;
     padding-right: .5rem;
 }
@@ -26,6 +26,15 @@
     border-radius: calc(var(--border-radius) / 2);;
 }
 
-.dropdown-menu > a:active {
+.dropdown-menu > li {
+	cursor: pointer;
+}
+
+.dropdown-menu > li:active {
 	background-color: var(--color-button);
+}
+
+.dropdown-menu > li > a {
+    text-decoration: none;
+    color: inherit;
 }

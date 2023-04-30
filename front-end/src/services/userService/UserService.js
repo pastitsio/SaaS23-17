@@ -20,6 +20,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
       onAuthenticatedCallback();
     })
     .catch(console.error);
+
 };
 
 const getUserProfile = async () => {
@@ -30,19 +31,19 @@ const getUserProfile = async () => {
 
 const getUsername = () => _kc.tokenParsed?.preferred_username;
 
-const getEmail = () => _kc.tokenParsed?.email;
+// const getEmail = () => _kc.tokenParsed?.email;
 
 const doLogin = _kc.login;
 
 const doLogout = async () => {
   await _kc.logout();
-  const requestBody = { email: getEmail(), lastLogoutTimestamp: Date.now() };
+  // const requestBody = { email: getEmail(), lastLogoutTimestamp: Date.now() };
   // dbConnector.saveMailTimestamp(requestBody);
 };
 
 const getId = () => _kc.tokenParsed?.sub;
 
-const getToken = () => _kc.token;
+// const getToken = () => _kc.token;
 
 const isLoggedIn = () => !!_kc.token;
 
@@ -54,15 +55,15 @@ const updateToken = (successCallback) =>
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 
 const UserService = {
-  initKeycloak,
   doLogin,
   doLogout,
-  isLoggedIn,
   getId,
-  getUserProfile,
   getUsername,
-  updateToken,
+  getUserProfile,
   hasRole,
+  initKeycloak,
+  isLoggedIn,
+  updateToken,
 };
 
 export default UserService;

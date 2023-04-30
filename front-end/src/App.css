@@ -10,7 +10,7 @@ body {
 
 #main-container {
     width: 85vmax;
-    height: 95vmin;
+    height: 65vh;
     border-radius: 12px;
     background-color: var(--color-bg-front);
     padding: 0;

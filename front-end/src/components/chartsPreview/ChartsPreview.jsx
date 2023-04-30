@@ -8,41 +8,42 @@ import './chartsPreview.css'
 
 const ChartsPreview = ({ userid }) => {
   // const [chartsList, setChartsList] = useState([]);
-  const [selected, setSelected] = useState(0);
+  const [selectedImgId, setSelectedImgId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
   const chartsList = [
-    { 'id': 'a', 'type': 'linear', 'name': 'chart_a', 'createdTimestamp': 1131482603153 },
-    { 'id': 'b', 'type': 'linear', 'name': 'chart_b', 'createdTimestamp': 1231482603153 },
-    { 'id': 'c', 'type': 'linear', 'name': 'chart_c', 'createdTimestamp': 1141482603153 },
-    { 'id': 'd', 'type': 'linear', 'name': 'chart_d', 'createdTimestamp': 1241482603153 },
-    { 'id': 'f', 'type': 'linear', 'name': 'chart_f', 'createdTimestamp': 1251482603153 },
-    { 'id': 'g', 'type': 'linear', 'name': 'chart_g', 'createdTimestamp': 1261482603153 },
-    { 'id': 'h', 'type': 'linear', 'name': 'chart_h', 'createdTimestamp': 1231482503153 },
-    { 'id': 'i', 'type': 'linear', 'name': 'chart_i', 'createdTimestamp': 1231482603153 },
-    { 'id': 'j', 'type': 'linear', 'name': 'chart_j', 'createdTimestamp': 1231482603153 },
-    { 'id': 'k', 'type': 'linear', 'name': 'chart_k', 'createdTimestamp': 1231482603153 },
-    { 'id': 'l', 'type': 'linear', 'name': 'chart_l', 'createdTimestamp': 1231482603153 },
-    { 'id': 'm', 'type': 'linear', 'name': 'chart_m', 'createdTimestamp': 1231482603153 },
+    { 'id': 'a', 'type': 'linear', 'name': 'chart_a', 'createdTimestamp': 1131482603153, 'title': 'Line Chart (a)', 'description': 'This is a line chart' },
+    { 'id': 'b', 'type': 'linear', 'name': 'chart_b', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (b)', 'description': 'This is a line chart' },
+    { 'id': 'c', 'type': 'linear', 'name': 'chart_c', 'createdTimestamp': 1141482603153, 'title': 'Line Chart (c)', 'description': 'This is a line chart' },
+    { 'id': 'd', 'type': 'linear', 'name': 'chart_d', 'createdTimestamp': 1241482603153, 'title': 'Line Chart (d)', 'description': 'This is a line chart' },
+    { 'id': 'e', 'type': 'linear', 'name': 'chart_f', 'createdTimestamp': 1251482603153, 'title': 'Line Chart (e)', 'description': 'This is a line chart' },
+    { 'id': 'f', 'type': 'linear', 'name': 'chart_g', 'createdTimestamp': 1261482603153, 'title': 'Line Chart (f)', 'description': 'This is a line chart' },
+    { 'id': 'g', 'type': 'linear', 'name': 'chart_h', 'createdTimestamp': 1231482503153, 'title': 'Line Chart (g)', 'description': 'This is a line chart' },
+    { 'id': 'h', 'type': 'linear', 'name': 'chart_i', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (h)', 'description': 'This is a line chart' },
+    { 'id': 'i', 'type': 'linear', 'name': 'chart_j', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (i)', 'description': 'This is a line chart' },
+    { 'id': 'j', 'type': 'linear', 'name': 'chart_k', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (j)', 'description': 'This is a line chart' },
+    { 'id': 'k', 'type': 'linear', 'name': 'chart_l', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (k)', 'description': 'This is a line chart' },
+    { 'id': 'l', 'type': 'linear', 'name': 'chart_m', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (l)', 'description': 'This is a line chart' },
   ]
 
   function handleRowClick(id) {
-    setImgReady(false);
-    setSelected(id);
     setIsLoading(true);
+    setImgReady(false);
+
     setTimeout(() => {
+      // TODO: fetch img preview
+      setSelectedImgId(id);
+
       setIsLoading(false);
       setImgReady(true);
     }, 2500);
   }
 
   const handleDownloadImage = (event) => {
-    console.log(event.target.name, selected)
+    console.log(event.target.name, selectedImgId)
   }
 
-
-  console.log('selected id :>> ', selected);
 
   return (
     <Container id='charts-preview-container'>
@@ -55,7 +56,7 @@ const ChartsPreview = ({ userid }) => {
             </thead>
             <tbody>
               {chartsList.map((item, idx) => (
-                <tr key={idx} onClick={() => handleRowClick(item.id)} className={selected === item.id ? 'table-active' : ''}>
+                <tr key={idx} onClick={() => handleRowClick(item.id)} className={selectedImgId === item.id ? 'table-active' : ''}>
                   <td>{item.type}</td>
                   <td>{item.name}</td>
                   <td>{new Date(item.createdTimestamp).toDateString()}</td>
@@ -72,32 +73,32 @@ const ChartsPreview = ({ userid }) => {
             <Button className={imgReady ? '' : 'disabled'} name='png' onClick={(event) => handleDownloadImage(event)}>PNG</Button>
             <Button className={imgReady ? '' : 'disabled'} name='svg' onClick={(event) => handleDownloadImage(event)}>SVG</Button>
             <Container id='button-divider'  >{" "}</Container>
-          <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
+            <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
+          </Container>
         </Container>
-    </Container>
       </Stack >
 
-  <Container id='preview-image-container'>
-    {isLoading
-      ? <Spinner animation='border' /> // if is loading: display spinner
-      : imgReady // else: 
-        ? // if image is ready: load card 
-        <>
-          <Card id='preview-card' className={imgReady ? 'max-height-card' : ''}>
-            <Card.Img variant='bottom' src={sampleImg} alt='preview'></Card.Img>
-            <Card.Body>
-              <Card.Title>Line chart</Card.Title>
-              <Card.Text>Lorem ipsum dolor sit amet.</Card.Text>
-            </Card.Body>
-          </Card>
-        </>
-        :
-        <Card id='preview-card'>
-          {/* else show select prompt  */}
-          <p id='select-prompt'>Select a chart from the table </p>
-        </Card>
-    }
-  </Container>
+      <Container id='preview-image-container'>
+        {isLoading
+          ? <Spinner animation='border' variant='light'/> // if is loading: display spinner
+          : imgReady // else: 
+            ? // if image is ready: load card 
+            <>
+              <Card id='preview-card' className={imgReady ? 'max-height-card' : ''}>
+                <Card.Img variant='top' src={sampleImg} alt='preview'></Card.Img>
+                <Card.Body>
+                  <Card.Title id='card-title'>{chartsList.find((e) => e.id === selectedImgId).title}</Card.Title>
+                  <Card.Text id='card-text'>{chartsList.find((e) => e.id === selectedImgId).description}</Card.Text>
+                </Card.Body>
+              </Card>
+            </>
+            :
+            <Card id='preview-card'>
+              {/* else show select prompt  */}
+              <p id='select-prompt'>Select a chart from the table </p>
+            </Card>
+        }
+      </Container>
     </Container >
 
   );

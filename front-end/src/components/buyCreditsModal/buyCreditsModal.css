@@ -1,0 +1,53 @@
+#modal-title {
+    color: var(--color-bg);
+}
+
+#credit-card-title {
+    color: var(--color-button);
+}
+
+#credit-card-text {
+    color: var(--color-text);
+}
+
+.credit-card {
+    cursor: pointer;
+}
+
+.selected {
+    border-color: var(--color-button) !important;
+}
+
+#purchase-button {
+    background-color: var(--color-button);
+    border: none;
+}
+
+#purchase-button:hover {
+    background-color: var(--color-text-light-alt);
+    color: var(--color-bg);
+}
+
+#cancel-button {
+    background-color: white;
+    color: var(--color-bg);
+    border: none;
+    justify-self: flex-start;
+}
+
+#modal-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#modal-buttons, #action-result {
+    flex: 1 1 0%;
+
+    display: flex;
+    align-items: center;
+}
+
+#action-result {
+    justify-content: flex-end;
+}
