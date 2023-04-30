@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Card, Container, Spinner, Stack, Table } from 'react-bootstrap'
-import { BsFillArrowUpRightCircleFill, BsGripVertical } from 'react-icons/bs'
+import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
-import sampleImg from '../../assets/sample_img.png'
+import sampleImg from '../../assets/line_chart_white-bg.png'
 
 import './chartsPreview.css'
 
@@ -86,7 +86,8 @@ const ChartsPreview = ({ userid }) => {
           <Card id='preview-card' className={imgReady ? 'max-height-card' : ''}>
             <Card.Img variant='bottom' src={sampleImg} alt='preview'></Card.Img>
             <Card.Body>
-              <Card.Title>Pie chart</Card.Title>
+              <Card.Title>Line chart</Card.Title>
+              <Card.Text>Lorem ipsum dolor sit amet.</Card.Text>
             </Card.Body>
           </Card>
         </>

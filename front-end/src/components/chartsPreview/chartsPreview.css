@@ -23,7 +23,7 @@
 #preview-image-container {
     flex: 0 0 60%;
     max-height: 85vh;
-    background-color: white;
+    background-color: var(--color-button);
 
     display: flex;
     align-items: center;
@@ -32,6 +32,7 @@
 
 #preview-card {
     border: none;
+    background-color: var(--color-button);
 }
 
 .max-height-card {
@@ -41,10 +42,15 @@
 #preview-card > p, img {
     max-height: 500px;
     max-width: auto;
+    padding-top: 1rem;
 }
 
-#select-prompt {
+#select-prompt, .card-title {
     font-weight: 700;
+    color: var(--color-text-light);
+}
+.card-text {
+    color: white`;
 }
 
 table {
