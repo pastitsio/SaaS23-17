@@ -1,7 +1,16 @@
-#header-container{
-    display: flex;
-    justify-content: center;
-    margin: 1rem 0;
-    padding: 1rem 0 0 0 ;
-    color: var(--color-text-alt);
-  }
+#header-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+  padding: 1rem 0 0 0;
+  color: var(--color-text-alt);
+}
+
+.offcanvas {
+  max-height: 20vh !important;
+}
+.offcanvas-body>button {
+  margin: 2rem 1rem;
+  position: relative;
+  left: 35%;
+}

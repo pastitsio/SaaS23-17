@@ -26,11 +26,11 @@ const About = () => {
       </Row>
       <Row className="mt-2">
         <Col>
-          <p>Check out our <a href="https://github.com/ntua/SaaS23-17/ce">GitHub repository</a> for more information.</p>
+          <p>Check out our <a href="https://github.com/ntua/SaaS23-17" target="_blank" rel="noopener noreferrer">GitHub repository</a> for more information.</p>
         </Col>
       </Row>
     </Container>
   );
 }
 
-export default About;
+export default About

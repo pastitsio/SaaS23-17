@@ -23,27 +23,43 @@ const initKeycloak = (onAuthenticatedCallback) => {
 
 };
 
-const getUserProfile = async () => {
-  const profile = await _kc.loadUserProfile();
-  console.log('profile :>> ', _kc.tokenParsed);
-  return profile;
+/**
+ *  Simulate an API call.
+ *  On resolve, update user session as well.
+ * 
+ *  MUST BE CALLED between transactions to update credit balance.
+ *  */
+const getUserInfo = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const response = {
+        new_user: true,
+        _id: 1234567810,
+        email: 'demos@testos.com',
+        number_of_charts: '0',
+        last_login: 1682970603153
+      };
+
+      sessionStorage.setItem('userInfo', JSON.stringify(response));
+      resolve(response);
+      // reject(new Error('Failed to fetch user info'));
+    }, 2500);
+  });
 };
 
 const getUsername = () => _kc.tokenParsed?.preferred_username;
-
-// const getEmail = () => _kc.tokenParsed?.email;
 
 const doLogin = _kc.login;
 
 const doLogout = async () => {
   await _kc.logout();
+  sessionStorage.removeItem('userInfo');
+
   // const requestBody = { email: getEmail(), lastLogoutTimestamp: Date.now() };
   // dbConnector.saveMailTimestamp(requestBody);
 };
 
 const getId = () => _kc.tokenParsed?.sub;
-
-// const getToken = () => _kc.token;
 
 const isLoggedIn = () => !!_kc.token;
 
@@ -54,25 +70,12 @@ const updateToken = (successCallback) =>
 
 const hasRole = (roles) => roles.some((role) => _kc.hasRealmRole(role));
 
-const checkNewUser = () => {
-  return new Promise((resolve) => {
-    // Simulate an API call
-    setTimeout(() => {
-      resolve({ 
-        newUser: true, 
-        msg: 'value2'
-      });
-    }, 2500);
-  });
-}
-
 const UserService = {
-  checkNewUser,
   doLogin,
   doLogout,
   getId,
   getUsername,
-  getUserProfile,
+  getUserInfo,
   hasRole,
   initKeycloak,
   isLoggedIn,

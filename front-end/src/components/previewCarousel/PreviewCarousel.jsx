@@ -24,8 +24,8 @@ const PreviewCarousel = () => {
   return (
     <Container id='carousel-container'>
       <Carousel>
-        {previewImages.map((img, index) => (
-          <Carousel.Item>
+        {previewImages.map((img, idx) => (
+          <Carousel.Item key={idx}>
             <Container className='carousel-img'><img src={img.src} alt="Line Chart" /></Container>
             <Carousel.Caption bsPrefix='my-carousel-caption'>
               <h4>{img.title} <BsFillArrowUpRightCircleFill style={{cursor: 'pointer'}} onClick={() => handleShowPreview()} /></h4>

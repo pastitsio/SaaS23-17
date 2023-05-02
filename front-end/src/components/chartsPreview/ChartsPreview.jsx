@@ -5,8 +5,12 @@ import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 import sampleImg from '../../assets/line_chart_white-bg.png'
 
 import './chartsPreview.css'
+import { UserService } from '../../services'
 
-const ChartsPreview = ({ userid }) => {
+const ChartsPreview = () => {
+
+  const userid = UserService.getId();
+
   const [chartsList, setChartsList] = useState([]);
   const [selectedImgId, setSelectedImgId] = useState("");
 
@@ -15,7 +19,7 @@ const ChartsPreview = ({ userid }) => {
   const [imgReady, setImgReady] = useState(false);
 
   useEffect(() => {
-    // TODO: fetch Table data
+    // TODO: GET fetch Table data
     setTimeout(() => {
 
       const data = [
@@ -43,7 +47,7 @@ const ChartsPreview = ({ userid }) => {
     setImgReady(false);
 
     setTimeout(() => {
-      // TODO: fetch img preview
+      // TODO: GET fetch img preview
       setSelectedImgId(id);
 
       setImgLoading(false);
@@ -57,9 +61,10 @@ const ChartsPreview = ({ userid }) => {
 
   // TODO: maybe useMemo for image, since it's "expensive"
 
+  console.log('userid :>> ', userid);
 
   return (
-    <Container id='charts-preview-container' className={tableLoading ? 'table-loading': ''}>
+    <Container id='charts-preview-container' className={tableLoading ? 'table-loading' : ''}>
       {tableLoading
         ? <Spinner id='table-spinner' animation='border' variant='light' /> // if is loading: display spinner
         : <>
@@ -122,4 +127,4 @@ const ChartsPreview = ({ userid }) => {
   );
 }
 
-export default ChartsPreview;
+export default ChartsPreview

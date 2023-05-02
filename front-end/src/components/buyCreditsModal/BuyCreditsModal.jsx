@@ -37,8 +37,6 @@ const BuyCreditsModal = ({ show, onHide }) => {
     { 'quantity': 50, 'value': 50 },
   ];
 
-  console.log('selectedCredits :>> ', selectedCredits);
-
   return (
     <Modal show={show} onHide={handleHide}>
       <Modal.Header closeButton>
@@ -47,8 +45,8 @@ const BuyCreditsModal = ({ show, onHide }) => {
       <Modal.Body>
         <Container className="row">
           {pricingList.map((item, idx) => (
-            <Container className="col-md-6">
-              <Card key={idx} style={{ margin: '5px' }}
+            <Container key={idx} className="col-md-6">
+              <Card style={{ margin: '5px' }}
                 className={`credit-card ${selectedCredits === item.quantity ? 'selected' : ''}`}
                 onClick={() => setSelectedCredits(item.quantity)}
               >
@@ -61,7 +59,7 @@ const BuyCreditsModal = ({ show, onHide }) => {
           ))}
         </Container>
       </Modal.Body>
-      <Modal.Footer style={{ display: 'flex' }}>
+      <Modal.Footer className='d-flex'>
         <Container id='modal-buttons'>
           <Button variant="secondary" id="cancel-button" onClick={handleHide}>
             Cancel

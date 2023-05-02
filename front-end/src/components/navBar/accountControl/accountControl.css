@@ -26,15 +26,14 @@
     border-radius: calc(var(--border-radius) / 2);;
 }
 
-.dropdown-menu > li {
-	cursor: pointer;
+.dropdown-menu, #user-profile-card {
+    background-color: var(--color-button-bg-username) !important;
 }
 
 .dropdown-menu > li:active {
-	background-color: var(--color-button);
+	background-color: var(--color-button-bg-username) !important;
 }
 
-.dropdown-menu > li > a {
-    text-decoration: none;
-    color: inherit;
+.dropdown-menu {
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.6);
 }
