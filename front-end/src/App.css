@@ -9,9 +9,12 @@ body {
 }
 
 #main-container {
+    display: flex;
+    flex-direction: column;
     width: 85vmax;
     height: 65vh;
     border-radius: 12px;
     background-color: var(--color-bg-front);
     padding: 0;
+    overflow: scroll;
 }

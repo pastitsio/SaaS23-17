@@ -36,7 +36,8 @@ const getUserInfo = async () => {
         new_user: true,
         _id: 1234567810,
         email: 'demos@testos.com',
-        number_of_charts: '0',
+        number_of_charts: 0,
+        credits: 0,
         last_login: 1682970603153
       };
 

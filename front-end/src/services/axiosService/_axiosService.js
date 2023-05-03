@@ -8,11 +8,12 @@ import { UserService } from '..';
 const _axios = axios.create();
 _axios.interceptors.request.use((config) => {
   if (UserService.isLoggedIn()) {
+    const source = axios.CancelToken.source();
     const cb = () => {
       config.headers.Authorization = `Bearer ${UserService.getToken()}`;
-      return Promise.resolve(config);
     };
-    return UserService.updateToken(cb);
+    UserService.updateToken(cb);
+    config.cancelToken = source.token;
   }
 
   return config;

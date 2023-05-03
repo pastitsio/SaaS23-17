@@ -1,33 +1,19 @@
 import { useState } from 'react';
-import { Button, Card, Container, Modal, Spinner } from 'react-bootstrap';
+import { Button, Card, Container, Modal } from 'react-bootstrap';
 
 import './buyCreditsModal.css';
+import { SubmitWaitButton } from '..';
 
 const BuyCreditsModal = ({ show, onHide }) => {
   const [selectedCredits, setSelectedCredits] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [purchaseReady, setPurchaseReady] = useState(false);
-  const [purchaseResult, setPurchaseResult] = useState(false);
 
   const handleHide = () => {
-    setPurchaseReady(false);
-    setIsLoading(false);
     setSelectedCredits(0);
     onHide();
   }
 
-  const handlePurchase = () => {
-    setIsLoading(true);
-    setPurchaseReady(false);
-    
-    setTimeout(() => {
-      // TODO: POST credits purchase
-      setPurchaseResult(Math.random() > 0.5 ? true : false)
-      
-      setIsLoading(false);
-      setPurchaseReady(true);
-      setSelectedCredits(0);
-    }, 2500)
+  const handleSelectedCreditsButton = (value) => {
+    setSelectedCredits(value);
   }
 
   const pricingList = [
@@ -46,9 +32,9 @@ const BuyCreditsModal = ({ show, onHide }) => {
         <Container className="row">
           {pricingList.map((item, idx) => (
             <Container key={idx} className="col-md-6">
-              <Card style={{ margin: '5px' }}
-                className={`credit-card ${selectedCredits === item.quantity ? 'selected' : ''}`}
-                onClick={() => setSelectedCredits(item.quantity)}
+              <Card 
+                className={`m-2 credit-card ${selectedCredits === item.quantity ? 'selected' : ''}`}
+                onClick={() => handleSelectedCreditsButton(item.quantity)}
               >
                 <Card.Body>
                   <Card.Title id='credit-card-title'>{item.quantity} Credits</Card.Title>
@@ -59,24 +45,18 @@ const BuyCreditsModal = ({ show, onHide }) => {
           ))}
         </Container>
       </Modal.Body>
-      <Modal.Footer className='d-flex'>
-        <Container id='modal-buttons'>
-          <Button variant="secondary" id="cancel-button" onClick={handleHide}>
+      <Modal.Footer >
+        <Container className='d-flex flex-row mt-2'>
+
+          <Button id="cancel-button" onClick={handleHide}>
             Cancel
           </Button>
-          <Button className={selectedCredits === 0 ? 'disabled' : ''} variant="primary" id="purchase-button" onClick={handlePurchase}>
-            Purchase
-          </Button>
-        </Container>
-        <Container id="action-result">
-          {isLoading
-            ? <Spinner animation="border" variant="dark" />
-            : !purchaseReady
-              ? " "
-              : purchaseResult
-                ? <span style={{ 'color': 'green' }}>Purchase complete!</span>
-                : <span style={{ 'color': 'red' }}>Purchase failed!</span>
-          }
+          <SubmitWaitButton
+            actionName='Purchase'
+            actionOnClick={() => undefined}
+            disableCondition={selectedCredits === 0}
+            id="purchase-button"
+          />
         </Container>
       </Modal.Footer>
 

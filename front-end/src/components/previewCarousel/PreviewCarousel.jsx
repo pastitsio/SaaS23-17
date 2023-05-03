@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Carousel, Container } from 'react-bootstrap'
-import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
+import { Container } from 'react-bootstrap'
+import { BsDashLg, BsFillArrowUpRightCircleFill } from 'react-icons/bs'
+import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 
 import './previewCarousel.css'
 
@@ -12,30 +13,63 @@ import img3 from '../../assets/radar.png'
 
 const PreviewCarousel = () => {
 
-  const handleShowPreview = () => {
+  const [shownImageIdx, setShownImageIdx] = useState(0);
+  const handleShowPreview = (idx) => {
   }
 
-  const previewImages = [
-    { 'src': img1, 'title': 'Line Chart', 'description': 'Nulla vitae elit libero, a pharetra augue mollis interdum.' },
-    { 'src': img2, 'title': 'Multi Axes Line Chart', 'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
-    { 'src': img3, 'title': 'Radar chart', 'description': 'Praesent commodo cursus magna, vel scelerisque nisl consectetur.' }
+  const imgList = [
+    { 'src': img1, 'title': 'Line Chart', 'caption': 'Nulla vitae elit libero, a pharetra augue mollis interdum.' },
+    { 'src': img2, 'title': 'Multi Axes Line Chart', 'caption': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+    { 'src': img3, 'title': 'Radar chart', 'caption': 'Praesent commodo cursus magna, vel scelerisque nisl consectetur.' }
   ]
 
   return (
-    <Container id='carousel-container'>
-      <Carousel>
-        {previewImages.map((img, idx) => (
-          <Carousel.Item key={idx}>
-            <Container className='carousel-img'><img src={img.src} alt="Line Chart" /></Container>
-            <Carousel.Caption bsPrefix='my-carousel-caption'>
-              <h4>{img.title} <BsFillArrowUpRightCircleFill style={{cursor: 'pointer'}} onClick={() => handleShowPreview()} /></h4>
-              <p>{img.description}</p>
-            </Carousel.Caption>
-          </Carousel.Item>
+    <Container className='carousel-container'>
+
+      <Container className='carousel-img-container'>
+        <Container className='carousel-arrow-indicator' onClick={() => setShownImageIdx((shownImageIdx + imgList.length - 1) % imgList.length)}>
+          <MdArrowBackIos transform="scale(1.5,2)" />
+        </Container>
+
+        <Container className='carousel-center-container'>
+          {imgList.map((img, idx) => (
+            <Container key={`img-${idx}`}>
+              <Container className={`carousel-img ${idx === shownImageIdx ? 'active-img' : 'd-none'}`}>
+                <img src={img.src} alt={img.title} />
+              </Container>
+              <Container className={idx === shownImageIdx ? 'carousel-img-text' : 'd-none'}>
+                <span onClick={() => handleShowPreview(shownImageIdx)} id='img-title'><u>{img.title}</u> <BsFillArrowUpRightCircleFill /> (Click me!) </span>
+                <br />
+                <span id='img-caption'>{img.caption}</span>
+              </Container>
+            </Container>
+          ))}
+        </Container>
+
+        <Container className='carousel-arrow-indicator' onClick={() => setShownImageIdx((shownImageIdx + 1) % imgList.length)}>
+          <MdArrowForwardIos transform="scale(1.5,2)" />
+        </Container>
+      </Container>
+      <Container className='carousel-indicator-container'>
+        {imgList.map((i, idx) => (
+          <span
+            key={`indicator-${idx}`}
+            className={` indicator ${idx === shownImageIdx ? 'active-indicator' : ''}`}
+            onClick={() => setShownImageIdx(idx)}>
+            <BsDashLg />
+          </span>
         ))}
-      </Carousel >
-    </Container >
+      </Container>
+    </Container>
   )
 }
 
 export default PreviewCarousel
+
+//   < Carousel.Item key = { idx } >
+// <Container className='carousel-img'><img src={img.src} alt="Line Chart" /></Container>
+// <Carousel.Caption bsPrefix='my-carousel-caption'>
+//   <h4>{img.title} <BsFillArrowUpRightCircleFill style={{cursor: 'pointer'}} onClick={() => handleShowPreview()} /></h4>
+//   <p>{img.caption}</p>
+// </Carousel.Caption>
+// </Carousel.Item >

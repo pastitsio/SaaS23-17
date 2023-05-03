@@ -5,11 +5,10 @@ import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 import sampleImg from '../../assets/line_chart_white-bg.png'
 
 import './chartsPreview.css'
-import { UserService } from '../../services'
 
 const ChartsPreview = () => {
 
-  const userid = UserService.getId();
+  const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
 
   const [chartsList, setChartsList] = useState([]);
   const [selectedImgId, setSelectedImgId] = useState("");
@@ -19,6 +18,8 @@ const ChartsPreview = () => {
   const [imgReady, setImgReady] = useState(false);
 
   useEffect(() => {
+    // const cancelToken = _axios.cancelToken.source();
+
     // TODO: GET fetch Table data
     setTimeout(() => {
 
@@ -38,6 +39,10 @@ const ChartsPreview = () => {
       ]
       setChartsList(data);
       setTableLoading(false);
+
+      return () => {
+        // cancelToken.cancel()
+      }
     }, 2000)
 
   }, [])
@@ -61,7 +66,7 @@ const ChartsPreview = () => {
 
   // TODO: maybe useMemo for image, since it's "expensive"
 
-  console.log('userid :>> ', userid);
+  console.log('userInfo._id :>> ', userInfo._id);
 
   return (
     <Container id='charts-preview-container' className={tableLoading ? 'table-loading' : ''}>

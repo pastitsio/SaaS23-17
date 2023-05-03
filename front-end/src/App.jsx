@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Container } from 'react-bootstrap'
 
 import { ChartsPreview, NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
-import { About, Home, PageNotAuthorized, PageNotFound } from './pages'
+import { About, CreateChart, Home, PageNotFound } from './pages'
 
 import { UserService } from './services'
 
@@ -22,7 +22,6 @@ const App = () => {
   useEffect(() => {
     const fetchUserInfo = () => {
       const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-      console.log('userInfo', userInfo)
       UserService.getUserInfo()
         .then(() => {
           setIsNewUser(userInfo.new_user);
@@ -33,7 +32,6 @@ const App = () => {
       fetchUserInfo();
     }
   }, [])
-
 
   return (
     <BrowserRouter>
@@ -46,16 +44,17 @@ const App = () => {
           <Route index element={<Home />} />
 
           <Route path='/about' element={
-            <RenderOnAuth altComponent={<PageNotAuthorized />}>
-              <About />
-            </RenderOnAuth>
+            <RenderOnAuth> <About /> </RenderOnAuth>
           } />
 
-          <Route path='/mycharts/*' element={
-            <RenderOnAuth altComponent={<PageNotAuthorized />}>
-              <ChartsPreview />
-            </RenderOnAuth>
+          <Route path='/mycharts' element={
+            <RenderOnAuth> <ChartsPreview /> </RenderOnAuth>
           } />
+
+          <Route path='/create' element={
+            <RenderOnAuth> <CreateChart /> </RenderOnAuth>
+          } />
+
 
           <Route path='*' element={<PageNotFound />} />
         </Routes>

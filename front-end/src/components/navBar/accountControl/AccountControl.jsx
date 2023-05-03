@@ -32,7 +32,7 @@ const AccountControl = () => {
             <Dropdown.Divider />
 
             <Dropdown.Item as='li' onClick={() => UserService.doLogout()}>
-              Logout
+              <b>Logout</b>
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

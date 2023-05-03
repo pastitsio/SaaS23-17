@@ -38,9 +38,8 @@
 }
 
 #preview-card>p,
-img {
+#preview-card>img {
     max-height: 500px;
-    max-width: auto;
     margin-top: 1rem;
 }
 

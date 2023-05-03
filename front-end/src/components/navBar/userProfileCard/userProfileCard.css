@@ -34,10 +34,10 @@
 
 .user-info-value {
   color: black !important;
-  font-weight: bold;
+  /* font-weight: bold; */
   background-color: var(--color-text-light);
   padding: 0 3px;
-  border-radius: 3px;
+  border-radius: 5px !important;
 }
 
 .user-info-footer {
@@ -47,8 +47,10 @@
 }
 
 .user-info-button {
-  margin: 5px;
-  font-weight: 700;
+  margin: 2px;
+  /* font-weight: 700; */
+  font-weight: bold !important;
+
 }
 
 .user-info-button>a,
