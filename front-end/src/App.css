@@ -8,13 +8,18 @@ body {
     background: var(--color-bg);
 }
 
-#main-container {
+.main-container {
     display: flex;
     flex-direction: column;
-    width: 85vmax;
-    height: 65vh;
-    border-radius: 12px;
-    background-color: var(--color-bg-front);
+    /* align-items: flex-start;     */
+    justify-content: flex-start !important;    
+    gap: 5px;
     padding: 0;
+
+    width: 85vmax;
+    height: 87vh;
     overflow: scroll;
+
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg-front);
 }

@@ -36,7 +36,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <NavBar />
-      <Container id='main-container'>
+      <Container className='main-container'>
 
         <NewUserOffcanvas isNewUser={isNewUser} setIsNewUser={setIsNewUser} />
 

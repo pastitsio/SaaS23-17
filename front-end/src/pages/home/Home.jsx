@@ -10,7 +10,7 @@ const Home = () => {
 
     return (
     <>
-      <Container id='header-container'>
+      <Container className='header-container'>
         <h2>Welcome to MyCharts!</h2>
       </Container>
 

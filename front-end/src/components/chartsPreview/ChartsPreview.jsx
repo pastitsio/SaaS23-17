@@ -69,65 +69,69 @@ const ChartsPreview = () => {
   console.log('userInfo._id :>> ', userInfo._id);
 
   return (
-    <Container id='charts-preview-container' className={tableLoading ? 'table-loading' : ''}>
-      {tableLoading
-        ? <Spinner id='table-spinner' animation='border' variant='light' /> // if is loading: display spinner
-        : <>
-          <Stack id='info-container'>
-            <Container id='table-container'>
-              <Table className='hover rounded rounded-3 overflow-hidden'>
-                <thead>
-                  <tr><th>Type</th><th>Name</th><th>Created Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {chartsList.map((item, idx) => (
-                    <tr key={idx} onClick={() => handleRowClick(item.id)} className={selectedImgId === item.id ? 'table-active' : ''}>
-                      <td>{item.type}</td>
-                      <td>{item.name}</td>
-                      <td>{new Date(item.createdTimestamp).toDateString()}</td>
+    <>
+      <Container className="header-container">
+        <h2>Your Charts</h2>
+      </Container>
+      <Container id='charts-preview-container' className={`p-0 ${tableLoading ? 'table-loading' : ''}`}>
+        {tableLoading
+          ? <Spinner id='table-spinner' animation='border' variant='light' /> // if is loading: display spinner
+          : <>
+            <Stack id='info-container'>
+              <Container className='overflow-scroll'>
+                <Table className='hover rounded rounded-3 overflow-hidden'>
+                  <thead>
+                    <tr><th>Type</th><th>Name</th><th>Created Date</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Container>
-            <Container id='export-container'>
-              <u id='export-label'>Export as:</u>
-              <Container id='export-buttons'>
-                <Button className={imgReady ? '' : 'disabled'} name='html' onClick={(event) => handleDownloadImage(event)}>HTML</Button>
-                <Button className={imgReady ? '' : 'disabled'} name='pdf' onClick={(event) => handleDownloadImage(event)}>PDF</Button>
-                <Button className={imgReady ? '' : 'disabled'} name='png' onClick={(event) => handleDownloadImage(event)}>PNG</Button>
-                <Button className={imgReady ? '' : 'disabled'} name='svg' onClick={(event) => handleDownloadImage(event)}>SVG</Button>
-                <Container id='button-divider'  >{" "}</Container>
-                <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
+                  </thead>
+                  <tbody>
+                    {chartsList.map((item, idx) => (
+                      <tr key={idx} onClick={() => handleRowClick(item.id)} className={selectedImgId === item.id ? 'table-active' : ''}>
+                        <td>{item.type}</td>
+                        <td>{item.name}</td>
+                        <td>{new Date(item.createdTimestamp).toDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
               </Container>
-            </Container>
-          </Stack >
-
-          <Container id='preview-image-container'>
-            {imgLoading
-              ? <Spinner animation='border' variant='light' /> // if is loading: display spinner
-              : imgReady // else: 
-                ? // if image is ready: load card 
-                <>
-                  <Card id='preview-card' className={imgReady ? 'max-height-card' : ''}>
-                    <Card.Img variant='top' src={sampleImg} alt='preview'></Card.Img>
-                    <Card.Body>
-                      <Card.Title id='card-title'>{chartsList.find((e) => e.id === selectedImgId).title}</Card.Title>
-                      <Card.Text id='card-text'>{chartsList.find((e) => e.id === selectedImgId).description}</Card.Text>
-                    </Card.Body>
+              <Container id='export-container' className='mt-2'>
+                <u id='export-label'>Export as:</u>
+                <Container id='export-buttons'>
+                  <Button className={imgReady ? '' : 'disabled'} name='html' onClick={(event) => handleDownloadImage(event)}>HTML</Button>
+                  <Button className={imgReady ? '' : 'disabled'} name='pdf' onClick={(event) => handleDownloadImage(event)}>PDF</Button>
+                  <Button className={imgReady ? '' : 'disabled'} name='png' onClick={(event) => handleDownloadImage(event)}>PNG</Button>
+                  <Button className={imgReady ? '' : 'disabled'} name='svg' onClick={(event) => handleDownloadImage(event)}>SVG</Button>
+                  <Container id='button-divider'  >{" "}</Container>
+                  <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
+                </Container>
+              </Container>
+            </Stack >
+            <Container id='preview-image-container'>
+              {imgLoading
+                ? <Spinner animation='border' variant='light' /> // if is loading: display spinner
+                : imgReady // else:
+                  ? // if image is ready: load card
+                  <>
+                    <Card id='preview-card' className={imgReady ? 'max-height-card' : ''}>
+                      <Card.Img variant='top' src={sampleImg} alt='preview'></Card.Img>
+                      <Card.Body>
+                        <Card.Title id='card-title'>{chartsList.find((e) => e.id === selectedImgId).title}</Card.Title>
+                        <Card.Text id='card-text'>{chartsList.find((e) => e.id === selectedImgId).description}</Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </>
+                  :
+                  <Card id='preview-card'>
+                    {/* else show select prompt  */}
+                    <p id='select-prompt'>Select a chart from the table </p>
                   </Card>
-                </>
-                :
-                <Card id='preview-card'>
-                  {/* else show select prompt  */}
-                  <p id='select-prompt'>Select a chart from the table </p>
-                </Card>
-            }
-          </Container>
-        </>
-      }
-    </Container >
+              }
+            </Container>
+          </>
+        }
+      </Container >
+    </>
 
   );
 }

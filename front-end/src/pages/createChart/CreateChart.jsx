@@ -20,16 +20,17 @@ const CreateChart = () => {
 
 
   return (
-    <Container className='d-flex flex-column my-4 px-0'>
-      <Container>
-        <h3>Create your own chart with ease</h3>
+    <>
+      <Container className='header-container'>
+        <h2>Create your own chart with ease</h2>
+        <h5 className='header-description'>Below are some demos. Click the demo title to see the interactive preview! </h5> 
       </Container>
 
       <PreviewCarousel />
 
-      <Container className='d-flex flex-row gap-5 mt-5'>
+      <Container className='d-flex flex-row gap-5 mt-3'>
         <Container>
-          <h3>Download presets</h3>
+          <h5>Download presets</h5>
           <Form.Select value={selectedPreset} onChange={handleDownloadChange} aria-label="Default select example" className='mb-2'>
             <option value="0">Open this select menu</option>
             <option value="1">One</option>
@@ -39,7 +40,7 @@ const CreateChart = () => {
 
           <SubmitWaitButton
             actionName='Download'
-            actionOnClick={() => undefined}
+            action={() => undefined}
             disableCondition={selectedPreset === "0"}
             color='lightseagreen'
           />
@@ -49,19 +50,19 @@ const CreateChart = () => {
         </Container> */}
         <Container>
           <Form.Group controlId="formFile" className='mb-2'>
-            <h3>Upload your input file</h3>
-            <Form.Control type="file" onChange={handleFileInputChange} />
+            <h5>Upload your JSON file</h5>
+            <Form.Control type="file" accept=".json" onChange={handleFileInputChange} />
           </Form.Group>
 
           <SubmitWaitButton
             actionName='Create'
-            actionOnClick={() => undefined}
+            action={() => undefined}
             disableCondition={!fileInput}
             color='green'
           />
         </Container>
       </Container>
-    </Container>
+    </>
   )
 }
 

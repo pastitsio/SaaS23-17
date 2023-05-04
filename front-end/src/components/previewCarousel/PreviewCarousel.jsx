@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Container } from 'react-bootstrap'
 import { BsDashLg, BsFillArrowUpRightCircleFill } from 'react-icons/bs'
@@ -23,6 +23,16 @@ const PreviewCarousel = () => {
     { 'src': img3, 'title': 'Radar chart', 'caption': 'Praesent commodo cursus magna, vel scelerisque nisl consectetur.' }
   ]
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShownImageIdx(prev => (prev + 1) % imgList.length)
+    }, 4000)
+    return () => {
+      clearInterval(interval)
+    }
+  }, [imgList.length, shownImageIdx])
+
+
   return (
     <Container className='carousel-container'>
 
@@ -38,7 +48,9 @@ const PreviewCarousel = () => {
                 <img src={img.src} alt={img.title} />
               </Container>
               <Container className={idx === shownImageIdx ? 'carousel-img-text' : 'd-none'}>
-                <span onClick={() => handleShowPreview(shownImageIdx)} id='img-title'><u>{img.title}</u> <BsFillArrowUpRightCircleFill /> (Click me!) </span>
+                <span onClick={() => handleShowPreview(shownImageIdx)} id='img-title'>
+                  <u>{img.title}</u> <BsFillArrowUpRightCircleFill /> (Click me!)
+                </span>
                 <br />
                 <span id='img-caption'>{img.caption}</span>
               </Container>

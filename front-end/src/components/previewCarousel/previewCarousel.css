@@ -1,5 +1,4 @@
 .carousel-container {
-  width: 85%;
   display: flex;
   flex-direction: column;
   align-content: space-around;
@@ -9,15 +8,21 @@
   display: flex;
   flex-direction: column;
   flex-basis: 80%;
+
+  box-shadow: 0px 6.5px 13px 0px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  margin: .5rem;
+
+  background-color: white;
 }
 
 .carousel-img-container {
-  background-color: white;
+  background-color: var(--color-bg-transparent );
   border-radius: var(--border-radius);
   display: flex;
   flex-direction: row;
   align-items: stretch;
-}
+ }
 
 .carousel-img {
   width: auto;
@@ -28,6 +33,7 @@
 
 .carousel-img>img {
   height: 300px;
+  width: 500px;
 }
 
 @keyframes fade-in {
@@ -36,7 +42,7 @@
 }
 
 .active-img {
-  animation: fade-in 1s;
+  animation: fade-in 1.2s;
   animation-fill-mode: forwards;
 }
 
@@ -49,16 +55,21 @@
 
 .carousel-arrow-indicator:hover {
   cursor: pointer;
-  background-color: rgba(245, 245, 245, 0.372);
+  background-color: rgba(140, 119, 119, 0.113);
 }
 
 .carousel-img-text {
   margin: 1rem 0;
+  height: 10vh;
 }
 
 .carousel-img-text>#img-title {
   color: var(--color-button);
   font-weight: 600;
+}
+
+.carousel-img-text>#img-title:hover{
+  cursor: pointer;
 }
 
 .carousel-indicator-container {
@@ -74,6 +85,6 @@
 }
 
 .active-indicator {
-  animation: change-indicator .2s;
+  animation: change-indicator .1s;
   animation-fill-mode: forwards;
 }

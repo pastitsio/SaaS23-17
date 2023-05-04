@@ -14,7 +14,7 @@ const SubmitWaitButton = (props) => {
     setTimeout(() => {
       // TODO: GET ...
       // TODO: POST ...
-      props.actionOnClick();
+      props.action();
 
       setLoading(false);
       setReady(true);

@@ -22,7 +22,7 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
           <SubmitWaitButton
             actionName='Continue'
             id="continue-button"
-            actionOnClick={() => setIsNewUser(false)}
+            action={() => setIsNewUser(false)}
           />
         </Container>
       </Offcanvas.Body>

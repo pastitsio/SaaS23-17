@@ -8,6 +8,8 @@ const _kc = new Keycloak('/keycloak.json');
  * @param onAuthenticatedCallback
  */
 const initKeycloak = (onAuthenticatedCallback) => {
+//   onAuthenticatedCallback()
+// }
   _kc.init({
     onLoad: 'check-sso',
     silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
@@ -48,7 +50,7 @@ const getUserInfo = async () => {
   });
 };
 
-const getUsername = () => _kc.tokenParsed?.preferred_username;
+const getUsername = () =>  _kc.tokenParsed?.preferred_username;
 
 const doLogin = _kc.login;
 
@@ -62,7 +64,7 @@ const doLogout = async () => {
 
 const getId = () => _kc.tokenParsed?.sub;
 
-const isLoggedIn = () => !!_kc.token;
+const isLoggedIn = () =>  !!_kc.token;
 
 const updateToken = (successCallback) =>
   _kc.updateToken(5)

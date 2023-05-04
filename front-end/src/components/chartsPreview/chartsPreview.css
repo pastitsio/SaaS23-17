@@ -1,7 +1,7 @@
 #charts-preview-container {
     display: flex;
     flex-direction: row;
-    padding: 1rem;
+    justify-content: space-between;
 }
 
 #info-container {
@@ -10,14 +10,8 @@
     overflow: hidden;
 }
 
-/* table */
-#table-container {
-    overflow: auto;
-    display: inline-block;
-}
-
 #preview-image-container {
-    flex: 0 0 60%;
+    flex: 0 0 58%;
     max-height: 60vh;
     background-color: var(--color-button);
 
@@ -25,7 +19,6 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--border-radius);
-    margin-left: 5px;
 }
 
 #preview-card {
@@ -80,7 +73,6 @@ tr:nth-child(n) {
     color: var(--color-button);
     font-weight: 700;
     /* display: flex; */
-    padding-top: 10px;
 }
 
 #export-buttons {

@@ -23,6 +23,8 @@ const BuyCreditsModal = ({ show, onHide }) => {
     { 'quantity': 50, 'value': 50 },
   ];
 
+  console.log('selectedCredits', selectedCredits)
+
   return (
     <Modal show={show} onHide={handleHide}>
       <Modal.Header closeButton>
@@ -53,7 +55,8 @@ const BuyCreditsModal = ({ show, onHide }) => {
           </Button>
           <SubmitWaitButton
             actionName='Purchase'
-            actionOnClick={() => undefined}
+            onClick
+            action={() => undefined}
             disableCondition={selectedCredits === 0}
             id="purchase-button"
           />

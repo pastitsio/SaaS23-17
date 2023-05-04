@@ -1,15 +1,18 @@
-#header-container {
+.header-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  padding: 1rem 0;
-  color: var(--color-text-alt);
+  border-radius: var(--border-radius);
+  background-color: var(--color-text-light);
+  margin-top: 1rem;
+  width: calc(100% - 27px) !important;
+  padding-top: 8px;
+}
+
+.header-container>.header-description {
+  color: var(--color-button);
 }
 
 .offcanvas {
-  max-height: 20vh !important;
-}
-.offcanvas-body>button {
-  margin: 2rem 1rem;
-  position: relative;
-  left: 35%;
+  max-height: 30vh !important;
 }
