@@ -20,16 +20,32 @@ const App = () => {
    *     
    */
   useEffect(() => {
+    let isMounted = true;
     const fetchUserInfo = () => {
       const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
       UserService.getUserInfo()
         .then(() => {
-          setIsNewUser(userInfo.new_user);
+          if (isMounted) {
+            setIsNewUser(userInfo.new_user);
+          }
         })
     }
 
     if (UserService.isLoggedIn()) {
+      var tokenUpdateInterval = setInterval(() => {
+        UserService.updateToken(() => {
+          console.log('Token updated');
+        }).catch((error) => {
+          console.error(error);
+        });
+      }, 1000 * 60); // update token every minute if still logged in
+
       fetchUserInfo();
+    }
+
+    return () => {
+      isMounted = false; // Set mounted flag to false when component is unmounted to stop fetching.
+      clearInterval(tokenUpdateInterval);
     }
   }, [])
 

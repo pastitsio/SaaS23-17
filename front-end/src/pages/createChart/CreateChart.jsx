@@ -41,8 +41,9 @@ const CreateChart = () => {
           <SubmitWaitButton
             actionName='Download'
             action={() => undefined}
-            disableCondition={selectedPreset === "0"}
+            disabledIf={selectedPreset === "0"}
             color='lightseagreen'
+            reset={() => setSelectedPreset("0")}
           />
         </Container>
         {/* <Container className='m-3'>
@@ -55,10 +56,11 @@ const CreateChart = () => {
           </Form.Group>
 
           <SubmitWaitButton
-            actionName='Create'
             action={() => undefined}
-            disableCondition={!fileInput}
+            actionName='Create'
+            disabledIf={!fileInput}
             color='green'
+            reset={() => setFileInput(null)}
           />
         </Container>
       </Container>

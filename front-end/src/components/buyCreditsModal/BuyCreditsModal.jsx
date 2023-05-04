@@ -54,11 +54,11 @@ const BuyCreditsModal = ({ show, onHide }) => {
             Cancel
           </Button>
           <SubmitWaitButton
-            actionName='Purchase'
-            onClick
             action={() => undefined}
-            disableCondition={selectedCredits === 0}
+            actionName='Purchase'
+            disabledIf={selectedCredits === 0}
             id="purchase-button"
+            reset={() => setSelectedCredits(0)}
           />
         </Container>
       </Modal.Footer>

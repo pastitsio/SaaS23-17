@@ -19,6 +19,7 @@ const SubmitWaitButton = (props) => {
       setLoading(false);
       setReady(true);
       setResult(Math.random() > 0.5 ? true : false)
+      props.reset()
     }, 2500)
   }
 
@@ -26,11 +27,11 @@ const SubmitWaitButton = (props) => {
     <Container className='d-flex flex-row px-0 align-items-center'>
       <Button
         id={props.id}
-        disabled={props.disableCondition}
+        disabled={props.disabledIf}
         onClick={handleButtonClick}
         style={{ backgroundColor: props.color, border: 'none' }}
-        >
-          <b>{props.actionName}</b>
+      >
+        <b>{props.actionName}</b>
       </Button>
       <Container className='d-flex justify-content-end align-items-center'>
         {loading
