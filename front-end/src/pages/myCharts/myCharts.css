@@ -1,0 +1,139 @@
+.wrapper-container {
+    display: flex;
+    gap: 0.5rem;
+
+    height: 60%;
+}
+
+.table-loading {
+    height: 100%;
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.table-export-container {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.img-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background-color: var(--color-button);
+    border-radius: var(--border-radius);
+}
+
+.table-container {
+    overflow: auto;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+
+.preview-card {
+    border: none !important;
+    background-color: var(--color-button) !important;
+}
+
+.preview-card>p,
+.preview-card>img {
+    border-radius: var(--border-radius);
+    max-height: 400px;
+    padding: .5rem;
+}
+
+#select-prompt,
+.card-text {
+    font-weight: 700;
+    color: var(--color-text-light);
+}
+
+.card-title {
+    color: whitesmoke;
+}
+
+table {
+    overflow: hidden;
+    border-radius: var(--border-radius);
+
+    font-family: var(--font-family-mono) !important;
+    font-weight: 400;
+    background-color: var(--color-text-light);
+}
+
+thead {
+    background-color: var(--color-button);
+    color: var(--color-text-light);
+
+    position: sticky;
+    top: 0;
+}
+
+tr:hover {
+    cursor: pointer;
+    background-color: var(--color-text-light-alt);
+}
+
+tr:nth-child(n) {
+    border-bottom: 2px solid var(--color-text);
+}
+
+/* export control */
+.export-container {
+    display: flex;
+    flex-direction: column-reverse;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    gap: 1rem;
+}
+
+.export-label {
+    color: var(--color-button);
+    font-weight: 700;
+}
+
+.export-buttons {
+    padding: 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 3px;
+}
+
+.export-buttons>button {
+    font-size: smaller;
+    font-weight: 500;
+    border-radius: calc(var(--border-radius)*2);
+    background-color: var(--color-text-alt) !important;
+    border: none;
+}
+
+.export-buttons>button:hover {
+    background-color: var(--color-text-light);
+    color: var(--color-button);
+}
+
+#interactive-button {
+    background-color: var(--color-button) !important;
+    border: none !important;
+}
+
+#interactive-button:hover {
+    background-color: var(--color-text-light-alt) !important;
+    color: var(--color-bg) !important;
+}
+
+.button-divider {
+    height: min-content !important;
+    width: min-content !important;
+}

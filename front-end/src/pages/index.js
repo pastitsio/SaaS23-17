@@ -1,5 +1,7 @@
 export { default as About } from './about/About'
-export { default as CreateChart } from './createChart/CreateChart'
+export { default as CreatedChart } from './createdChart/CreatedChart'
 export { default as Home } from './home/Home'
+export { default as MyCharts } from './myCharts/MyCharts'
+export { default as NewChart } from './newChart/NewChart'
 export { default as PageNotAuthorized } from './pageNotAuthorized/PageNotAuthorized'
 export { default as PageNotFound } from './pageNotFound/PageNotFound'

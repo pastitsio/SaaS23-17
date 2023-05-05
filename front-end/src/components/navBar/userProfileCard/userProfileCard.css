@@ -4,7 +4,7 @@
   align-items: center;
   padding: 20px;
   border-radius: 10px;
-  background-color: white;
+  background-color: rgba(106, 140, 97, 0.824);
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.6);
 }
 
@@ -28,7 +28,7 @@
 }
 
 .user-info-label {
-  color: black !important;
+  color: var(--color-bg) !important;
   font-weight: bold;
   margin-right: 10px;
 }
@@ -49,13 +49,36 @@
 
 .user-info-button {
   margin: 2px;
-  /* font-weight: 700; */
   font-weight: bold !important;
-
+  border: none !important;
 }
 
 .user-info-button>a,
 .user-info-button>a:hover {
   text-decoration: none;
   color: inherit;
+}
+
+#new-button {
+  background-color: rgb(67, 116, 222) !important;
+}
+
+#new-button:hover {
+  background-color: rgb(12, 60, 164) !important;
+}
+
+#view-button {
+  background-color: rgb(154, 77, 178) !important;
+}
+
+#view-button:hover {
+  background-color: rgb(86, 25, 104) !important;
+}
+
+#buy-button {
+  background-color: rgb(238, 97, 37) !important;
+}
+
+#buy-button:hover {
+  background-color: rgb(143, 46, 5) !important
 }

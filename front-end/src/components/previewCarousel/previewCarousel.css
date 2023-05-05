@@ -4,7 +4,7 @@
   align-content: space-around;
 }
 
-.carousel-center-container {
+.carousel-img-container {
   display: flex;
   flex-direction: column;
   flex-basis: 80%;
@@ -16,7 +16,7 @@
   background-color: white;
 }
 
-.carousel-img-container {
+.carousel-top-container {
   background-color: var(--color-bg-transparent );
   border-radius: var(--border-radius);
   display: flex;

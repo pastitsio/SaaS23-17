@@ -14,19 +14,24 @@ const SubmitWaitButton = (props) => {
     setTimeout(() => {
       // TODO: GET ...
       // TODO: POST ...
-      props.action();
-
+      
+      
       setLoading(false);
       setReady(true);
       setResult(Math.random() > 0.5 ? true : false)
+      
+      // reset styling on parent component
       props.reset()
+      
+      // this is the action being activated when pressing the button.
+      props.action();
     }, 2500)
   }
 
   return (
     <Container className='d-flex flex-row px-0 align-items-center'>
       <Button
-        id={props.id}
+        id={props.cssId}
         disabled={props.disabledIf}
         onClick={handleButtonClick}
         style={{ backgroundColor: props.color, border: 'none' }}

@@ -36,12 +36,12 @@ const PreviewCarousel = () => {
   return (
     <Container className='carousel-container'>
 
-      <Container className='carousel-img-container'>
+      <Container className='carousel-top-container'>
         <Container className='carousel-arrow-indicator' onClick={() => setShownImageIdx((shownImageIdx + imgList.length - 1) % imgList.length)}>
           <MdArrowBackIos transform="scale(1.5,2)" />
         </Container>
 
-        <Container className='carousel-center-container'>
+        <Container className='carousel-img-container'>
           {imgList.map((img, idx) => (
             <Container key={`img-${idx}`}>
               <Container className={`carousel-img ${idx === shownImageIdx ? 'active-img' : 'd-none'}`}>
@@ -59,7 +59,7 @@ const PreviewCarousel = () => {
         </Container>
 
         <Container className='carousel-arrow-indicator' onClick={() => setShownImageIdx((shownImageIdx + 1) % imgList.length)}>
-          <MdArrowForwardIos transform="scale(1.5,2)" />
+          <MdArrowForwardIos transform="scale(1.8, 2)" />
         </Container>
       </Container>
       <Container className='carousel-indicator-container'>
@@ -77,11 +77,3 @@ const PreviewCarousel = () => {
 }
 
 export default PreviewCarousel
-
-//   < Carousel.Item key = { idx } >
-// <Container className='carousel-img'><img src={img.src} alt="Line Chart" /></Container>
-// <Carousel.Caption bsPrefix='my-carousel-caption'>
-//   <h4>{img.title} <BsFillArrowUpRightCircleFill style={{cursor: 'pointer'}} onClick={() => handleShowPreview()} /></h4>
-//   <p>{img.caption}</p>
-// </Carousel.Caption>
-// </Carousel.Item >

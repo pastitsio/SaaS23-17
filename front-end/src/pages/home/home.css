@@ -6,6 +6,7 @@
   background-color: var(--color-text-light);
   margin-top: 1rem;
   width: calc(100% - 27px) !important;
+  min-height: 100px;
   padding-top: 8px;
 }
 

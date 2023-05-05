@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Container, Form } from 'react-bootstrap'
 import { PreviewCarousel, SubmitWaitButton } from '../../components'
 
-import './createChart.css'
+import './newChart.css'
 
-const CreateChart = () => {
+const NewChart = () => {
 
   const [fileInput, setFileInput] = useState(null);
   const handleFileInputChange = (event) => {
@@ -18,12 +19,13 @@ const CreateChart = () => {
     setSelectedPreset(e.target.value);
   };
 
+  const navigate = useNavigate();
 
   return (
     <>
       <Container className='header-container'>
         <h2>Create your own chart with ease</h2>
-        <h5 className='header-description'>Below are some demos. Click the demo title to see the interactive preview! </h5> 
+        <h5 className='header-description'>Below are some demos. Click the demo title to see the interactive preview! </h5>
       </Container>
 
       <PreviewCarousel />
@@ -46,9 +48,9 @@ const CreateChart = () => {
             reset={() => setSelectedPreset("0")}
           />
         </Container>
-        {/* <Container className='m-3'>
-          <h4>Or</h4>
-        </Container> */}
+        <Container className='or-container'>
+          <Container className='or-circle'>OR</Container>
+        </Container>
         <Container>
           <Form.Group controlId="formFile" className='mb-2'>
             <h5>Upload your JSON file</h5>
@@ -56,7 +58,7 @@ const CreateChart = () => {
           </Form.Group>
 
           <SubmitWaitButton
-            action={() => undefined}
+            action={() => navigate('/created')}
             actionName='Create'
             disabledIf={!fileInput}
             color='green'
@@ -68,4 +70,4 @@ const CreateChart = () => {
   )
 }
 
-export default CreateChart
+export default NewChart

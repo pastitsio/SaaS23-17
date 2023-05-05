@@ -57,7 +57,7 @@ const BuyCreditsModal = ({ show, onHide }) => {
             action={() => undefined}
             actionName='Purchase'
             disabledIf={selectedCredits === 0}
-            id="purchase-button"
+            cssId="purchase-button"
             reset={() => setSelectedCredits(0)}
           />
         </Container>

@@ -36,13 +36,13 @@ const UserProfileCard = () => {
       </Container>
 
       <Container className="user-info-footer">
-        <Button variant="primary" className="user-info-button">
-          <Link to='/create'>Create <BsPlusCircle /></Link>
+        <Button className="user-info-button" id="new-button">
+          <Link to='/new'>New <BsPlusCircle /></Link>
         </Button>{" "}
-        <Button variant="danger" className="user-info-button">
+        <Button className="user-info-button" id="view-button">
           <Link to='/mycharts/'>View <BsViewStacked /></Link>
         </Button>{" "}
-        <Button onClick={() => handleShowBuyCredits()} variant="success" className="user-info-button">
+        <Button onClick={() => handleShowBuyCredits()} className="user-info-button" id="buy-button">
           Buy credits < BsCart3/>
         </Button>{" "}
 

@@ -35,7 +35,7 @@ const getUserInfo = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const response = {
-        new_user: true,
+        new_user: false,
         _id: 1234567810,
         email: 'demos@testos.com',
         number_of_charts: 0,

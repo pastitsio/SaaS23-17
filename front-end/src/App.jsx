@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { Container } from 'react-bootstrap'
 
-import { ChartsPreview, NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
-import { About, CreateChart, Home, PageNotFound } from './pages'
+import { NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
+import { About, CreatedChart, Home, MyCharts, NewChart, PageNotFound } from './pages'
 
 import { UserService } from './services'
 
@@ -64,13 +64,16 @@ const App = () => {
           } />
 
           <Route path='/mycharts' element={
-            <RenderOnAuth> <ChartsPreview /> </RenderOnAuth>
+            <RenderOnAuth> <MyCharts /> </RenderOnAuth>
           } />
 
-          <Route path='/create' element={
-            <RenderOnAuth> <CreateChart /> </RenderOnAuth>
+          <Route path='/new' element={
+            <RenderOnAuth> <NewChart /> </RenderOnAuth>
           } />
 
+          <Route path='/created' element={
+            <RenderOnAuth> <CreatedChart /> </RenderOnAuth>
+          } />
 
           <Route path='*' element={<PageNotFound />} />
         </Routes>
