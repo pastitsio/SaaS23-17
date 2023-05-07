@@ -1,6 +1,3 @@
-// TODO: add keycloak authorization to endpoints
-// TODO: make error communication more humane to the user
-
 const express = require("express");
 const app = express();
 const router = require("./routes/userRouter");

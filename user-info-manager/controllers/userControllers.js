@@ -10,8 +10,10 @@ const stream = producerCreate("user-data");
 /**
  * @description gets user data from database and checks if its a new user or not
  * @param {*} req.params.email
- * @returns {JSON} {newUser:false, _id: String, email:String, number_of_charts: Number, credits: Number, last_login: Timestamp}
- * @returns {JSON} {newUser:true, email: String, last_login: Timestamp}
+ * @returns {JSON} if user exist
+ *  {newUser:false, _id: String, email:String, number_of_charts: Number, credits: Number, last_login: Timestamp}
+ * @returns {JSON} if user doesnt exist
+ * {newUser:true, email: String, last_login: Timestamp}
  */
 const userData = async (req, res) => {
   const email = req.params.email;
@@ -64,7 +66,7 @@ const saveUser = async (req, res) => {
 };
 
 /**
- * @description logs out user and updates last login attribute
+ * @description updates last login attribute
  * @param {body} req.body {email: String, lastLoginTimestamp: timestamp}
  * @returns {JSON} {success: Boolean, msg: String}
  * @publishes {_id: String, last_login: timestamp}
