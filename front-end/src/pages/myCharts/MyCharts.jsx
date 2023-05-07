@@ -1,72 +1,83 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Container, Spinner, Stack, Table } from 'react-bootstrap'
+import { Button, Card, Container, Spinner, Table } from 'react-bootstrap'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
-import sampleImg from '../../assets/line_chart_white-bg.png'
-
+import axios from 'axios'
+import { FetchService, UserService } from '../../services'
 import './myCharts.css'
 
 const MyCharts = () => {
 
   const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
 
-  const [chartsList, setChartsList] = useState([]);
-  const [selectedImgId, setSelectedImgId] = useState("");
+  const [chartsTable, setChartsTable] = useState([]);
+  const [selectedChartId, setSelectedChartId] = useState("");
+  const [selectedChart, setSelectedChart] = useState(null);
 
   const [tableLoading, setTableLoading] = useState(true);
   const [imgLoading, setImgLoading] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
+
   useEffect(() => {
-    // const cancelToken = _axios.cancelToken.source();
+    const source = axios.CancelToken.source();
 
-    // TODO: GET fetch Table data
-    setTimeout(() => {
-
-      const data = [
-        { 'id': 'a', 'type': 'linear', 'name': 'chart_a', 'createdTimestamp': 1131482603153, 'title': 'Line Chart (a)', 'caption': 'This is a line chart' },
-        { 'id': 'b', 'type': 'linear', 'name': 'chart_b', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (b)', 'caption': 'This is a line chart' },
-        { 'id': 'c', 'type': 'linear', 'name': 'chart_c', 'createdTimestamp': 1141482603153, 'title': 'Line Chart (c)', 'caption': 'This is a line chart' },
-        { 'id': 'd', 'type': 'linear', 'name': 'chart_d', 'createdTimestamp': 1241482603153, 'title': 'Line Chart (d)', 'caption': 'This is a line chart' },
-        { 'id': 'e', 'type': 'linear', 'name': 'chart_f', 'createdTimestamp': 1251482603153, 'title': 'Line Chart (e)', 'caption': 'This is a line chart' },
-        { 'id': 'f', 'type': 'linear', 'name': 'chart_g', 'createdTimestamp': 1261482603153, 'title': 'Line Chart (f)', 'caption': 'This is a line chart' },
-        { 'id': 'g', 'type': 'linear', 'name': 'chart_h', 'createdTimestamp': 1231482503153, 'title': 'Line Chart (g)', 'caption': 'This is a line chart' },
-        { 'id': 'h', 'type': 'linear', 'name': 'chart_i', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (h)', 'caption': 'This is a line chart' },
-        { 'id': 'i', 'type': 'linear', 'name': 'chart_j', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (i)', 'caption': 'This is a line chart' },
-        { 'id': 'j', 'type': 'linear', 'name': 'chart_k', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (j)', 'caption': 'This is a line chart' },
-        { 'id': 'k', 'type': 'linear', 'name': 'chart_l', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (k)', 'caption': 'This is a line chart' },
-        { 'id': 'l', 'type': 'linear', 'name': 'chart_m', 'createdTimestamp': 1231482603153, 'title': 'Line Chart (l)', 'caption': 'This is a line chart' },
-      ]
-      setChartsList(data);
-      setTableLoading(false);
-
-      return () => {
-        // cancelToken.cancel()
+    // TODO: GET fetch Table data, add error case
+    const fetchTableData = async () => {
+      try {
+        const tableData = await FetchService.fetchTableData(userInfo._id);
+        setChartsTable(tableData);
+        setTableLoading(false);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled:', error.message);
+        } else {
+          console.log('Error:', error.message);
+        }
       }
-    }, 2000)
+    }
 
-  }, [])
+    if (UserService.isLoggedIn()) {
+      fetchTableData();
+    }
 
-  const handleRowClick = (id) => {
+    return () => {
+      source.cancel('Request canceled by MyCharts.jsx cleanup');
+    }
+  }, [userInfo._id]);
+
+
+  const handleRowClick = (chartId) => {
     setImgLoading(true);
     setImgReady(false);
+    setSelectedChartId(chartId);
 
-    setTimeout(() => {
-      // TODO: GET fetch img preview
-      setSelectedImgId(id);
+    const fetchChartPreview = async () => {
+      const imgPreview = await FetchService.fetchChartPreview(chartId);
 
+      setSelectedChart(imgPreview);
       setImgLoading(false);
       setImgReady(true);
-    }, 2500);
+    }
+
+    if (UserService.isLoggedIn()) {
+      fetchChartPreview(selectedChartId);
+    }
   }
 
   const handleDownloadImage = (event) => {
-    console.log(event.target.name, selectedImgId)
+    const chartId = selectedChartId;
+    const format = event.target.name;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        await FetchService.downloadImgFormat(chartId, format);
+        resolve(() => undefined);
+      } catch (e) {
+        reject(e)
+      }
+    })
   }
-
-  // TODO: maybe useMemo for image, since it's "expensive"
-
-  console.log('userInfo._id :>> ', userInfo._id);
 
   return (
     <>
@@ -85,11 +96,14 @@ const MyCharts = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {chartsList.map((item, idx) => (
-                      <tr key={idx} onClick={() => handleRowClick(item.id)} className={selectedImgId === item.id ? 'table-active' : ''}>
-                        <td>{item.type}</td>
-                        <td>{item.name}</td>
-                        <td>{new Date(item.createdTimestamp).toDateString()}</td>
+                    {chartsTable.map((chartTableEntry, idx) => (
+                      <tr key={idx}
+                        onClick={() => handleRowClick(chartTableEntry.id)}
+                        disabled={!imgLoading}
+                        className={selectedChartId === chartTableEntry.id ? 'table-active' : ''}>
+                        <td>{chartTableEntry.type}</td>
+                        <td>{chartTableEntry.name}</td>
+                        <td>{new Date(chartTableEntry.createdTimestamp).toDateString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -114,10 +128,10 @@ const MyCharts = () => {
                   {imgReady // else:
                     ? // if image is ready: load card
                     <>
-                      <Card.Img variant='top' src={sampleImg} alt='preview' />
+                      <Card.Img variant='top' src={selectedChart} alt='preview' />
                       <Card.Body>
-                        <Card.Title >{chartsList.find((e) => e.id === selectedImgId).title}</Card.Title>
-                        <Card.Text >{chartsList.find((e) => e.id === selectedImgId).caption}</Card.Text>
+                        <Card.Title >{selectedChart.title}</Card.Title>
+                        <Card.Text >{selectedChart.caption}</Card.Text>
                       </Card.Body>
                     </>
                     :

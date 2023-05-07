@@ -11,21 +11,21 @@ const SubmitWaitButton = (props) => {
     setLoading(true);
     setReady(false);
 
-    setTimeout(() => {
-      // TODO: GET ...
-      // TODO: POST ...
-      
-      
-      setLoading(false);
-      setReady(true);
-      setResult(Math.random() > 0.5 ? true : false)
-      
-      // reset styling on parent component
-      props.reset()
-      
-      // this is the action being activated when pressing the button.
-      props.action();
-    }, 2500)
+    // !performs POST/GET action when pressed the button.
+    props.action()
+      .then((onResolveCallback) => {
+        onResolveCallback();
+        setResult(true);
+      })
+      .catch((err) => {
+        console.log(`ERROR ${props.name} :>>`, err)
+        setResult(false);
+      })
+      .finally(() => {
+        setLoading(false);
+        setReady(true);
+        props.resetParentState(); // reset states on parent component
+      })
   }
 
   return (

@@ -2,33 +2,46 @@ import React, { useEffect, useState } from 'react'
 import { Button, Card, Container, Spinner } from 'react-bootstrap'
 
 import { SubmitWaitButton } from '../../components'
+import { FetchService, UserService } from '../../services'
 
 import sampleImg from '../../assets/line_chart_white-bg.png'
-
 import './createdChart.css'
+import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 
 const CreatedChart = () => {
+  const { state } = useLocation();
+
   const [imgLoading, setImgLoading] = useState(true);
   const [createdImg, setCreatedImg] = useState(null);
 
   useEffect(() => {
-    // const cancelToken = _axios.cancelToken.source();
+    const source = axios.CancelToken.source();
 
-    // TODO: GET fetch Table data
-    setTimeout(() => {
-      setCreatedImg({
-        src: sampleImg,
-        title: 'Line Chart',
-        caption: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-      });
-      setImgLoading(false);
-
-      return () => {
-        // cancelToken.cancel()
+    // TODO: GET created image preview
+    const fetchChartPreview = async () => {
+      try {
+        const imgPreview = await FetchService.fetchChartPreview(state.chartId);
+        setCreatedImg(imgPreview);
+        setImgLoading(false);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled:', error.message);
+        } else {
+          console.log('Error:', error.message);
+        }
       }
-    }, 2000)
+    }
 
-  }, [])
+    if (UserService.isLoggedIn()) {
+      fetchChartPreview();
+    }
+
+    return () => {
+      source.cancel('Request canceled by MyCharts.jsx cleanup');
+    }
+
+  }, [state.chartId]);
 
   return (
     <>

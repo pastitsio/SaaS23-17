@@ -3,6 +3,7 @@ import { Button, Card, Container, Modal } from 'react-bootstrap';
 
 import './buyCreditsModal.css';
 import { SubmitWaitButton } from '..';
+import { FetchService } from '../../services';
 
 const BuyCreditsModal = ({ show, onHide }) => {
   const [selectedCredits, setSelectedCredits] = useState(0);
@@ -10,6 +11,21 @@ const BuyCreditsModal = ({ show, onHide }) => {
   const handleHide = () => {
     setSelectedCredits(0);
     onHide();
+  }
+
+  const handlePurchaseButton = () => {
+    const userId = JSON.parse(sessionStorage.getItem('userInfo'))._id;
+    const credits = selectedCredits;
+
+    return new Promise(async (resolve, reject) => {
+      try {
+        await FetchService.buyCredits(userId, credits);
+        resolve(() => undefined);
+      } catch (e) {
+        reject(e)
+      }
+    })
+
   }
 
   const handleSelectedCreditsButton = (value) => {
@@ -23,8 +39,6 @@ const BuyCreditsModal = ({ show, onHide }) => {
     { 'quantity': 50, 'value': 50 },
   ];
 
-  console.log('selectedCredits', selectedCredits)
-
   return (
     <Modal show={show} onHide={handleHide}>
       <Modal.Header closeButton>
@@ -34,7 +48,7 @@ const BuyCreditsModal = ({ show, onHide }) => {
         <Container className="row">
           {pricingList.map((item, idx) => (
             <Container key={idx} className="col-md-6">
-              <Card 
+              <Card
                 className={`m-2 credit-card ${selectedCredits === item.quantity ? 'selected' : ''}`}
                 onClick={() => handleSelectedCreditsButton(item.quantity)}
               >
@@ -54,11 +68,11 @@ const BuyCreditsModal = ({ show, onHide }) => {
             Cancel
           </Button>
           <SubmitWaitButton
-            action={() => undefined}
+            action={handlePurchaseButton}
             actionName='Purchase'
             disabledIf={selectedCredits === 0}
             cssId="purchase-button"
-            reset={() => setSelectedCredits(0)}
+            resetParentState={() => setSelectedCredits(0)}
           />
         </Container>
       </Modal.Footer>

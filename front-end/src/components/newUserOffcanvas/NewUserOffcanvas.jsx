@@ -1,12 +1,26 @@
 import React from 'react'
 import { Button, Container, Offcanvas } from 'react-bootstrap'
 
-import { UserService } from '../../services'
+import { FetchService, UserService } from '../../services'
 
 import './newUserOffcanvas.css'
 import { SubmitWaitButton } from '../'
 
 const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
+
+  const handleSaveButton = () => {
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+    return new Promise(async (resolve, reject) => {
+      try {
+        await FetchService.saveUserToDB(userInfo._id);
+        resolve(()=> undefined);
+      } catch (e) {
+        reject(e)
+      }
+    })   
+  }
+
+
   return (
     <Offcanvas backdrop={true} show={isNewUser} placement='bottom'>
       <Offcanvas.Header >
@@ -16,14 +30,14 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
         <Container>If you continue, <b>your email will be stored in our database</b> to allow you to <u>store your created charts</u> and <u>purchase charts credits</u>.</Container>
 
         <Container>
-          <Button variant="secondary" id="cancel-button" onClick={() => UserService.doLogout()}>
+          <Button variant="secondary" id="cancel-button" onClick={UserService.doLogout}>
             Cancel
           </Button>
           <SubmitWaitButton
-            action={() => setIsNewUser(false)}
+            action={handleSaveButton}
             actionName='Continue'
             cssId="continue-button"
-            reset={() => undefined}
+            resetParentState={() => setIsNewUser(false)}
           />
         </Container>
       </Offcanvas.Body>

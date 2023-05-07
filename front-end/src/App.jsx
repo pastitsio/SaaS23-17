@@ -6,7 +6,7 @@ import { Container } from 'react-bootstrap'
 import { NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
 import { About, CreatedChart, Home, MyCharts, NewChart, PageNotFound } from './pages'
 
-import { UserService } from './services'
+import { FetchService, UserService } from './services'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
@@ -21,14 +21,16 @@ const App = () => {
    */
   useEffect(() => {
     let isMounted = true;
-    const fetchUserInfo = () => {
-      const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-      UserService.getUserInfo()
-        .then(() => {
-          if (isMounted) {
-            setIsNewUser(userInfo.new_user);
-          }
-        })
+
+    const fetchUserInfo = async () => {
+      var userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+      if (!userInfo) {
+        userInfo = await FetchService.fetchUserInfo();
+        if (isMounted) {
+          console.log('userInfo :>> ', userInfo);
+          setIsNewUser(userInfo.new_user);
+        }
+      }
     }
 
     if (UserService.isLoggedIn()) {
@@ -57,7 +59,9 @@ const App = () => {
         <NewUserOffcanvas isNewUser={isNewUser} setIsNewUser={setIsNewUser} />
 
         <Routes>
-          <Route index element={<Home />} />
+          <Route index element={
+            <Home />}
+          />
 
           <Route path='/about' element={
             <RenderOnAuth> <About /> </RenderOnAuth>

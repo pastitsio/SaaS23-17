@@ -42,7 +42,7 @@
 
 .preview-card {
     border: none !important;
-    background-color: var(--color-button) !important;
+    /* background-color: var(--color-button) !important; */
 }
 
 .preview-card>p,
