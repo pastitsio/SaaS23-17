@@ -20,7 +20,7 @@ const memoryStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: memoryStore });
 
 // middleware
-app.use(express.static("../front-end/public"));
+// app.use(express.static("../front-end/public"));
 app.use(express.json());
 app.use(cors());
 app.use(errorHandlerMiddleware);
