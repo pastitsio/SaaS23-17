@@ -3,6 +3,7 @@ const CustomAPIError = require("../errors/custom-error");
 const { StatusCodes } = require("http-status-codes");
 const queueMessage = require("../../choreographer/kafka/kafka-publisher");
 const { producerCreate } = require("../../choreographer/kafka/kafka-connect");
+require("express-async-errors");
 
 // connect to kafka as a publisher
 const stream = producerCreate("user-data");
