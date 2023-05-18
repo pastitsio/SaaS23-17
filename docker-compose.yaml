@@ -91,7 +91,9 @@ networks:
   #     - KEYCLOAK_ADMIN_PASSWORD=admin
   #   ports:
   #     - "8080:8080"
-  #   command: start-dev
+  #   volumes:
+  #     - /mnt/c/Users/Yanis/Downloads/uncategorised/realm-export.json:/opt/keycloak/data/import/realm.json
+  #   command: start-dev --import-realm
 
   # frontend:
   #   build:
