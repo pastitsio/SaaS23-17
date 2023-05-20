@@ -25,6 +25,8 @@ const initKeycloak = (onAuthenticatedCallback) => {
 
 };
 
+const getToken = () => _kc.token;
+
 const getUsername = () => _kc.tokenParsed?.preferred_username;
 
 const doLogin = _kc.login;
@@ -52,6 +54,7 @@ const UserService = {
   doLogin,
   doLogout,
   getId,
+  getToken,
   getUsername,
   hasRole,
   initKeycloak,

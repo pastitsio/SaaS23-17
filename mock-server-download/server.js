@@ -1,15 +1,29 @@
 const express = require('express');
-const app = express();
 const fs = require('fs');
 const cors = require('cors');
-const { setMaxIdleHTTPParsers } = require('http');
 
+const app = express();
 app.use(cors())
 
-app.get('/data/:presetFilename', (req, res) => {
-  const presetFilename = req.params.presetFilename;
 
-  fs.readFile(`./${presetFilename}`, (err, data) => {
+app.get('/user/:userId', (req, res) => {
+  res.status(200).json({
+    new_user: true,
+    _id: req.params.userId,
+    email: 'demos@testos.com',
+    number_of_charts: 0,
+    credits: 0,
+    last_login: 1682970603153
+  })
+})
+
+
+app.get('/preset/:presetId', (req, res) => {
+  // Extract the JWT token from the request headers
+  const presetId = req.params.presetId;
+  const filename = `./test${presetId}.json`;
+
+  fs.readFile(filename, (err, data) => {
     if (err) {
       console.error(err);
       res.status(500).json({

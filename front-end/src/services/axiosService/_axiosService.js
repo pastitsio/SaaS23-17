@@ -5,20 +5,23 @@ import { UserService } from '..';
  * Interceptor for http requests. Appends the access token
  * at the headers of every request.
  */
-const API_URL = 'http://localhost:4000/';
 
-axios.interceptors.request.use(
+const api = axios.create({
+  baseURL: process.env.REACT_APP_BACKEND_API_URL
+});
+
+api.interceptors.request.use(
   (config) => {
     if (UserService.isLoggedIn()) {
       const cb = () => {
-        config.headers['Authorization'] = `Bearer ${UserService.getToken()}`;
+        config.headers.Authorization = `Bearer ${UserService.getToken()}`;
       }
+      cb();
       UserService.updateToken(cb);
 
       config.cancelToken = new axios.CancelToken((cancel) => {
         config.cancel = cancel
       });
-
       return config;
     }
   },
@@ -27,8 +30,5 @@ axios.interceptors.request.use(
   }
 );
 
-const api = axios.create({
-  baseURL: API_URL
-});
 
 export default api;

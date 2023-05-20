@@ -1,19 +1,19 @@
 import { api } from '../';
+import { withTimeout } from './utils'
 
-const fakeCondition = true;
+// const fakeCondition = true;
 const fakeTimeout = 1000;
 
 // const someCondition = UserService.isLoggedIn() && fakeCondition;
 const someCondition = true;
 
-
 // TODO: implement on modal.
-const mockBuyCredits = async (_id, credits) => {
+const mockBuyCredits = async (userId, credits) => {
   return new Promise((resolve, reject) => {
     if (someCondition) {
       // TODO: POST REQUEST FOR CREDIT VALIDATION
       setTimeout(() => {
-        console.log(`Credits bought! :>> (ID: ${_id}, credits: ${credits}).`);
+        console.log(`Credits bought! :>> (ID: ${userId}, credits: ${credits}).`);
         resolve();
       }, fakeTimeout);
     } else {
@@ -40,7 +40,7 @@ const mockCreateChart = (fileInput) => {
 const mockDownloadImgFormat = async (chartId, format) => {
   const url = `/chart/${chartId}?format=${format}`;
   try {
-    const response = await api.get(url, { responseType: 'blob' });
+    const response = await withTimeout(api.get(url, { responseType: 'blob' }));
     const urlHTML = window.URL.createObjectURL(new Blob([response.data]));
 
     // create and destroy hidden download button
@@ -59,13 +59,15 @@ const mockDownloadImgFormat = async (chartId, format) => {
 
 
 const mockDownloadJSONPreset = async (presetId) => {
-  const filename = `test${presetId}.json`;
-  const url = `/data/${filename}`;
+  // const filename = `test${presetId}.json`;
+  const url = `/preset/${presetId}`;
 
   try {
-    const response = await api.get(url, { responseType: 'blob' });
+    const response = await withTimeout(api.get(url, { responseType: 'blob' }));
     const urlHTML = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
+
+    const filename = `preset${presetId}.json`;
 
     link.href = urlHTML;
     link.setAttribute('download', filename);
@@ -83,7 +85,7 @@ const mockDownloadJSONPreset = async (presetId) => {
 const mockFetchChartPreview = async (chartId) => {
   const url = `/chart/${chartId}?preview=True`;
   try {
-    const response = await api.get(url, { responseType: 'blob' });
+    const response = await withTimeout(api.get(url, { responseType: 'blob' }));
     const imgBlob = new Blob([response.data], { type: 'image/png' });
 
     console.log(`Chart preview fetched! :>> chartId: ${chartId}`);
@@ -94,12 +96,12 @@ const mockFetchChartPreview = async (chartId) => {
 };
 
 
-const mockFetchTableData = async (_id) => {
-  const url = `/charts/user/${_id}`;
+const mockFetchTableData = async (userId) => {
+  const url = `/charts/user/${userId}`;
   try {
-    const response = await api.get(url);
+    const response = await withTimeout(api.get(url));
 
-    console.log(`Table data fetched! :>> userId: ${_id}`);
+    console.log(`Table data fetched! :>> userId: ${userId}`);
     return Promise.resolve(response.data);
   } catch (error) {
     return Promise.reject(new Error(`Error fetching table data: ${error.message}`));
@@ -107,39 +109,30 @@ const mockFetchTableData = async (_id) => {
 };
 
 
-const mockFetchUserInfo = async () => {
-  return new Promise((resolve, reject) => {
-    if (someCondition) {
-      setTimeout(() => {
-        const response = {
-          new_user: true,
-          _id: 1234567810,
-          email: 'demos@testos.com',
-          number_of_charts: 0,
-          credits: 0,
-          last_login: 1682970603153
-        };
+const mockFetchUserInfo = async (userId) => {
+  const url = `/user/${userId}`;
+  try {
+    const response = await withTimeout(api.get(url))
 
-        sessionStorage.setItem('userInfo', JSON.stringify(response));
-        resolve(response);
-      }, fakeTimeout);
-    } else {
-      reject(new Error('Failed to fetch user info! Please retry in a few moments'));
-    }
-  });
+    sessionStorage.setItem('userInfo', JSON.stringify(response.data));
+    console.log(`User info fetched! :>> userId :${response.data._id}`);
+    return Promise.resolve(response.data)
+  } catch (error) {
+    return Promise.reject(new Error(`Error fetching user: ${error.message}`));
+  }
 };
 
 
-const mockSaveUserToDB = async (_id) => {
+const mockSaveUserToDB = async (userId) => {
   return new Promise((resolve, reject) => {
     if (someCondition) {
       // TODO: POST REQUEST FOR VALIDATION
       setTimeout(() => {
-        console.log(`User saved to DB! :>> userId: ${_id}`);
+        console.log(`User saved to DB! :>> userId: ${userId}`);
         resolve();
       }, fakeTimeout);
     } else {
-      reject(new Error(`Failed to save user ${_id} in database! Please retry in a few moments`));
+      reject(new Error(`Failed to save user ${userId} in database! Please retry in a few moments`));
     }
   })
 };

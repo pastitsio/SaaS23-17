@@ -10,6 +10,7 @@ import { FetchService, UserService } from './services'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
+import axios from 'axios'
 
 
 const App = () => {
@@ -20,15 +21,21 @@ const App = () => {
    *     
    */
   useEffect(() => {
-    let isMounted = true;
+    const source = axios.CancelToken.source();
 
     const fetchUserInfo = async () => {
       var userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
       if (!userInfo) {
-        userInfo = await FetchService.fetchUserInfo();
-        if (isMounted) {
+        try {
+          userInfo = await FetchService.fetchUserInfo(UserService.getId());
           console.log('userInfo :>> ', userInfo);
           setIsNewUser(userInfo.new_user);
+        } catch (error) {
+          if (axios.isCancel(error)) {
+            console.log('Request canceled:', error.message);
+          } else {
+            console.log('Error:', error.message);
+          }
         }
       }
     }
@@ -44,9 +51,9 @@ const App = () => {
 
       fetchUserInfo();
     }
-
+    
     return () => {
-      isMounted = false; // Set mounted flag to false when component is unmounted to stop fetching.
+      source.cancel('Request canceled by App.jsx cleanup');
       clearInterval(tokenUpdateInterval);
     }
   }, [])

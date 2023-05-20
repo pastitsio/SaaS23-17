@@ -7,25 +7,25 @@ const SubmitWaitButton = (props) => {
   const [ready, setReady] = useState(false);
   const [result, setResult] = useState(false);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     setLoading(true);
     setReady(false);
 
-    // !performs POST/GET action when pressed the button.
-    props.action()
-      .then((onResolveCallback) => {
+    // !performs fetch action when pressed the button.
+    try {
+      const onResolveCallback = await props.action();
+      if (typeof onResolveCallback === 'function') {
         onResolveCallback();
-        setResult(true);
-      })
-      .catch((err) => {
-        console.log(`ERROR ${props.name} :>>`, err)
-        setResult(false);
-      })
-      .finally(() => {
-        setLoading(false);
-        setReady(true);
-        props.resetParentState(); // reset states on parent component
-      })
+      }
+      setResult(true);
+    } catch (err) {
+      console.log(`ERROR ${props.actionName} :>>`, err)
+      setResult(false);
+    } finally {
+      setLoading(false);
+      setReady(true);
+      props.resetParentState(); // reset states on parent component
+    }
   }
 
   return (
