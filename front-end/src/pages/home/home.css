@@ -1,0 +1,19 @@
+.header-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: var(--border-radius);
+  background-color: var(--color-text-light);
+  margin-top: 1rem;
+  width: calc(100% - 27px) !important;
+  min-height: 100px;
+  padding-top: 8px;
+}
+
+.header-container>.header-description {
+  color: var(--color-button);
+}
+
+.offcanvas {
+  max-height: 30vh !important;
+}

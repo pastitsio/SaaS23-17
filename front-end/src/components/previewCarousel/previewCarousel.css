@@ -1,0 +1,90 @@
+.carousel-container {
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+}
+
+.carousel-img-container {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 80%;
+
+  box-shadow: 0px 6.5px 13px 0px rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  margin: .5rem;
+
+  background-color: white;
+}
+
+.carousel-top-container {
+  background-color: var(--color-bg-transparent );
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+ }
+
+.carousel-img {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-img>img {
+  height: 300px;
+  width: 500px;
+}
+
+@keyframes fade-in {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.active-img {
+  animation: fade-in 1.2s;
+  animation-fill-mode: forwards;
+}
+
+.carousel-arrow-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 10%;
+}
+
+.carousel-arrow-indicator:hover {
+  cursor: pointer;
+  background-color: rgba(140, 119, 119, 0.113);
+}
+
+.carousel-img-text {
+  margin: 1rem 0;
+  height: 10vh;
+}
+
+.carousel-img-text>#img-title {
+  color: var(--color-button);
+  font-weight: 600;
+}
+
+.carousel-img-text>#img-title:hover{
+  cursor: pointer;
+}
+
+.carousel-indicator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+@keyframes change-indicator {
+  0% {transform: scale(1, 1);}
+  100% {transform: scale(2, 3);}
+}
+
+.active-indicator {
+  animation: change-indicator .1s;
+  animation-fill-mode: forwards;
+}
