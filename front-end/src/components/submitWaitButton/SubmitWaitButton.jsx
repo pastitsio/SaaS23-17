@@ -11,7 +11,7 @@ const SubmitWaitButton = (props) => {
     setLoading(true);
     setReady(false);
 
-    // !performs fetch action when pressed the button.
+    // !performs fetch action when the button is pressed.
     try {
       const onResolveCallback = await props.action();
       if (typeof onResolveCallback === 'function') {

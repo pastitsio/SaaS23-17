@@ -14,8 +14,6 @@ services:
       - broker
       - zookeeper
       - keycloak-ready
-<<<<<<< HEAD
-=======
     networks:
       private:
         aliases:
@@ -26,7 +24,6 @@ services:
       public:
         aliases:
           - userinfomanagerpublic
->>>>>>> testdocker
     restart: unless-stopped
 
   keycloak-ready:
@@ -35,16 +32,15 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes: 
+      - /home/dimitris/Desktop/ECE/10o/SaaS/SaaS23-17/keycloak-authenticator/realm-export.json:/opt/keycloak/data/import/realm.json
     ports:
       - "8080:8080"
-    command: start-dev
-<<<<<<< HEAD
-=======
+    command: start-dev --import-realm
     networks:
       private:
         aliases:
           - keycloak-ready
->>>>>>> testdocker
     restart: unless-stopped
     
   zookeeper:
@@ -53,13 +49,10 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-<<<<<<< HEAD
-=======
     networks:
       private:
           aliases:
             - zookeeper
->>>>>>> testdocker
     restart: unless-stopped
 
   broker:
@@ -77,35 +70,17 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-<<<<<<< HEAD
-    restart: unless-stopped
-
-  # keycloak:
-  #   image: quay.io/keycloak/keycloak:21.1.0
-  #   container_name: keycloak
-  #   environment:
-  #     - KEYCLOAK_ADMIN=admin
-  #     - KEYCLOAK_ADMIN_PASSWORD=admin
-  #   ports:
-  #     - "8080:8080"
-  #   command: start-dev
-=======
     networks:
       private:
         aliases:
           - broker
     restart: unless-stopped
->>>>>>> testdocker
 
 networks:
   private:
     driver: bridge
   public:
     driver: bridge
-<<<<<<< HEAD
-
- 
-=======
     
   
 
@@ -126,4 +101,3 @@ networks:
   #   build:
   #   container_name: 
   #   environment:
->>>>>>> testdocker

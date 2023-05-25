@@ -21,7 +21,7 @@ app.get('/user/:userId', (req, res) => {
 app.get('/preset/:presetId', (req, res) => {
   // Extract the JWT token from the request headers
   const presetId = req.params.presetId;
-  const filename = `./test${presetId}.json`;
+  const filename = `./preset${presetId}.json`;
 
   fs.readFile(filename, (err, data) => {
     if (err) {
