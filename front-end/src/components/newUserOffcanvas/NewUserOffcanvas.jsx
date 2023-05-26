@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Container, Offcanvas } from 'react-bootstrap'
 
-import { FetchService, UserService } from '../../services'
+import { BackendService, UserService } from '../../services'
 
 import './newUserOffcanvas.css'
 import { SubmitWaitButton } from '../'
@@ -12,7 +12,7 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.saveUserToDB(userInfo._id);
+        await BackendService.saveUserToDB(userInfo._id);
         resolve(()=> undefined);
       } catch (e) {
         reject(e)

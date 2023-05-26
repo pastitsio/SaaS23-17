@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import { Button, Container, Spinner } from 'react-bootstrap'
+import ActionErrorModal from './actionErrorModal/ActionErrorModal';
 
 const SubmitWaitButton = (props) => {
 
+  const [actionErrorMessage, setActionErrorMessage] = useState('');
+  const [actionErrorShow, setActionErrorShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const [result, setResult] = useState(false);
@@ -19,7 +22,8 @@ const SubmitWaitButton = (props) => {
       }
       setResult(true);
     } catch (err) {
-      console.log(`ERROR ${props.actionName} :>>`, err)
+      setActionErrorMessage(err.message);
+      setActionErrorShow(true);
       setResult(false);
     } finally {
       setLoading(false);
@@ -48,6 +52,12 @@ const SubmitWaitButton = (props) => {
               : <span style={{ 'color': 'red' }}><b>{props.actionName} Failed!</b></span>
         }
       </Container>
+
+      <ActionErrorModal
+        show={actionErrorShow}
+        onHide={() => setActionErrorShow(false)}
+        message={actionErrorMessage}
+      />
     </Container>
   )
 }

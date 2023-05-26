@@ -25,10 +25,10 @@ app.get('/preset/:presetId', (req, res) => {
 
   fs.readFile(filename, (err, data) => {
     if (err) {
-      console.error(err);
+      console.log(err.message);
       res.status(500).json({
         success: false,
-        message: 'Error reading data file'
+        message: err.message
       });
       return;
     }
@@ -40,7 +40,7 @@ app.get('/preset/:presetId', (req, res) => {
 
 app.get('/chart/:id', (req, res) => {
   // const chartId = req.params.chartId;
-  // const format = req.query.format || 'png'; // default to PNG if not specified
+  // const format  = req.query.format || 'png'; // default to PNG if not specified
   // const preview = req.query.format || true; // default to preview if not specified
 
   const chartId = 'e';

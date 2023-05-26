@@ -4,7 +4,7 @@ import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
 import sampleImg from '../../assets/sample_img.png'
 import axios from 'axios'
-import { FetchService, UserService } from '../../services'
+import { BackendService, UserService } from '../../services'
 import './myCharts.css'
 
 const MyCharts = () => {
@@ -26,7 +26,7 @@ const MyCharts = () => {
     // TODO: GET fetch Table data, add error case
     const fetchTableData = async () => {
       try {
-        const tableData = await FetchService.fetchTableData(userInfo._id);
+        const tableData = await BackendService.fetchTableData(userInfo._id);
         setChartsTable(tableData);
         setTableLoading(false);
       } catch (error) {
@@ -54,7 +54,8 @@ const MyCharts = () => {
     setSelectedChartId(chartId);
 
     const fetchChartPreview = async () => {
-      const imgPreview = await FetchService.createChart(chartId);
+      // eslint-disable-next-line no-unused-vars
+      const imgPreview = await BackendService.createChart(chartId);
 
       setSelectedChart(sampleImg);
       setImgLoading(false);
@@ -72,7 +73,7 @@ const MyCharts = () => {
 
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.downloadImgFormat(chartId, format);
+        await BackendService.downloadImgFormat(chartId, format);
         resolve(() => undefined);
       } catch (e) {
         reject(e)

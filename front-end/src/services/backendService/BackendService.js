@@ -1,4 +1,4 @@
-import { api } from '../';
+import { api } from '..';
 import { withTimeout } from './utils'
 
 // const fakeCondition = true;
@@ -23,17 +23,25 @@ const mockBuyCredits = async (userId, credits) => {
 };
 
 
-const mockCreateChart = (fileInput) => {
-  return new Promise((resolve, reject) => {
-    if (someCondition) {
-      // TODO: POST REQUEST FOR CREATION
-      setTimeout(() => {
-        resolve(3);
-      }, fakeTimeout);
-    } else {
-      reject(new Error('Failed to validate file input! Please retry in a few moments'));
-    }
-  })
+const mockCreateChartPreview = async (fileInput) => {
+  const formData = new FormData();
+  formData.append('file', fileInput);
+
+  const url = `http://localhost:5003/create/`;
+  try {
+    const response = await api.post(url, formData,
+      {
+        responseType: 'blob',
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+    const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
+    console.log('response.data :>> ', response.data);
+    console.log(`Chart preview fetched!`);
+    return Promise.resolve(URL.createObjectURL(imgBlob));
+  } catch (error) {
+    return Promise.reject(new Error(error));
+  }
 };
 
 
@@ -60,7 +68,7 @@ const mockDownloadImgFormat = async (chartId, format) => {
 
 const mockDownloadJSONPreset = async (presetId) => {
   // const filename = `test${presetId}.json`;
-  const url = `/preset/${presetId}`;
+  const url = `${process.env.REACT_APP_BACKEND_API_URL}/preset/${presetId}`;
 
   try {
     const response = await withTimeout(api.get(url, { responseType: 'blob' }));
@@ -76,36 +84,28 @@ const mockDownloadJSONPreset = async (presetId) => {
     link.parentNode.removeChild(link);
 
     console.log(`File downloaded! :>> filename: ${filename}`);
-  } catch (error) {
-    return Promise.reject(new Error(`Error downloading file: ${error.message}`));
+  } catch (errorBlob) {
+    throw new Error(`Error downloading preset with ID: ${presetId}.`);    
   }
 };
 
 
-const mockFetchChartPreview = async (fileInput) => {
-  const formData = new FormData();
-  formData.append('file', fileInput);
-
-  const url = `http://localhost:5000/create`;
-  try {
-    const response = await api.post(url, formData,
-      {
-        responseType: 'blob',
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-
-    const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
-    console.log('response.data :>> ', response.data);
-    console.log(`Chart preview fetched!`);
-    return Promise.resolve(URL.createObjectURL(imgBlob));
-  } catch (error) {
-    return Promise.reject(new Error(`Error downloading image: ${error.message}`));
-  }
+const mockFetchChartPreview = (fileInput) => {
+  return new Promise((resolve, reject) => {
+    if (someCondition) {
+      // TODO: POST REQUEST FOR FETCH PREVIEW
+      setTimeout(() => {
+        resolve(3);
+      }, fakeTimeout);
+    } else {
+      reject(new Error('Failed to validate file input! Please retry in a few moments'));
+    }
+  })
 };
 
 
 const mockFetchTableData = async (userId) => {
-  const url = `/charts/user/${userId}`;
+  const url = `${process.env.REACT_APP_BACKEND_API_URL}/charts/user/${userId}`;
   try {
     const response = await withTimeout(api.get(url));
 
@@ -118,7 +118,7 @@ const mockFetchTableData = async (userId) => {
 
 
 const mockFetchUserInfo = async (userId) => {
-  const url = `/user/${userId}`;
+  const url = `${process.env.REACT_APP_BACKEND_API_URL}/user/${userId}`;
   try {
     const response = await withTimeout(api.get(url))
 
@@ -150,25 +150,24 @@ const mockValidateFileInput = async (fileInput) => {
   const formData = new FormData();
   formData.append('file', fileInput);
 
-  const url = `http://localhost:5000/validate/`;
+  const url = process.env.REACT_APP_VALIDATE_API_URL;
   try {
     const response = await api.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
-    console.log(response.data);
+
     console.log('Input validated!');
     return response.data;
   } catch (error) {
-    console.error(`Error validating input: ${error.message}`);
-    throw new Error(`Preset not valid: ${error.message}`);
+    throw new Error(error.response.data);
   }
 };
 
 
 const buyCredits = mockBuyCredits;
-const createChart = mockCreateChart;
+const createChartPreview = mockCreateChartPreview;
 const downloadImgFormat = mockDownloadImgFormat;
 const downloadJSONPreset = mockDownloadJSONPreset;
 const fetchChartPreview = mockFetchChartPreview;
@@ -177,9 +176,9 @@ const fetchUserInfo = mockFetchUserInfo;
 const saveUserToDB = mockSaveUserToDB;
 const validateFileInput = mockValidateFileInput;
 
-const FetchService = {
+const BackendService = {
   buyCredits,
-  createChart,
+  createChartPreview,
   downloadImgFormat,
   downloadJSONPreset,
   fetchChartPreview,
@@ -189,4 +188,4 @@ const FetchService = {
   validateFileInput,
 };
 
-export default FetchService;
+export default BackendService;

@@ -6,7 +6,7 @@ import { Container, Form } from 'react-bootstrap'
 import { PreviewCarousel, SubmitWaitButton } from '../../components'
 
 import './newChart.css'
-import { FetchService } from '../../services'
+import { BackendService } from '../../services'
 
 const NewChart = () => {
 
@@ -23,7 +23,7 @@ const NewChart = () => {
   const handleDownloadButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.downloadJSONPreset(selectedPreset);
+        await BackendService.downloadJSONPreset(selectedPreset);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -34,7 +34,7 @@ const NewChart = () => {
   const handleCreateButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.validateFileInput(fileInput);
+        await BackendService.validateFileInput(fileInput);
         resolve(() => navigate('/created', { state: { preset: fileInput } }));
       } catch (e) {
         reject(e)

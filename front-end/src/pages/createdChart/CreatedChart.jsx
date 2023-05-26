@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Button, Card, Container, Spinner } from 'react-bootstrap'
 
 import { SubmitWaitButton } from '../../components'
-import { FetchService, UserService } from '../../services'
+import { BackendService, UserService } from '../../services'
 
-import sampleImg from '../../assets/line_chart_white-bg.png'
-import './createdChart.css'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
+import './createdChart.css'
 
 const CreatedChart = () => {
   const { state } = useLocation();
@@ -21,7 +20,7 @@ const CreatedChart = () => {
     // TODO: GET created image preview
     const fetchChartPreview = async () => {
       try {
-        const imgPreview = await FetchService.fetchChartPreview(state.preset);
+        const imgPreview = await BackendService.createChartPreview(state.preset);
         setCreatedImg(imgPreview);
         setImgLoading(false);
       } catch (error) {

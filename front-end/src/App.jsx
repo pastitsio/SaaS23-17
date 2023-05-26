@@ -6,7 +6,7 @@ import { Container } from 'react-bootstrap'
 import { NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
 import { About, CreatedChart, Home, MyCharts, NewChart, PageNotFound } from './pages'
 
-import { FetchService, UserService } from './services'
+import { BackendService, UserService } from './services'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
@@ -27,7 +27,7 @@ const App = () => {
       var userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
       if (!userInfo) {
         try {
-          userInfo = await FetchService.fetchUserInfo(UserService.getId());
+          userInfo = await BackendService.fetchUserInfo(UserService.getId());
           console.log('userInfo :>> ', userInfo);
           setIsNewUser(userInfo.new_user);
         } catch (error) {

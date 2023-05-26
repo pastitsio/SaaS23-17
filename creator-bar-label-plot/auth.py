@@ -2,10 +2,10 @@ import requests
 
 from config import config
 
-keycloak_server_url = config['Keycloak']['SERVER_URL']
-keycloak_realm = config['Keycloak']['REALM']
-keycloak_client_id = config['Keycloak']['CLIENT_ID']
-keycloak_client_secret = config['Keycloak']['CLIENT_SECRET']
+keycloak_server_url = config['KEYCLOAK']['SERVER_URL']
+keycloak_realm = config['KEYCLOAK']['REALM']
+keycloak_client_id = config['KEYCLOAK']['CLIENT_ID']
+keycloak_client_secret = config['KEYCLOAK']['CLIENT_SECRET']
 
 def invalidate_token(token):
     '''
