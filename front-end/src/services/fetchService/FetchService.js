@@ -82,13 +82,21 @@ const mockDownloadJSONPreset = async (presetId) => {
 };
 
 
-const mockFetchChartPreview = async (chartId) => {
-  const url = `/chart/${chartId}?preview=True`;
-  try {
-    const response = await withTimeout(api.get(url, { responseType: 'blob' }));
-    const imgBlob = new Blob([response.data], { type: 'image/png' });
+const mockFetchChartPreview = async (fileInput) => {
+  const formData = new FormData();
+  formData.append('file', fileInput);
 
-    console.log(`Chart preview fetched! :>> chartId: ${chartId}`);
+  const url = `http://localhost:5000/create`;
+  try {
+    const response = await api.post(url, formData,
+      {
+        responseType: 'blob',
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+    const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
+    console.log('response.data :>> ', response.data);
+    console.log(`Chart preview fetched!`);
     return Promise.resolve(URL.createObjectURL(imgBlob));
   } catch (error) {
     return Promise.reject(new Error(`Error downloading image: ${error.message}`));
@@ -139,17 +147,25 @@ const mockSaveUserToDB = async (userId) => {
 
 
 const mockValidateFileInput = async (fileInput) => {
-  return new Promise((resolve, reject) => {
-    if (someCondition) {
-      // TODO: POST REQUEST FOR VALIDATION
-      setTimeout(() => { // 
-        resolve();
-      }, fakeTimeout);
-    } else {
-      reject(new Error('Failed to validate file input! Please retry in a few moments'));
-    }
-  })
+  const formData = new FormData();
+  formData.append('file', fileInput);
+
+  const url = `http://localhost:5000/validate/`;
+  try {
+    const response = await api.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log(response.data);
+    console.log('Input validated!');
+    return response.data;
+  } catch (error) {
+    console.error(`Error validating input: ${error.message}`);
+    throw new Error(`Preset not valid: ${error.message}`);
+  }
 };
+
 
 const buyCredits = mockBuyCredits;
 const createChart = mockCreateChart;

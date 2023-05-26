@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Card, Container, Spinner, Table } from 'react-bootstrap'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
+import sampleImg from '../../assets/sample_img.png'
 import axios from 'axios'
 import { FetchService, UserService } from '../../services'
 import './myCharts.css'
@@ -53,9 +54,9 @@ const MyCharts = () => {
     setSelectedChartId(chartId);
 
     const fetchChartPreview = async () => {
-      const imgPreview = await FetchService.fetchChartPreview(chartId);
+      const imgPreview = await FetchService.createChart(chartId);
 
-      setSelectedChart(imgPreview);
+      setSelectedChart(sampleImg);
       setImgLoading(false);
       setImgReady(true);
     }

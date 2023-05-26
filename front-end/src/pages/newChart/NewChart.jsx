@@ -35,8 +35,7 @@ const NewChart = () => {
     return new Promise(async (resolve, reject) => {
       try {
         await FetchService.validateFileInput(fileInput);
-        const chartId = await FetchService.createChart(fileInput);
-        resolve(() => navigate('/created', { state: { chartId: chartId } }));
+        resolve(() => navigate('/created', { state: { preset: fileInput } }));
       } catch (e) {
         reject(e)
       }
@@ -56,7 +55,7 @@ const NewChart = () => {
 
       <Container className='d-flex flex-row gap-5 mt-3'>
         <Container>
-          <h5>Download presets</h5>
+          <h5>Download a preset</h5>
           <Form.Select value={selectedPreset} onChange={handleDownloadChange} aria-label="Default select example" className='mb-2'>
             <option value="0">Open this select menu</option>
             <option value="1">True</option>
@@ -76,7 +75,7 @@ const NewChart = () => {
         </Container>
         <Container>
           <Form.Group controlId="formFile" className='mb-2'>
-            <h5>Upload your JSON file</h5>
+            <h5>Upload your JSON preset</h5>
             <Form.Control type="file" accept=".json" onChange={handleFileInputChange} />
           </Form.Group>
 

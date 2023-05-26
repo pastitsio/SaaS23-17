@@ -1,11 +1,15 @@
 import io
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
 from typing import List, Dict, Union
 
+matplotlib.use('Agg') # non interactive
 
-def _scatter_plot(x: Union[List, np.array],
+plot_types = ['simple_plot', 'scatter_plot', 'bar_label']
+
+def fn_scatter_plot(x: Union[List, np.array],
                  y: Union[List, np.array],
                  colors: Union[List, np.array] = None,
                  sizes: Union[List, np.array] = None):
@@ -25,7 +29,7 @@ def _scatter_plot(x: Union[List, np.array],
     return ax
 
 
-def _simple_plot(x: Union[List, np.array],
+def fn_simple_plot(x: Union[List, np.array],
                 y: Union[List, np.array],
                 x_label: str,
                 y_label: str,
@@ -39,7 +43,7 @@ def _simple_plot(x: Union[List, np.array],
     return ax
 
 
-def _bar_label(x_labels: List[str],
+def fn_bar_label(x_labels: List[str],
               bar_counts: Dict[str, Union[List, np.array]],
               title: str):
     width = 0.6  # the width of the bars: can also be len(x) sequence
@@ -59,29 +63,34 @@ def _bar_label(x_labels: List[str],
     return ax
 
 
-def create_chart(json_input: Dict, format: str):
-    if json_input['__type__'] == 'simple_plot':
-       fn = _simple_plot
-    elif json_input['__type__'] == 'bar_label':
-       fn = _bar_label
-    elif json_input['__type__'] == 'scatter_plot':
-       fn = _scatter_plot
-
-    # for k in json_input.keys():
-    #     if k.startswith('__'):
-    del json_input['__comment__']
-    del json_input['__type__']
-
+def create_chart(json_input: Dict, format: str='jpeg'):
+    plot_type = json_input['__type__']
+    if plot_type not in plot_types:
+        # to define new plot add a fn_plot function in this file.
+        raise ValueError(f'__type__ must be one of: {plot_types}')
+    
+    fn = globals()[f"fn_{json_input['__type__']}"]
+    
+    for k in list(json_input.keys()):
+        if k.startswith('__'):
+            del json_input[k]
+    
     ax = fn(**json_input)
     
     img_stream = io.BytesIO()
     ax.figure.savefig(img_stream, format=format)
     img_stream.seek(0)
 
-    return img_stream.getvalue()
+    return img_stream
 
 
-# def validate_input(json_input: Dict):
-#     i
-#         return False
-#     return True
+def validate_json_input(json_input: Dict):
+    if 'fn_' + json_input['__type__'] not in globals():
+        return False
+    return True
+
+
+if __name__ == '__main__':
+    create_chart({
+        '__type__': 'simple_plot'
+    }, 'png')

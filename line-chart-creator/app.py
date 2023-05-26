@@ -1,27 +1,85 @@
-from flask import Flask, request, jsonify
-from charts import create_chart, validate_input
+import json
+from auth import invalidate_token
+from config import config
+
+from charts import create_chart, validate_json_input
+from flask import Flask, Response, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/validate', methods=['POST'])
-def validate_endpoint():
+
+# Run the token validation before each request
+@app.before_request
+def before_request():
+    # OPTIONS method is preflight, meaning it is sent by the browser
+    # to check CORS functionality. Interceptor cannot interfere with it.
+    if (request.method == 'OPTIONS'):        
+        return
+    
+    token = request.headers.get('Authorization')
+    token = token.split()[1] # remove 'Bearer' word
+
+    if not invalidate_token(token):
+        return jsonify({'error': 'Invalid Token'}), 400
+
+
+@app.route('/validate/', methods=['POST', 'OPTIONS'])
+def validate():
+    # Handle preflight OPTIONS request
+
+    response = jsonify()
+    if request.method == 'OPTIONS':
+        response.headers['Access-Control-Allow-Origin'] = config['FrontEnd']['SERVER_URL']
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        return response
+    
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    file = request.files['file']
+    if file.content_type != 'application/json':
+        return 'Invalid file format. Expected JSON.', 400
+
     try:
-        json_data = request.get_json()  # Read JSON data from the request body
-        if json_data:
-            if validate_input(json_data):
-                image = create_chart(json_data)
-                # produce changes to kafka 
-                'image/png'
-            return jsonify({'valid': validation_result})
-        else:
-            return jsonify({'error': 'Invalid JSON data provided'})
+        file = json.load(file)
+        # Process the uploaded file here
+        # !TODO: validate input
+        result = validate_json_input(file)
+        response = jsonify({'success': result})
+        return response
     except Exception as e:
-        return jsonify({'error': str(e)})
+        return jsonify({'Error': str(e)})
+
+
+@app.route('/create', methods=['POST', 'OPTIONS'])
+def create_endpoint():
+    
+    response = jsonify()
+    if request.method == 'OPTIONS':
+        response.headers['Access-Control-Allow-Origin'] = config['FrontEnd']['SERVER_URL']
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        return response
     
 
-@app.route('/create', methods=['POST'])
-def create_endpoint():
+    format = request.args.get('format', default='jpeg')
 
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
 
+    file = request.files['file']
+    if file.content_type != 'application/json':
+        return 'Invalid file format. Expected JSON.', 400
+    
+    try:
+        file = json.load(file)
+        img_stream = create_chart(file, format)
+        return Response(img_stream, mimetype=f'image/{format}'), 200
+    except:
+        return 'Error creating image.', 400
+    
 if __name__ == '__main__':
     app.run(debug=True)

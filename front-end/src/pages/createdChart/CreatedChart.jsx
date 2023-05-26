@@ -21,7 +21,7 @@ const CreatedChart = () => {
     // TODO: GET created image preview
     const fetchChartPreview = async () => {
       try {
-        const imgPreview = await FetchService.fetchChartPreview(state.chartId);
+        const imgPreview = await FetchService.fetchChartPreview(state.preset);
         setCreatedImg(imgPreview);
         setImgLoading(false);
       } catch (error) {
@@ -41,7 +41,7 @@ const CreatedChart = () => {
       source.cancel('Request canceled by MyCharts.jsx cleanup');
     }
 
-  }, [state.chartId]);
+  }, [state.preset]);
 
   return (
     <>
@@ -53,11 +53,11 @@ const CreatedChart = () => {
           {imgLoading
             ? <Spinner animation='border' variant='light' /> // if is loading: display spinner
             : <Card className='preview-card'>
-              <Card.Img variant='top' src={sampleImg} alt='preview' />
-              <Card.Body>
+              <Card.Img variant='top' src={createdImg} alt='preview' />
+              {/* <Card.Body>
                 <Card.Title >{createdImg.title}</Card.Title>
                 <Card.Text >{createdImg.caption}</Card.Text>
-              </Card.Body>
+              </Card.Body> */}
             </Card>
           }
         </Container>
