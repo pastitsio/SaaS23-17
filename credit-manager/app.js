@@ -1,3 +1,5 @@
+// TODO: When sending back errors message is not displayed
+
 const express = require("express");
 const app = express();
 const router = require("./routes/creditManagerRouter");
@@ -6,20 +8,40 @@ const pageNotFound = require("./middleware/pageNotFound");
 const errorHandler = require("./middleware/errorHandlerMiddleware");
 
 const cors = require("cors");
+const session = require("express-session");
+const Keycloak = require("keycloak-connect");
 require("dotenv").config();
 
 const port = process.env.APP_PORT || 3000;
 const host = process.env.HOST || "localhost";
 
+const memoryStore = new session.MemoryStore();
+const keycloak = new Keycloak({ store: memoryStore });
+
 // middleware
 app.use(express.json());
 app.use(cors());
 
+app.use(
+  session({
+    store: memoryStore,
+    secret: process.env.SECRET,
+    resave: false,
+  })
+);
+
+app.use(
+  keycloak.middleware({
+    logout: "/logout",
+    admin: "/",
+  })
+);
+
 // routes
-app.use("/api/v1/", router);
-// app.get("/", keycloak.protect("realm:user"), (req, res) => {
-//   res.json({ token: req.kauth.grant.access_token.token });
-// });
+app.use("/api/v1/", keycloak.protect("realm:user"), router);
+app.get("/", keycloak.protect("realm:user"), (req, res) => {
+  res.json({ token: req.kauth.grant.access_token.token });
+});
 app.use("*", pageNotFound);
 
 // error-handler
