@@ -4,27 +4,29 @@ const Credits = require("../models/Credits");
 require("express-async-errors");
 
 /**
- *
- * @param {*} req
- * @param {*} res
+ * @description this endpoint is in charge of purchasing credits and updating the database 
+ * @param {JSON} req.body 
+ * @returns {JSON} {success: Boolean, result: Obj} Obj has email and new credit balance
  */
 
-const purchase = (req, res) => {
-  controllersController(req, res, (x, y) => {
+const purchase = async (req, res) => {
+  await controllersController(req, res, (x, y) => {
     return x + y;
   });
 };
 
 /**
- *
- * @param {*} req
- * @param {*} res
+ * @description this endpoint is in charge of update user credit score after a purchase
+ * @param {JSON} req.body {email: String, credits: Number}
+ * @returns {JSON} {success: Boolean, result: Obj} Obj has email and new credit balance
  */
-const udpate = (req, res) => {
-  controllersController(req, res, (x, y) => {
+const udpate = async (req, res) => {
+  await controllersController(req, res, (x, y) => {
     return x - y;
   });
 };
+
+
 
 async function controllersController(req, res, fn) {
   const { email, credits } = req.body;
