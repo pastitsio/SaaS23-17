@@ -10,11 +10,11 @@ defaults = (None, 0)
 label = namedtuple("label", fields, defaults=defaults)
 
 
-def _type_name(name):
+def _type_name(type_name):
     try:
-        label_type = name._name
+        label_type = type_name._name
     except AttributeError:
-        label_type = str(name).split(" ")[1][1:-2]
+        label_type = str(type_name).split(" ")[1][1:-2]
 
     return label_type
 
@@ -26,12 +26,7 @@ def _validate(json_input, valid_input, matching_pairs):
             keys_list = sorted(valid_input.keys())
             raise KeyError(f"Key [{key}] should be one of: {keys_list}")
 
-        '''
-        check: type is valid for every dimension
-        if x = [[2, 3], [3, 4], [5, 'kostas']]
-
-
-        '''
+        # check: type is valid for every dimension
         valid_key = valid_input[key]
         dim_check = [json_input[key]]
         for dim in range(valid_key.ndim + 1):
@@ -75,11 +70,11 @@ def validate_json_input(json_input: Dict):
         valid_input = {
             "x": label(is_type=[List, (int, float)], ndim=1),
             "y": label(is_type=[List, (int, float)], ndim=1),
-            "x_label": label(is_type=[str,]),
-            "y_label": label(is_type=[str,]),
-            "title": label(is_type=[str,]),
+            "x_label": label(is_type=[str]),
+            "y_label": label(is_type=[str]),
+            "title": label(is_type=[str]),
         }
 
-        matching_pairs = (['x', 'y'],)
+        matching_pairs = (["x", "y"],)
 
     _validate(json_input, valid_input, matching_pairs)
