@@ -32,7 +32,7 @@ def before_request():
 
 
 @app.route('/create/', methods=['POST'])
-def create():   
+def create():
     
     # check available formats
     format = request.args.get('format', default='jpeg')
