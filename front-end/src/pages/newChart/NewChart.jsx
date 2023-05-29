@@ -48,9 +48,8 @@ const NewChart = () => {
       try {
         const previewImg = await BackendService.createChart(jsonInput, fileInput);
         resolve(() => {
-          // prevent back button from loading this page again.
-          window.history.replaceState(null, document.title, '/new');
-          navigate('/created', { state: {previewImg: previewImg}
+          navigate('/created', {
+            state: { previewImg: previewImg }
           });
         });
       } catch (e) {
@@ -101,7 +100,7 @@ const NewChart = () => {
             actionName='Create'
             disabledIf={!jsonInput}
             color='green'
-            resetParentState={() => {setJsonInput(null); setFileInput(null)}}
+            resetParentState={() => { setJsonInput(null); setFileInput(null) }}
           />
         </Container>
       </Container>

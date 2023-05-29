@@ -3,11 +3,17 @@ import { Button, Card, Container } from 'react-bootstrap'
 
 import { SubmitWaitButton } from '../../components'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import './createdChart.css'
 
 const CreatedChart = () => {
   const { state } = useLocation();
+  const navigate = useNavigate();
+
+  const handleCancelButton = () => {
+    // prevent back button from loading this page again.
+    navigate('/', { replace: true });
+  }
 
   const handleSaveButton = () => {
     return undefined;
@@ -20,23 +26,23 @@ const CreatedChart = () => {
       </Container>
       <Container className='wrapper-container flex-column'>
         <Container className="img-preview-container" style={{ height: '100%' }}>
-          <Card.Img variant='top' src={state.previewImg} alt='preview' />
-          {/* <Card.Body>
+          <Card className='preview-card'>
+            <Card.Img variant='top' src={state.previewImg} alt='preview' />
+            {/* <Card.Body>
             <Card.Title >{createdImg.title}</Card.Title>
             <Card.Text >{createdImg.caption}</Card.Text>
           </Card.Body> */}
-          {/* {imgLoading
+            {/* {imgLoading
             ? <Spinner animation='border' variant='light' /> // if is loading: display spinner
-            : <Card className='preview-card'>
-             </Card>
           } */}
+          </Card>
         </Container>
 
         <Container className='d-flex px-0 gap-2'>
-          <Button id='cancel-button'>Cancel</Button>
+          <Button onClick={handleCancelButton} id='cancel-button'>Cancel</Button>
           <SubmitWaitButton
             action={handleSaveButton}
-            actionName='Save'
+            actionName='Save!'
             cssId="buy-button"
             reset={() => undefined}
           />

@@ -13,33 +13,11 @@ from config_loader import config
 from Plot import *
 from utils import check_file_exists, preflight_options, validate_user
 
-
-app = Flask("create_app")
-# use CORS
-CORS(app)
-
-if __name__ == "__main__":
-    # Create an argument parser
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-u", "--user", type=validate_user, help=f"Type of app.", required=True
-    )
-    parser.add_argument("-p", "--port", help=f"TCP port to run on.", required=True)
-
-    # Parse the command-line arguments
-    args = parser.parse_args()
-
-    user = args.user.upper()  # which plot type
-    if user == "BAR_LABEL_PLOT":
-        PLOT = BarLabelPlot
-    if user == "SCATTER_PLOT":
-        PLOT = ScatterPlot
-    if user == "SIMPLE_PLOT":
-        PLOT = SimplePlot
-
-    print(user, PLOT)
-    
-
+# application factory function
+def create_app(user):
+    app = Flask("create_app")
+    # use CORS
+    CORS(app)
     # [Token validation, OPTIONS handling, file existence] checks before each request
     app.before_request(preflight_options)
     app.before_request(lambda: require_token_validation(user))
@@ -52,9 +30,12 @@ if __name__ == "__main__":
         valid_formats = config["PLOT"]["FORMATS"]
         if img_format not in valid_formats:
             return (
-                jsonify({
+                jsonify(
+                    {
                         "message": f"Unsupported output format {img_format}. Expected {valid_formats}."
-                }), 415
+                    }
+                ),
+                415,
             )
 
         try:
@@ -70,6 +51,29 @@ if __name__ == "__main__":
             return Response(img_stream, mimetype=f"image/{img_format}"), 200
         except Exception as e:
             return jsonify({"message": e}), 500
+
+    return app
+
+if __name__ == "__main__":
+    # Create an argument parser
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-u", "--user", type=validate_user, help=f"Type of app.", required=True
+    )
+    parser.add_argument("-p", "--port", help=f"TCP port to run on.", required=True)
+
+    # Parse the command-line arguments
+    args = parser.parse_args()
+
+    user = args.user.upper()  # which plot type, for runtime
+    if user == "BAR_LABEL_PLOT":
+        PLOT = BarLabelPlot
+    if user == "SCATTER_PLOT":
+        PLOT = ScatterPlot
+    if user == "SIMPLE_PLOT":
+        PLOT = SimplePlot
+
+    app = create_app(user)
 
     port = args.port
     app.run(debug=True, port=port)
