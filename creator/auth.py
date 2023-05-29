@@ -1,35 +1,38 @@
 import requests
 
-from config import config
+from flask import jsonify, request
 
-keycloak_server_url = config['KEYCLOAK']['SERVER_URL']
-keycloak_realm = config['KEYCLOAK']['REALM']
-keycloak_client_id = config['KEYCLOAK']['CLIENT_ID']
-keycloak_client_secret = config['KEYCLOAK']['CLIENT_SECRET']
+from config_loader import config
 
-def invalidate_token(token):
-    '''
-    Check with keycloak that request is valid 
-    within realm premises.
-    '''
-    introspection_endpoint = f'{keycloak_server_url}/realms/{keycloak_realm}/protocol/openid-connect/token/introspect'
+keycloak_server_url = config["KEYCLOAK"]["SERVER_URL"]
+keycloak_realm = config["KEYCLOAK"]["REALM"]
+
+
+def require_token_validation(user):
+    """
+    Check with keycloak that request is valid within realm premises.
+    """
+    token = request.headers.get("Authorization")
+    token = token.split()[1]  # remove 'Bearer' word
+
+    introspection_endpoint = f"{keycloak_server_url}/realms/{keycloak_realm}/protocol/openid-connect/token/introspect"
 
     data = {
-        'token': token,
-        'client_id': keycloak_client_id,
-        'client_secret': keycloak_client_secret,
+        "token": token,
+        "client_id": config["KEYCLOAK"][user]["CLIENT_ID"],
+        "client_secret": config["KEYCLOAK"][user]["CLIENT_SECRET"],
     }
 
     response = requests.post(introspection_endpoint, data=data)
 
     if response.status_code == 200:
         introspection_result = response.json()
-        if introspection_result.get('active'):
-            print('Token is valid.')
-            return True
+        if introspection_result.get("active"):
+            print("Token is valid.")
+            return  # is valid, continue execution
         else:
-            print('Token is not valid.')
-            return False
+            print("Token is not valid.")
+            return jsonify({"message": "Invalid Token"}), 401
     else:
-        print('Failed to introspect token.')
-        return False
+        print("Failed to introspect token.")
+        return jsonify({"message": "Failed to introspect token."}), 401

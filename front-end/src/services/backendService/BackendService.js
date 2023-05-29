@@ -23,12 +23,19 @@ const mockBuyCredits = async (userId, credits) => {
 };
 
 
-const mockCreateChartPreview = async (fileInput) => {
+const mockCreateChart = async (jsonData, fileData) => {
   const formData = new FormData();
-  formData.append('file', fileInput);
+  formData.append('file', fileData);
 
-  const url = `http://localhost:5003/create/`;
   try {
+    const plotType = jsonData['__type__'];
+    const plotTypes = process.env['REACT_APP_plot_types'].split(',');
+        
+    if (!plotTypes.includes(plotType)) {
+      throw new Error(`__type__ should be on of [${plotTypes}]`);
+    }
+    const url = process.env[`REACT_APP_${plotType}_api_url`];
+
     const response = await api.post(url, formData,
       {
         responseType: 'blob',
@@ -40,7 +47,7 @@ const mockCreateChartPreview = async (fileInput) => {
     console.log(`Chart preview fetched!`);
     return Promise.resolve(URL.createObjectURL(imgBlob));
   } catch (error) {
-    return Promise.reject(new Error(error));
+    throw new Error(`Error creating chart: ${error.message}`);
   }
 };
 
@@ -61,7 +68,7 @@ const mockDownloadImgFormat = async (chartId, format) => {
 
     console.log(`Chart downloaded! :>> chartId :${chartId}, format: ${format}`);
   } catch (error) {
-    return Promise.reject(new Error(`Error downloading image: ${error.message}`));
+    throw new Error(`Error downloading image: ${error.message}`);
   }
 };
 
@@ -85,7 +92,7 @@ const mockDownloadJSONPreset = async (presetId) => {
 
     console.log(`File downloaded! :>> filename: ${filename}`);
   } catch (errorBlob) {
-    throw new Error(`Error downloading preset with ID: ${presetId}.`);    
+    throw new Error(`Error downloading preset with ID: ${presetId}.`);
   }
 };
 
@@ -146,46 +153,26 @@ const mockSaveUserToDB = async (userId) => {
 };
 
 
-const mockValidateFileInput = async (fileInput) => {
-  const formData = new FormData();
-  formData.append('file', fileInput);
-
-  const url = process.env.REACT_APP_VALIDATE_API_URL;
-  try {
-    const response = await api.post(url, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    console.log('Input validated!');
-    return response.data;
-  } catch (error) {
-    throw new Error(error.response.data);
-  }
-};
-
 
 const buyCredits = mockBuyCredits;
-const createChartPreview = mockCreateChartPreview;
+const createChart = mockCreateChart;
 const downloadImgFormat = mockDownloadImgFormat;
 const downloadJSONPreset = mockDownloadJSONPreset;
 const fetchChartPreview = mockFetchChartPreview;
 const fetchTableData = mockFetchTableData;
 const fetchUserInfo = mockFetchUserInfo;
 const saveUserToDB = mockSaveUserToDB;
-const validateFileInput = mockValidateFileInput;
+
 
 const BackendService = {
   buyCredits,
-  createChartPreview,
+  createChart,
   downloadImgFormat,
   downloadJSONPreset,
   fetchChartPreview,
   fetchTableData,
   fetchUserInfo,
   saveUserToDB,
-  validateFileInput,
 };
 
 export default BackendService;

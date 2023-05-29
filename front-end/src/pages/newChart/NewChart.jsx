@@ -10,9 +10,21 @@ import { BackendService } from '../../services'
 
 const NewChart = () => {
 
+  const [jsonInput, setJsonInput] = useState(null);
   const [fileInput, setFileInput] = useState(null);
+
   const handleFileInputChange = (event) => {
-    setFileInput(event.target.files[0]);
+    const file = event.target.files[0];
+    setFileInput(file);
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const fileContents = event.target.result;
+      const parsedData = JSON.parse(fileContents);
+      setJsonInput(parsedData);
+    };
+
+    reader.readAsText(file);
   };
 
   const [selectedPreset, setSelectedPreset] = useState('0');
@@ -34,8 +46,13 @@ const NewChart = () => {
   const handleCreateButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.validateFileInput(fileInput);
-        resolve(() => navigate('/created', { state: { preset: fileInput } }));
+        const previewImg = await BackendService.createChart(jsonInput, fileInput);
+        resolve(() => {
+          // prevent back button from loading this page again.
+          window.history.replaceState(null, document.title, '/new');
+          navigate('/created', { state: {previewImg: previewImg}
+          });
+        });
       } catch (e) {
         reject(e)
       }
@@ -82,9 +99,9 @@ const NewChart = () => {
           <SubmitWaitButton
             action={handleCreateButton}
             actionName='Create'
-            disabledIf={!fileInput}
+            disabledIf={!jsonInput}
             color='green'
-            resetParentState={() => setFileInput(null)}
+            resetParentState={() => {setJsonInput(null); setFileInput(null)}}
           />
         </Container>
       </Container>
