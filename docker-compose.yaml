@@ -27,7 +27,6 @@ services:
     volumes:
       - /mnt/c/Users/Yanis/Downloads/uncategorised/realm-export.json:/opt/keycloak/data/import/realm.json
     command: start-dev --import-realm
-  
     
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -49,20 +48,12 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_CREATE_TOPICS: user-data:1:1, credit-data:1:1, chart-data:1:1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-    networks:
-      private:
-        aliases:
-          - broker
     restart: unless-stopped
 
-networks:
-  private:
-    driver: bridge
-  public:
-    driver: bridge
     
   
 

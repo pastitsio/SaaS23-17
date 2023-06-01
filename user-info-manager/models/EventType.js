@@ -5,11 +5,11 @@ const eventSchema = avro.Type.forSchema({
   fields: [
     { 
         name: "email" ,
-        type: 'string'
+        type: "string"
     },
     { 
         name: "credits",
-        type: 'long'
+        type: "int"
     },
   ],
 });
