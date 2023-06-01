@@ -1,5 +1,5 @@
 import { api } from '..';
-import { withTimeout } from './utils'
+import { readFileAsText, withTimeout } from './utils'
 
 // const fakeCondition = true;
 const fakeTimeout = 1000;
@@ -23,29 +23,42 @@ const mockBuyCredits = async (userId, credits) => {
 };
 
 
-const mockCreateChart = async (jsonData, fileData) => {
-  const formData = new FormData();
-  formData.append('file', fileData);
-
+const mockCreateChart = async (fileInput, mode) => {
+  mode = mode.toLowerCase();
   try {
+    const jsonDataStr = await readFileAsText(fileInput); // read file to extract plot type info
+    const jsonData = JSON.parse(jsonDataStr)
+
     const plotType = jsonData['__type__'];
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
-        
+
     if (!plotTypes.includes(plotType)) {
       throw new Error(`__type__ should be on of [${plotTypes}]`);
     }
-    const url = process.env[`REACT_APP_${plotType}_api_url`];
 
-    const response = await api.post(url, formData,
-      {
-        responseType: 'blob',
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+    const formData = new FormData();
+    formData.append('file', fileInput);
+    const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
+    const url = `${create_server_url}/create?mode=${mode}`;
 
-    const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
-    console.log('response.data :>> ', response.data);
-    console.log(`Chart preview fetched!`);
-    return Promise.resolve(URL.createObjectURL(imgBlob));
+    if (mode === 'preview') {
+      const response = await api.post(url, formData,
+        {
+          responseType: 'blob',
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+      const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
+      console.log('response.data :>> ', response.data);
+      console.log(`Chart preview fetched!`);
+      return Promise.resolve(URL.createObjectURL(imgBlob));
+    } else if (mode === 'save') {
+      await api.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      console.log(`Chart saved to DB!`);
+    }
+    else {
+      throw new Error('Mode should either be SAVE or PREVIEW')
+    }
   } catch (error) {
     throw new Error(`Error creating chart: ${error.message}`);
   }
@@ -75,7 +88,7 @@ const mockDownloadImgFormat = async (chartId, format) => {
 
 const mockDownloadJSONPreset = async (presetId) => {
   // const filename = `test${presetId}.json`;
-  const url = `${process.env.REACT_APP_BACKEND_API_URL}/preset/${presetId}`;
+  const url = `${process.env.REACT_APP_BACKEND_api_url}/preset/${presetId}`;
 
   try {
     const response = await withTimeout(api.get(url, { responseType: 'blob' }));
@@ -112,7 +125,7 @@ const mockFetchChartPreview = (fileInput) => {
 
 
 const mockFetchTableData = async (userId) => {
-  const url = `${process.env.REACT_APP_BACKEND_API_URL}/charts/user/${userId}`;
+  const url = `${process.env.REACT_APP_BACKEND_api_url}/charts/user/${userId}`;
   try {
     const response = await withTimeout(api.get(url));
 
@@ -125,7 +138,7 @@ const mockFetchTableData = async (userId) => {
 
 
 const mockFetchUserInfo = async (userId) => {
-  const url = `${process.env.REACT_APP_BACKEND_API_URL}/user/${userId}`;
+  const url = `${process.env.REACT_APP_BACKEND_api_url}/user/${userId}`;
   try {
     const response = await withTimeout(api.get(url))
 

@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Button, Container } from "react-bootstrap";
-import { BsPlusCircle, BsCart3,  BsTable, BsViewStacked } from "react-icons/bs";
+import { BsPlusCircle, BsCart3, BsTable, BsViewStacked } from "react-icons/bs";
 import { FaChartArea } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr";
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { BuyCreditsModal } from "../../";
 import './userProfileCard.css';
 
 const UserProfileCard = () => {
+  const navigate = useNavigate();
 
   // Buy Credits Control
   const [showBuyCredits, setShowBuyCredits] = useState(false);
@@ -36,14 +37,14 @@ const UserProfileCard = () => {
       </Container>
 
       <Container className="user-info-footer">
-        <Button className="user-info-button" id="new-button">
-          <Link to='/new'>New <BsPlusCircle /></Link>
+        <Button onClick={() => navigate('/new')} className="user-info-button" id="new-button">
+          New <BsPlusCircle />
         </Button>{" "}
-        <Button className="user-info-button" id="view-button">
-          <Link to='/mycharts/'>View <BsViewStacked /></Link>
+        <Button onClick={() => navigate('/mycharts')} className="user-info-button" id="view-button">
+          View <BsViewStacked />
         </Button>{" "}
-        <Button onClick={() => handleShowBuyCredits()} className="user-info-button" id="buy-button">
-          Buy credits < BsCart3/>
+        <Button onClick={handleShowBuyCredits} className="user-info-button" id="buy-button">
+          Buy credits < BsCart3 />
         </Button>{" "}
 
         <BuyCreditsModal show={showBuyCredits} onHide={handleCloseBuyCredits} />

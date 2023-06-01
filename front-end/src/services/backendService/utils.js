@@ -6,3 +6,20 @@ export const withTimeout = (promise, timeout = timeoutDuration) => {
     new Promise((resolve, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))
   ]);
 };
+
+export const readFileAsText = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const fileContents = event.target.result;
+      resolve(fileContents);
+    };
+
+    reader.onerror = (event) => {
+      reject(event.target.error);
+    };
+
+    reader.readAsText(file);
+  });
+}

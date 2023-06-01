@@ -4,8 +4,10 @@ from flask import jsonify, request
 
 from config_loader import config
 
-keycloak_server_url = config["KEYCLOAK"]["SERVER_URL"]
-keycloak_realm = config["KEYCLOAK"]["REALM"]
+config = config["KEYCLOAK"]
+
+keycloak_server_url = config["SERVER_URL"]
+keycloak_realm = config["REALM"]
 
 
 def require_token_validation(user):
@@ -19,8 +21,8 @@ def require_token_validation(user):
 
     data = {
         "token": token,
-        "client_id": config["KEYCLOAK"][user]["CLIENT_ID"],
-        "client_secret": config["KEYCLOAK"][user]["CLIENT_SECRET"],
+        "client_id": config[user]["CLIENT_ID"],
+        "client_secret": config[user]["CLIENT_SECRET"],
     }
 
     response = requests.post(introspection_endpoint, data=data)

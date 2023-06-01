@@ -10,9 +10,16 @@ KEYCLOAK:
     # BAR_LABEL_PLOT:
     # SCATTER_PLOT:
 
+MONGO:
+    USERNAME: user
+    PASSWORD: 57qL3B2TYJCeye7K
+    CLUSTERNAME: nodetutorial.hsrazgf
+    DB_NAME: images
+    COLLECTION_NAMES: jpeg,png,svg
+
 FRONTEND:
     SERVER_URL: http://localhost:3000
 
 PLOT:
     TYPES: bar_label_plot,scatter_plot,simple_plot
-    FORMATS: html,jpeg,png,svg
+    FORMATS: jpeg,png,svg

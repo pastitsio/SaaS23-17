@@ -1,13 +1,12 @@
 import io
 from abc import ABC, abstractmethod
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-
 from config_loader import config
-from utils import type2str, label
+from utils import label, type2str
 
 matplotlib.use("Agg")  # non interactive
 
@@ -15,9 +14,8 @@ PLOT_TYPES = config["PLOT"]["TYPES"]
 
 
 class Plot(ABC):
-    def __init__(self, json_input: Dict, is_validated: bool):
-        self.is_validated = is_validated
-        self.json_input = json_input
+    def __init__(self, json_input: Dict):
+        self.json_input = json_input.copy()
         self.plot_type = self.json_input["__type__"]
 
         for k in list(self.json_input.keys()):
@@ -38,14 +36,31 @@ class Plot(ABC):
     def _plot(self, **args):
         raise NotImplementedError
 
-    def create_chart(self, format: str = "jpeg"):
+    def create_chart(self, img_format: Union[str, List[str]]) -> Dict[str, bytes]:
+        """Creates img using matplotlib.
+
+        Args:
+            format (Union[str, List[str]]): either 'all' for creating image in all posible formats,
+            or list of str formats. value checked before.
+
+
+        Returns:
+            Dict[str, bytes]: dict with key being the format and value the image.
+        """
+        if img_format == 'all':
+            formats = config["PLOT"]["FORMATS"].split(',')
+        else:
+            formats = [img_format,]
         ax = self._plot(**self.json_input)
+        
+        images = {}
+        for img_format in formats:
+            img_stream = io.BytesIO()
+            ax.figure.savefig(img_stream, format=img_format)
+            img_stream.seek(0)
+            images[img_format] = img_stream.getvalue()
 
-        img_stream = io.BytesIO()
-        ax.figure.savefig(img_stream, format=format)
-        img_stream.seek(0)
-
-        return img_stream
+        return images
 
     def validate(self):
         for key in self.json_input.keys():
@@ -76,8 +91,8 @@ class Plot(ABC):
 
 
 class SimplePlot(Plot):
-    def __init__(self, json_input: Dict, is_validated: bool = False):
-        super().__init__(json_input, is_validated)
+    def __init__(self, json_input: Dict):
+        super().__init__(json_input)
 
         self._valid_input = {
             "x": label(is_type=[List, (int, float)], ndim=1),
@@ -107,8 +122,8 @@ class SimplePlot(Plot):
 
 
 class ScatterPlot(Plot):
-    def __init__(self, json_input: Dict, is_validated: bool = False):
-        super().__init__(json_input, is_validated)
+    def __init__(self, json_input: Dict):
+        super().__init__(json_input)
 
         self._valid_input = []
         self._matching_pairs = []
@@ -138,8 +153,8 @@ class ScatterPlot(Plot):
 
 
 class BarLabelPlot(Plot):
-    def __init__(self, json_input: Dict, is_validated: bool = False):
-        super().__init__(json_input, is_validated)
+    def __init__(self, json_input: Dict):
+        super().__init__(json_input)
 
         self._valid_input = []
         self._matching_pairs = []

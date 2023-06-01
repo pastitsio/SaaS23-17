@@ -40,7 +40,7 @@ const AccountControl = () => {
       </RenderOnAuth>
 
       <RenderOnAnonymous>
-        <Button id="navbar-login" onClick={() => handleClickLogin()}>
+        <Button id="navbar-login" onClick={handleClickLogin}>
           Sign In / Sign up
         </Button>
       </RenderOnAnonymous>

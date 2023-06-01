@@ -10,21 +10,11 @@ import { BackendService } from '../../services'
 
 const NewChart = () => {
 
-  const [jsonInput, setJsonInput] = useState(null);
-  const [fileInput, setFileInput] = useState(null);
+  const [inputFile, setInputFile] = useState(null);
 
   const handleFileInputChange = (event) => {
     const file = event.target.files[0];
-    setFileInput(file);
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const fileContents = event.target.result;
-      const parsedData = JSON.parse(fileContents);
-      setJsonInput(parsedData);
-    };
-
-    reader.readAsText(file);
+    setInputFile(file);
   };
 
   const [selectedPreset, setSelectedPreset] = useState('0');
@@ -46,10 +36,14 @@ const NewChart = () => {
   const handleCreateButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const previewImg = await BackendService.createChart(jsonInput, fileInput);
+        const previewImg = await BackendService.createChart(inputFile, 'preview');
         resolve(() => {
           navigate('/created', {
-            state: { previewImg: previewImg }
+            state: {
+               previewImg: previewImg,
+               inputFile: inputFile
+              },
+
           });
         });
       } catch (e) {
@@ -98,9 +92,9 @@ const NewChart = () => {
           <SubmitWaitButton
             action={handleCreateButton}
             actionName='Create'
-            disabledIf={!jsonInput}
+            disabledIf={!inputFile}
             color='green'
-            resetParentState={() => { setJsonInput(null); setFileInput(null) }}
+            resetParentState={() => { setInputFile(null) }}
           />
         </Container>
       </Container>
