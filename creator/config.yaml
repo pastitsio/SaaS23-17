@@ -15,7 +15,7 @@ MONGO:
     PASSWORD: 57qL3B2TYJCeye7K
     CLUSTERNAME: nodetutorial.hsrazgf
     DB_NAME: images
-    COLLECTION_NAMES: jpeg,png,svg
+    COLLECTION_NAME: user-images
 
 FRONTEND:
     SERVER_URL: http://localhost:3000

@@ -15,12 +15,15 @@ PLOT_TYPES = config["PLOT"]["TYPES"]
 
 class Plot(ABC):
     def __init__(self, json_input: Dict):
+        '''Must be called after child's __init__()'''
         self.json_input = json_input.copy()
         self.plot_type = self.json_input["__type__"]
-
-        for k in list(self.json_input.keys()):
-            if k.startswith("__"):
-                del self.json_input[k]
+    
+        # remove redundant keys
+        redundant = set(self.json_input.keys()).difference(set(self.valid_input.keys()))
+        for key in redundant:
+            del self.json_input[key]
+        
 
     @property
     @abstractmethod  # implemented at child
@@ -63,12 +66,17 @@ class Plot(ABC):
         return images
 
     def validate(self):
+        # !! TODO: use matplotlib.errors instead
+        # check if key is missing
+        for key in set(self.valid_input.input.keys()).difference(set(self.json_input.keys())):
+            if not key.optional:
+                raise KeyError(f'Missing {key}, necessary for plot.')
+            
         for key in self.json_input.keys():
             # check: all keys are present
             if key not in self.valid_input.keys():
                 keys_list = sorted(self.valid_input.keys())
                 raise KeyError(f"Key [{key}] should be one of: {keys_list}")
-
             # check: type is valid for every dimension
             valid_key = self.valid_input[key]
             dim_check = [self.json_input[key]]
@@ -92,16 +100,19 @@ class Plot(ABC):
 
 class SimplePlot(Plot):
     def __init__(self, json_input: Dict):
-        super().__init__(json_input)
 
         self._valid_input = {
             "x": label(is_type=[List, (int, float)], ndim=1),
             "y": label(is_type=[List, (int, float)], ndim=1),
-            "x_label": label(is_type=[str]),
-            "y_label": label(is_type=[str]),
-            "title": label(is_type=[str]),
+            "x_label": label(is_type=[str], optional=True),
+            "y_label": label(is_type=[str], optional=True),
+            "title": label(is_type=[str], optional=True),
         }
         self._matching_pairs = (["x", "y"],)
+
+
+        super().__init__(json_input)
+
 
     @property
     def valid_input(self):
@@ -125,8 +136,19 @@ class ScatterPlot(Plot):
     def __init__(self, json_input: Dict):
         super().__init__(json_input)
 
-        self._valid_input = []
-        self._matching_pairs = []
+        # !! TODO complete
+        self._valid_input = {
+            "x": label(is_type=[List, (int, float)], ndim=1),
+            "y": label(is_type=[List, (int, float)], ndim=1),
+            "x_label": label(is_type=[str], optional=True),
+            "y_label": label(is_type=[str], optional=True),
+            "title": label(is_type=[str], optional=True),
+            "colors": label(is_type=[List, str], ndim=1, optional=True),
+            "sizes": label(is_type=[List, str], ndim=1, optional=True)
+        }
+
+        self._matching_pairs = [("x", "y"), ]
+        # if color
 
     @property
     def valid_input(self):
@@ -136,7 +158,7 @@ class ScatterPlot(Plot):
     def matching_pairs(self):
         return self._matching_pairs
 
-    def _plot(self, x: List, y: List, colors: List = None, sizes: List = None):
+    def _plot(self, x: List, y: List, x_label: str, y_label: str, title: str, colors: List = None, sizes: List = None):
         _, ax = plt.subplots()
 
         scatter = ax.scatter(x, y, c=colors, s=sizes)
@@ -147,6 +169,7 @@ class ScatterPlot(Plot):
 
         # produce a legend with a cross-section of sizes from the scatter
         handles, labels = scatter.legend_elements(prop="sizes", alpha=0.6)
+        ax.set(xlabel=x_label, ylabel=y_label, title=title)
         ax.legend(handles, labels, loc="best", title="Sizes")
 
         return ax
@@ -156,6 +179,7 @@ class BarLabelPlot(Plot):
     def __init__(self, json_input: Dict):
         super().__init__(json_input)
 
+        # !! TODO complete
         self._valid_input = []
         self._matching_pairs = []
 

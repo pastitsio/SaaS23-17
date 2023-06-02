@@ -10,16 +10,16 @@ from database_loader import db
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from Plot import *
-from utils import check_file_exists, preflight_options, validate_user
+from utils import check_file_exists, preflight_OPTIONS_method, validate_user
 
 
 # application factory function
 def create_app(user, PLOT):
     app = Flask("create_app")
-    # use CORS
     CORS(app)
+
     # [Token validation, OPTIONS handling, file existence] checks before each request
-    app.before_request(preflight_options)
+    app.before_request(preflight_OPTIONS_method)
     app.before_request(lambda: require_token_validation(user))
     app.before_request(check_file_exists)
 
@@ -30,7 +30,6 @@ def create_app(user, PLOT):
             plotObj = PLOT(file)
             plotObj.validate()
 
-            # !TODO: kafkify changes
             mode = request.args.get('mode')
             if mode == 'preview':
                 # always create previews in JPEG format
@@ -40,11 +39,11 @@ def create_app(user, PLOT):
             
             elif mode == 'save':
                 images = plotObj.create_chart(img_format="all")
-                ids = db.save_images(images)
+                ids = db.save_images(images) # !TODO: kafkify ids to user ms
 
                 return "Success", 200
             else: 
-                raise ValueError("Mode should either be SAVE or PREVIEW")
+                raise ValueError("Mode should either be SAVE or PREVIEW/")
             
         except Exception as e:
             return jsonify({"message": e}), 500

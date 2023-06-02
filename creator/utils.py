@@ -4,8 +4,8 @@ from flask import jsonify, request
 
 from config_loader import config
 
-fields = ("is_type", "ndim")
-defaults = (None, 0)
+fields = ("is_type", "ndim", "optional")
+defaults = (None, 0, False)
 label = namedtuple("label", fields, defaults=defaults)
 
 
@@ -16,7 +16,7 @@ def check_file_exists():
         return jsonify({"message": "Unsupported file format. Expected JSON."}), 415
 
 
-def preflight_options():
+def preflight_OPTIONS_method():
     """OPTIONS method is preflight, meaning it is sent by the browser
     to check CORS functionality before the actual req. Interceptor cannot interfere with it.
     """
