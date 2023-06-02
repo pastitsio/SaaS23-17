@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { BuyCreditsModal } from "../../";
 import './userProfileCard.css';
 
-const UserProfileCard = () => {
+const UserProfileCard = ({ userInfo }) => {
   const navigate = useNavigate();
 
   // Buy Credits Control
@@ -17,25 +17,28 @@ const UserProfileCard = () => {
   const handleCloseBuyCredits = () => setShowBuyCredits(false);
   const handleShowBuyCredits = () => setShowBuyCredits(true);
 
-  const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-
   return (
     <Container className="user-info">
-      <Container className="user-info-body">
-        <Container className="user-info-item">
-          <span className="user-info-label">Charts:</span>{" "}
-          <span className="user-info-value">{userInfo.number_of_charts} <FaChartArea /></span>
-        </Container>
-        <Container className="user-info-item">
-          <span className="user-info-label">Credits:</span>{" "}
-          <span className="user-info-value">{userInfo.credits} <GrMoney /></span>
-        </Container>
-        <Container className="user-info-item">
-          <span className="user-info-label">Last login:</span>{" "}
-          <span className="user-info-value">{new Date(userInfo.last_login).toDateString()} <BsTable /></span>
-        </Container>
-      </Container>
-
+      {!userInfo
+        ? <Container><h4>User info service is down at the moment. <br /> Retry later.</h4></Container>
+        :
+        <>
+          <Container className="user-info-body">
+            <Container className="user-info-item">
+              <span className="user-info-label">Charts:</span>{" "}
+              <span className="user-info-value">{userInfo.number_of_charts} <FaChartArea /></span>
+            </Container>
+            <Container className="user-info-item">
+              <span className="user-info-label">Credits:</span>{" "}
+              <span className="user-info-value">{userInfo.credits} <GrMoney /></span>
+            </Container>
+            <Container className="user-info-item">
+              <span className="user-info-label">Last login:</span>{" "}
+              <span className="user-info-value">{new Date(userInfo.last_login).toDateString()} <BsTable /></span>
+            </Container>
+          </Container >
+        </>
+      }
       <Container className="user-info-footer">
         <Button onClick={() => navigate('/new')} className="user-info-button" id="new-button">
           New <BsPlusCircle />

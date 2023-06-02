@@ -22,7 +22,7 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
 
 
   return (
-    <Offcanvas backdrop={true} show={isNewUser} placement='bottom'>
+    <Offcanvas backdrop={true} show={isNewUser} placement='start'>
       <Offcanvas.Header >
         <Offcanvas.Title>New user detected, <span id='welcome-span'>welcome aboard!</span></Offcanvas.Title>
       </Offcanvas.Header>
