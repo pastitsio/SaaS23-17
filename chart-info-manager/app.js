@@ -1,10 +1,3 @@
-// TODO: schema complete encoding (userid type, chart type)
-// TODO: create dummy data for population of db
-// TODO:
-// TODO:
-// TODO:
-// TODO:
-
 const express = require("express");
 const app = express();
 const connectDB = require("./db/connectDB");
@@ -14,6 +7,7 @@ const errorHandlerMiddleware = require("./middleware/errorHandlerMiddleware");
 const auth = require("./middleware/authUser");
 
 require("dotenv").config();
+require("express-async-error");
 const cors = require("cors");
 const Keycloak = require("keycloak-connect");
 const session = require("express-session");
@@ -42,7 +36,12 @@ app.use(
 );
 
 // routes
-app.get("/:email", keycloak.protect("realm:user"), auth, userChartsInfo);
+app.get(
+  "/api/v1/chartInfo/:email",
+  keycloak.protect("realm:user"),
+  auth,
+  userChartsInfo
+);
 app.get("/", keycloak.protect("realm:user"), (req, res) => {
   res.json({ token: req.kauth.grant.access_token.token });
 });

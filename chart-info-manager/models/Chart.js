@@ -1,31 +1,32 @@
 const mongoose = require('mongoose');
 
 const chartSchema = new mongoose.Schema({
-    user_id: {
+    email: {
         required: true,
         type: String
     },
-    chart: {
+    chart_url: {
         type: String,
-        required: [true, 'Chart field is required in order to create a new collection']
+        required: [true, 'Chart url field is required in order to create a new collection']
     },
     chart_type: {
         type: String,
         required: [true, 'Chart type field is required to create a new collection'],
-        enum: ['Bar Label', 'Simple Plot', 'Scatter Plot with legend']
+        enum: ['Bar Label', 'Simple Plot', 'Scatter Plot']
     },
     chart_name: {
         type: String,
         required: [true, 'Chart name field is required to create a new collection']
     },
-    created_at: {
+    created_on: {
         type: Date,
-        default: Date.now()
+        default: Date.now(),
+        required: [true, 'Created on field is required to create a new collection']
     },
     format_type: {
         type: String,
         required: [true, 'Format type of chart is required'],
-        enum: ['pdf', 'png', 'svg', 'html']
+        enum: ['pdf', 'png', 'svg', 'html', 'jpeg']
     }
 });
 
