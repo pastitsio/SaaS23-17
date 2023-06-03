@@ -25,6 +25,7 @@ app.use(
     store: memoryStore,
     secret: process.env.SECRET,
     resave: false,
+    saveUninitialized: false
   })
 );
 
