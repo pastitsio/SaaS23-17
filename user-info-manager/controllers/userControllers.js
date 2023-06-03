@@ -46,7 +46,6 @@ const userData = async (req, res) => {
 
   res.status(StatusCodes.OK).json({
     newUser: false,
-    _id: user._id,
     email: user.email,
     number_of_charts: user.number_of_charts,
     credits: user.credits,
@@ -77,7 +76,7 @@ const saveUser = async (req, res) => {
 };
 
 /**
- * @description updates last login attribute
+ * @description updates last login attribute, front end has to save login time and when user log outs update the value
  * @param {body} req.body {email: String, lastLoginTimestamp: timestamp}
  * @returns {JSON} {success: Boolean, msg: String}
  * @publishes {_id: String, last_login: timestamp}

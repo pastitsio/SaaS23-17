@@ -18,6 +18,8 @@ syncDB("user-data", "kafka15", async (msg) => {
   await Credits.create({...msg});
 });
 
+require('express-async-errors')
+
 /**
  *
  * @description controller check if specific user has enough credits in his balance

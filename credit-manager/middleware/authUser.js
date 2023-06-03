@@ -1,4 +1,4 @@
-const {BadRequest, Unauthorized} = require('../errors/custom-erros');
+const {BadRequest, Unauthorized} = require('../errors/custom-errors');
 
 const authzUser = (req, res, next) => {
     const email = req.params.email || req.body.email || req.query.email;

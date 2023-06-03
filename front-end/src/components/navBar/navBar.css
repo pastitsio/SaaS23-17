@@ -1,0 +1,29 @@
+#navbar-container {
+    margin: 10px auto;
+    width: 85vmax;
+    padding: 0;
+}
+
+#navbar-brand {
+    margin: 1rem;
+    position: relative;
+}
+
+.navbar {
+    border-radius: var(--border-radius);
+}
+
+.navbar-page_link {
+    color: var(--color-text-alt);
+
+    text-decoration: none;
+    font-weight: 450;
+    font-size: 22px;
+}
+
+.navbar-page_link:hover {
+    /* text-decoration: underline; */
+    color: white;
+    background-color: var(--color-text);
+    border-radius: calc(var(--border-radius)/2)
+}

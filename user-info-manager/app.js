@@ -24,6 +24,7 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     store: memoryStore,
+    saveUninitialized: false
   })
   );
 app.use(

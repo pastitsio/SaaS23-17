@@ -1,5 +1,3 @@
-// TODO: save table with credit amount needed to create a diagram to db and provide endpoint for updating it
-
 const express = require("express");
 const app = express();
 
@@ -8,16 +6,16 @@ const validateCredit = require("./controllers/creditValidatorControllers");
 const pageNotFound = require("./middleware/pageNotFound");
 const errorHandler = require("./middleware/error-handler");
 const authUser = require("./middleware/authUser");
-
 const cors = require("cors");
 const Keycloak = require("keycloak-connect");
 const session = require("express-session");
+
 require("express-async-errors");
 require("dotenv").config();
 
+
 const port = process.env.APP_PORT || 5000;
 const host = process.env.HOST || "localhost";
-const mail = "giannismitis@gmail.com";
 const memoryStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: memoryStore });
 
@@ -30,6 +28,7 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     store: memoryStore,
+    saveUninitialized: false
   })
 );
 app.use(
@@ -46,7 +45,7 @@ app.get("/",  keycloak.protect("realm:user"), (req, res) => {
 
 // routes
 app.get(
-  "/api/v1/creditvalidation",
+  "/api/v1/creditValidation",
   keycloak.protect("realm:user"),
   authUser,
   validateCredit
