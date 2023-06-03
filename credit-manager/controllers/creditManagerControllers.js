@@ -17,12 +17,15 @@ const consumer = kafka.consumerCreate(groupd_id, consume_topic);
 
 // read messages from
 const parseMsg = async (msg) => {
-  console.log("Credit Manager read: ", msg);
-  await Credits.create({ ...msg });
+  console.log(msg);
+  const user = await Credits.findOne({ email: msg.email });
+  if (!user) {
+    await Credits.create({ ...msg });
+  }
 };
 readMessage(consumer, parseMsg);
 
-/**
+/** Controllers
  * @description this endpoint is in charge of purchasing credits and updating the database
  * @param {JSON} req.body
  * @returns {JSON} {success: Boolean, result: Obj} Obj has email and new credit balance

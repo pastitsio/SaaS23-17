@@ -4,8 +4,9 @@
   "description": "Μύτης Γιάννης - el**13133**",
   "main": "index.js",
   "scripts": {
-    "start:all": "npm run start:service:keycloak > /dev/null 2>&1 & npm run start:service:choreographer > /dev/null 2>&1 & npm run start:ms:user-info-manager",
-    "stop:all":"npm run stop:ms:user-info-manager && npm run stop:service:keycloak && npm run stop:service:choreographer",
+    "start:allServices": "docker compose up",
+    "stop:allServices":"docker compose down",
+    "start:allMS": "cd user-info-manager && npm start",
     "start:ms:user-info-manager": "cd ./user-info-manager && nodemon -L app.js",
     "start:service:choreographer": "docker-compose -f ./choreographer/docker-compose.yml up && docker exec -it broker /usr/bin/kafka-topics --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic user-data",
     "stop:service:choreographer": "docker-compose -f ./choreographer/docker-compose.yml down",

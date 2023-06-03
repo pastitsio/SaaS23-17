@@ -1,10 +1,13 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequest, NotFound } = require("../errors/errors");
 const Credits = require("../models/Credits");
+require("express-async-errors");
+
+// kafka
 const { consumerCreate } = require("../kafka/kafka-connect");
 const readMessage = require("../kafka/kafka-subscriber");
 
-function syncDB (topic, group, parseMessage) {
+function syncDB(topic, group, parseMessage) {
   const consumer = consumerCreate(group, topic);
   readMessage(consumer, parseMessage);
 }
@@ -15,13 +18,15 @@ syncDB("credit-data", "kafka", async (msg) => {
   await user.save();
 });
 syncDB("user-data", "kafka15", async (msg) => {
-  await Credits.create({...msg});
+  const user = await Credits.findOne({ email: msg.email });
+  if (!user) {
+    await Credits.create({ ...msg });
+  }
 });
 
-require('express-async-errors')
 
 /**
- *
+ * Controller
  * @description controller check if specific user has enough credits in his balance
  * @param {queryString} req.query = {email: String, price: Number}
  * @returns {JSON} {user: String, enoughCredits: Boolean}
