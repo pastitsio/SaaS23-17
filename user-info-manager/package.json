@@ -9,7 +9,7 @@
     "start:clearDB": "node ./db/clearDB.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ioannis Mitis",
   "license": "ISC",
   "dependencies": {
     "avsc": "^5.7.7",
