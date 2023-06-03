@@ -2,6 +2,8 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequest, NotFound } = require("../errors/errors");
 const Credits = require("../models/Credits");
 
+require('express-async-errors')
+
 /**
  *
  * @description controller check if specific user has enough credits in his balance
