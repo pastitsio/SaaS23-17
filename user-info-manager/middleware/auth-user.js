@@ -10,7 +10,7 @@ const authUser = (req, res, next) => {
     );
   }
 
-  if (email != req.kauth.grant.access_token.content.email) {
+  if (!(email === req.kauth.grant.access_token.content.email)) {
     throw new CustomAPIError("Access denied", StatusCodes.FORBIDDEN);
   }
   next();
