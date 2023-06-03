@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const { BadRequest, NotFound } = require("../errors/custom-erros");
+const { BadRequest, NotFound } = require("../errors/custom-errors");
 const Credits = require("../models/Credits");
 require("express-async-errors");
 
@@ -8,7 +8,6 @@ require("express-async-errors");
  * @param {JSON} req.body 
  * @returns {JSON} {success: Boolean, result: Obj} Obj has email and new credit balance
  */
-
 const purchase = async (req, res) => {
   await controllersController(req, res, (x, y) => {
     return x + y;

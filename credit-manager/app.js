@@ -1,5 +1,3 @@
-// TODO: When sending back errors message is not displayed
-
 const express = require("express");
 const app = express();
 const router = require("./routes/creditManagerRouter");
@@ -27,6 +25,7 @@ app.use(
     store: memoryStore,
     secret: process.env.SECRET,
     resave: false,
+    saveUninitialized: false,
   })
 );
 
