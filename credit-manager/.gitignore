@@ -1,0 +1,4 @@
+.env
+node_modules
+keycloak.json
+.docker*
