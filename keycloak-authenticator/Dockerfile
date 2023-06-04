@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak:latest
+FROM quay.io/keycloak/keycloak:21.1.0
 
 # Enable health and metrics support
 ENV KC_HEALTH_ENABLED=true
@@ -13,5 +13,5 @@ COPY ./realm-export.json ./data/import/realm.json
 
 EXPOSE 8080
 
-ENTRYPOINT [ "./bin/kc.sh", "start-dev" , "--import-realm"]
+ENTRYPOINT [ "./bin/kc.sh", "start-dev", "--import-realm"]
 

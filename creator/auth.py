@@ -1,40 +1,32 @@
-import requests
+"""Module providing token validation function for keycloak.
 
-from flask import jsonify, request
+Returns:
+    request.response: response 
+"""
+import keycloak
 
-from config_loader import config
+from flask import request
 
-config = config["KEYCLOAK"]
-
-keycloak_server_url = config["SERVER_URL"]
-keycloak_realm = config["REALM"]
-
-
-def require_token_validation(user):
-    """
-    Check with keycloak that request is valid within realm premises.
-    """
+def get_token_from_request():
+    """GET JWT TOKEN"""
     token = request.headers.get("Authorization")
     token = token.split()[1]  # remove 'Bearer' word
+    return token
 
-    introspection_endpoint = f"{keycloak_server_url}/realms/{keycloak_realm}/protocol/openid-connect/token/introspect"
+def kc_introspect_token(kc_client):
+    """Checks if token is valid within realm premises.
 
-    data = {
-        "token": token,
-        "client_id": config[user]["CLIENT_ID"],
-        "client_secret": config[user]["CLIENT_SECRET"],
-    }
+    Args:
+        kc_client (keycloak.KeycloakOpenID): keycloak connection client
 
-    response = requests.post(introspection_endpoint, data=data)
+    Raises:
+        keycloak.exceptions.KeycloakInvalidTokenError: Token inactive
 
-    if response.status_code == 200:
-        introspection_result = response.json()
-        if introspection_result.get("active"):
-            print("Token is valid.")
-            return  # is valid, continue execution
-        else:
-            print("Token is not valid.")
-            return jsonify({"message": "Invalid Token"}), 401
-    else:
-        print("Failed to introspect token.")
-        return jsonify({"message": "Failed to introspect token."}), 401
+    Returns:
+        Dict: decoded token
+    """
+    token = get_token_from_request()
+    introspection_result = kc_client.introspect(token)
+    if not introspection_result.get("active"):
+        raise keycloak.exceptions.KeycloakInvalidTokenError('Invalid Token.')
+    return introspection_result
