@@ -27,7 +27,7 @@ const mockCreateChart = async (fileInput, mode) => {
   mode = mode.toLowerCase();
   try {
     const jsonDataStr = await readFileAsText(fileInput); // read file to extract plot type info
-    const jsonData = JSON.parse(jsonDataStr)
+    const jsonData = JSON.parse(jsonDataStr);
 
     const plotType = jsonData['__type__'];
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
@@ -38,6 +38,7 @@ const mockCreateChart = async (fileInput, mode) => {
 
     const formData = new FormData();
     formData.append('file', fileInput);
+
     const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
     const url = `${create_server_url}/create?mode=${mode}`;
 
@@ -49,18 +50,22 @@ const mockCreateChart = async (fileInput, mode) => {
         });
 
       const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
-      console.log('response.data :>> ', response.data);
+      
       console.log(`Chart preview fetched!`);
       return Promise.resolve(URL.createObjectURL(imgBlob));
     } else if (mode === 'save') {
       await api.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       console.log(`Chart saved to DB!`);
     }
-    else {
-      throw new Error('Mode should either be SAVE or PREVIEW')
-    }
   } catch (error) {
-    throw new Error(`Error creating chart: ${error.message}`);
+    const errorData = error.response.data;
+    if (errorData instanceof Blob){
+      // responseType was set to blob, so need to read as text->json.
+      const blobText = await errorData.text();
+      throw new Error(`Error creating chart: ${blobText}`);
+    }
+    throw new Error(`Error creating chart: ${error}`);
+  
   }
 };
 

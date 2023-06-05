@@ -21,13 +21,10 @@ const CreatedChart = () => {
     };
 
     const cleanup = () => {
-      // Perform any cleanup tasks or run the desired function here
-      console.log('Component unmounted or page unloaded');
       disableBackButton();
     };
     window.addEventListener('beforeunload', cleanup);
 
-    console.log('state :>> ', state);
     // Check if the state is null, i.e. the component is directly accessed from browser url
     if (state) { 
       setImg(state.previewImg)
@@ -67,7 +64,7 @@ const CreatedChart = () => {
       </Container>
       <Container className='wrapper-container flex-column'>
         <Container className="img-preview-container" style={{ height: '100%' }}>
-          <Card className='preview-card' style={{ 'max-height': '600' }}>
+          <Card className='preview-card' style={{ maxHeight: '600' }}>
             <Card.Img variant='top' src={img} alt='preview' />
             {/* <Card.Body>
             <Card.Title >{createdImg.title}</Card.Title>
