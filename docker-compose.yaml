@@ -1,47 +1,32 @@
 version: "3.0"
 services:
-  user-info-manager:
-    build:
-      context: ./user-info-manager
-      dockerfile: Dockerfile
-    image: userinfomanager
-    container_name: userinfomanager
-    ports:
-      - "5000:${APP_PORT}"
-    env_file:
-      - .env
-    depends_on:
-      - broker
-      - zookeeper
-      - keycloak-ready
-    networks:
-      private:
-        aliases:
-          - userinfomanager
-          - broker
-          - zookeeper
-          - keycloak-ready
-      public:
-        aliases:
-          - userinfomanagerpublic
-    restart: unless-stopped
+  # user-info-manager:
+  #   build:
+  #     context: ./user-info-manager
+  #     dockerfile: Dockerfile
+  #   image: userinfomanager
+  #   container_name: userinfomanager
+  #   ports:
+  #     - "5000:${APP_PORT}"
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - broker
+  #     - zookeeper
+  #     - keycloak-ready
+  #   restart: unless-stopped
 
-  keycloak-ready:
-    image: gmitis/keycloak:latest
-    container_name: keycloak-ready
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.0
+    container_name: keycloak
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
-    volumes: 
-      - /home/dimitris/Desktop/ECE/10o/SaaS/SaaS23-17/keycloak-authenticator/realm-export.json:/opt/keycloak/data/import/realm.json
     ports:
       - "8080:8080"
+    volumes:
+      - /mnt/c/Users/Yanis/Downloads/uncategorised/realm-export.json:/opt/keycloak/data/import/realm.json
     command: start-dev --import-realm
-    networks:
-      private:
-        aliases:
-          - keycloak-ready
-    restart: unless-stopped
     
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -49,10 +34,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      private:
-          aliases:
-            - zookeeper
     restart: unless-stopped
 
   broker:
@@ -67,35 +48,14 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_CREATE_TOPICS: user-data:1:1, credit-data:1:1, chart-data:1:1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-    networks:
-      private:
-        aliases:
-          - broker
     restart: unless-stopped
 
-networks:
-  private:
-    driver: bridge
-  public:
-    driver: bridge
     
   
-
-  # keycloak:
-  #   image: quay.io/keycloak/keycloak:21.1.0
-  #   container_name: keycloak
-  #   environment:
-  
-  #     - KEYCLOAK_ADMIN=admin
-  #     - KEYCLOAK_ADMIN_PASSWORD=admin
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - /mnt/c/Users/Yanis/Downloads/uncategorised/realm-export.json:/opt/keycloak/data/import/realm.json
-  #   command: start-dev --import-realm
 
   # frontend:
   #   build:
