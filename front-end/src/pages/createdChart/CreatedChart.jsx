@@ -12,6 +12,7 @@ const CreatedChart = () => {
   const { state } = useLocation();
 
   const [img, setImg] = useState('');
+  const [saveSuccessful, setSaveSuccessful] = useState(false);
 
   useEffect(() => {
     const disableBackButton = () => {
@@ -49,6 +50,7 @@ const CreatedChart = () => {
     return new Promise(async (resolve, reject) => {
       try {
         await BackendService.createChart(state.inputFile, 'save');
+        setSaveSuccessful(true);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -77,13 +79,15 @@ const CreatedChart = () => {
         </Container>
 
         <Container className='d-flex px-0 gap-2'>
-          <Button onClick={handleCancelButton} id='cancel-button'>Cancel</Button>
+          <Button onClick={handleCancelButton} disabled={saveSuccessful} id='cancel-button'>Cancel</Button>
           <SubmitWaitButton
             action={handleSaveButton}
             actionName='Save'
             cssId="buy-button"
+            disabledIf={saveSuccessful}
             reset={() => undefined}
           />
+          
         </Container>
       </Container>
     </>

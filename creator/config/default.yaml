@@ -2,5 +2,5 @@ FRONTEND:
     SERVER_URL: http://localhost:3000
 
 PLOT:
-    TYPES: bar_label_plot,scatter_plot,simple_plot
+    TYPES: BarLabelPlot,ScatterPlot,SimplePlot
     FORMATS: jpeg,png,svg

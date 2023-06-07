@@ -22,7 +22,7 @@ def check_file():
         return jsonify({"message": "Unsupported file format. Expected JSON."}), 415
 
 
-def preflight_OPTIONS_method(): # pylint: disable=invalid-name
+def preflight_OPTIONS_method():
     """OPTIONS method is preflight, meaning it is sent by the browser
     to check CORS functionality before the actual req. Interceptor cannot interfere with it.
     """
@@ -42,11 +42,11 @@ def generate_uuid(distinct=None):
     return uuid(name=f'{distinct}{str(round(datetime.now().timestamp() * 1000))}')
 
 
-def app_user(value, valid_values):
+def check_run_plot_type(value, valid_values):
     """Check if user is valid."""
     if value not in valid_values:
         raise ValueError(
-            f'Invalid value for "user". Allowed values are: {", ".join(valid_values)}'
+            f'Invalid value for "type". Allowed values are: {", ".join(valid_values)}'
         )
     return value
 
@@ -54,7 +54,7 @@ def app_user(value, valid_values):
 def type2str(type_name):
     """Extract human-readable type name."""
     try:
-        label_type = type_name._name # pylint: disable=protected-access
+        label_type = type_name._name
     except AttributeError:
         label_type = str(type_name).split(" ")[1][1:-2]
 

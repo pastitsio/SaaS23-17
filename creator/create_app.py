@@ -6,16 +6,18 @@ from keycloak import KeycloakOpenID
 
 from auth import kc_introspect_token
 from azure.azure_container_client import AzureContainerClient
+from kafka_producer import KafkaProducer
 from plot import Plot
 from utils import (check_file,
                    generate_uuid,
                    preflight_OPTIONS_method)
 
 
-def create_app(user: str,
-               plot: Plot,
-               kc_client: KeycloakOpenID,
-               container_client: AzureContainerClient) -> Flask:
+def create_app(plot: Plot,
+               keycloak_client: KeycloakOpenID,
+               azure_container_client: AzureContainerClient,
+               kafka_producer: KafkaProducer
+               ) -> Flask:
     """Creates app using runtime-resolved configuration.
 
     Args:
@@ -24,14 +26,13 @@ def create_app(user: str,
         client (AzureContainerClient): azure container client
 
     Raises:
-        ValueError: Create route mode shoudl either be 'preview' or 'save'
+        ValueError: Create route mode should either be 'preview' or 'save'
 
     Returns:
         Flask: Flask app instance
     """
     app = Flask("create_app")
     CORS(app)
-
 
     # [OPTIONS handling, file existence] checks before each request.
     # Note: CORS-preflight never includes credentials.
@@ -41,7 +42,7 @@ def create_app(user: str,
     @app.route("/create", methods=["POST", "OPTIONS"])
     def create():
         try:
-            user_id = kc_introspect_token(kc_client=kc_client).get('sub')
+            user_id = kc_introspect_token(kc_client=keycloak_client).get('sub')
 
             file = json.load(request.files["file"])
             _plot = plot(file)
@@ -55,16 +56,24 @@ def create_app(user: str,
 
             if mode == "save":
                 images = _plot.create_chart(img_format="all")
-                img_id = generate_uuid(distinct=user)
+                img_id = generate_uuid(distinct=user_id) # user_id to mess with randomly-created uuid's seed.
+                blob_path = f'{user_id}/{img_id}'
                 for img_format, img_data in images.items():
-                    blob_filepath = f'{user_id}/{img_id}/{img_format}' # construct filepath
-                    container_client.upload_to_blob(data=img_data, blob_filepath=blob_filepath)
+                    # construct filepath with user, img and format info.
+                    blob_file = f'{blob_path}/{img_format}'
+                    azure_container_client.upload_to_blob(
+                        data=img_data, blob_filepath=blob_file
+                    )
 
-                # !TODO: kafkify changes
+                # message is sent with acks set to 1, meaning the
+                # kafka_producer.send(
+                #     value={'imgUrl': blob_path, 'chartType': plot.__name__}
+                # )
+
                 return "Success", 200
             raise ValueError("Mode should either be SAVE or PREVIEW.")
 
-        except Exception as exc: # pylint: disable=broad-except
+        except Exception as exc:
             return jsonify({"message": str(exc)}), 500
 
     return app

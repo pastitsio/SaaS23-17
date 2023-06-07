@@ -14,12 +14,12 @@ const BuyCreditsModal = ({ show, onHide }) => {
   }
 
   const handlePurchaseButton = () => {
-    const userId = JSON.parse(sessionStorage.getItem('userInfo'))._id;
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     const credits = selectedCredits;
 
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.buyCredits(userId, credits);
+        await BackendService.buyCredits(userInfo._id, credits);
         resolve(() => undefined);
       } catch (e) {
         reject(e)

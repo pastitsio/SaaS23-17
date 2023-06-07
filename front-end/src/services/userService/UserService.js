@@ -22,11 +22,10 @@ const initKeycloak = (onAuthenticatedCallback) => {
     .catch(console.error);
 
 };
-
+const getId = () => _kc.tokenParsed?.sub;
 const getToken = () => _kc.token;
-
+const getTokenParsed = () => _kc.tokenParsed;
 const getUsername = () => _kc.tokenParsed?.preferred_username;
-
 const doLogin = _kc.login;
 
 const doLogout = () => {
@@ -34,9 +33,8 @@ const doLogout = () => {
   _kc.logout();
   // const requestBody = { email: getEmail(), lastLogoutTimestamp: Date.now() };
   // dbConnector.saveMailTimestamp(requestBody);
-};
+};  
 
-const getId = () => _kc.tokenParsed?.sub;
 
 const isLoggedIn = () => !!_kc.token;
 
@@ -53,6 +51,7 @@ const UserService = {
   doLogout,
   getId,
   getToken,
+  getTokenParsed,
   getUsername,
   hasRole,
   initKeycloak,

@@ -13,11 +13,11 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
     return new Promise(async (resolve, reject) => {
       try {
         await BackendService.saveUserToDB(userInfo._id);
-        resolve(()=> undefined);
+        resolve(() => { setIsNewUser(false) });
       } catch (e) {
         reject(e)
       }
-    })   
+    })
   }
 
 
@@ -37,7 +37,6 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
             action={handleSaveButton}
             actionName='Continue'
             cssId="continue-button"
-            resetParentState={() => setIsNewUser(false)}
           />
         </Container>
       </Offcanvas.Body>

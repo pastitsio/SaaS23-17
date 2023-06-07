@@ -28,7 +28,9 @@ const SubmitWaitButton = (props) => {
     } finally {
       setLoading(false);
       setReady(true);
-      props.resetParentState(); // reset states on parent component
+      if (typeof props.resetParentState === 'function') {
+        props.resetParentState();
+      }
     }
   }
 

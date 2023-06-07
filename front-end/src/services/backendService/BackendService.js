@@ -1,4 +1,4 @@
-import { api } from '..';
+import { UserService, api } from '..';
 import { readFileAsText, withTimeout } from './utils'
 
 // const fakeCondition = true;
@@ -50,22 +50,28 @@ const mockCreateChart = async (fileInput, mode) => {
         });
 
       const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
-      
+
       console.log(`Chart preview fetched!`);
       return Promise.resolve(URL.createObjectURL(imgBlob));
-    } else if (mode === 'save') {
+    }
+
+    if (mode === 'save') {
       await api.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
       console.log(`Chart saved to DB!`);
     }
+
   } catch (error) {
-    const errorData = error.response.data;
-    if (errorData instanceof Blob){
-      // responseType was set to blob, so need to read as text->json.
-      const blobText = await errorData.text();
-      throw new Error(`Error creating chart: ${blobText}`);
+    let errorMessage = error.message;
+    if (error.response) {
+      const errorData = error.response.data;
+      if (errorData instanceof Blob) {
+        // responseType was set to blob, so need to read as text->json.
+        const blobText = await errorData.text();
+        errorMessage = JSON.parse(blobText).message;
+      }
     }
-    throw new Error(`Error creating chart: ${error}`);
-  
+    throw new Error(`Error creating chart: ${errorMessage}`);
+
   }
 };
 
@@ -137,37 +143,56 @@ const mockFetchTableData = async (userId) => {
     console.log(`Table data fetched! :>> userId: ${userId}`);
     return Promise.resolve(response.data);
   } catch (error) {
-    return Promise.reject(new Error(`Error fetching table data: ${error.message}`));
+    throw new Error(`Error fetching table data: ${error.message}`);
   }
 };
 
+const mockFetchUserInfo = async (userId, force_reload = false) => {
+  const userInfo = sessionStorage.getItem('userInfo');
+  // first check session storage
+  if (userInfo)
+    return Promise.resolve(userInfo);
 
-const mockFetchUserInfo = async (userId) => {
-  const url = `${process.env.REACT_APP_BACKEND_api_url}/user/${userId}`;
   try {
+    const url = `${process.env.REACT_APP_BACKEND_api_url}/user/${userId}`;
     const response = await withTimeout(api.get(url))
 
     sessionStorage.setItem('userInfo', JSON.stringify(response.data));
     console.log(`User info fetched! :>> userId :${response.data._id}`);
-    return Promise.resolve(response.data)
+    if (force_reload) {
+      window.location.reload();
+    }
+    // return Promise.resolve(response.data)
   } catch (error) {
-    return Promise.reject(new Error(`Error fetching user: ${error.message}`));
+    throw new Error(`Error fetching user: ${error.message}`);
   }
 };
 
 
 const mockSaveUserToDB = async (userId) => {
-  return new Promise((resolve, reject) => {
-    if (someCondition) {
-      // TODO: POST REQUEST FOR VALIDATION
-      setTimeout(() => {
-        console.log(`User saved to DB! :>> userId: ${userId}`);
-        resolve();
-      }, fakeTimeout);
-    } else {
-      reject(new Error(`Failed to save user ${userId} in database! Please retry in a few moments`));
+  try {
+    const url = `${process.env.REACT_APP_uim_api_url}/newUser`;
+    const response = await withTimeout(api.post(
+      url,
+      {
+        mode: 'cors',
+        data: {
+          email: UserService.getTokenParsed().email,
+          lastLoginTimestamp: Date.now(),
+          newUser: true
+        }
+      }));
+    console.log('response :>> ', response.data.msg);
+  } catch (error) {
+    let errorMessage = error.response.data;
+    if (errorMessage instanceof Object) { // if CustomAPIError
+      errorMessage = errorMessage.msg;
     }
-  })
+    throw new Error(
+      `Error fetching user:
+      ${errorMessage}`
+    );
+  }
 };
 
 

@@ -8,14 +8,14 @@ import { About, CreatedChart, Home, MyCharts, NewChart, PageNotFound } from './p
 
 import { BackendService, UserService } from './services'
 
+import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
-import axios from 'axios'
 
 
 const App = () => {
   const [isNewUser, setIsNewUser] = useState(false);
-
+ 
   /**
    * If user is logged in, sets up session user info
    *     
@@ -24,18 +24,16 @@ const App = () => {
     const source = axios.CancelToken.source();
 
     const fetchUserInfo = async () => {
-      var userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-      if (!userInfo) {
-        try {
-          userInfo = await BackendService.fetchUserInfo(UserService.getId());
-          console.log('userInfo :>> ', userInfo);
-          setIsNewUser(userInfo.new_user);
-        } catch (error) {
-          if (axios.isCancel(error)) {
-            console.log('Request canceled:', error.message);
-          } else {
-            console.log('Error:', error.message);
-          }
+      try {
+        await BackendService.fetchUserInfo(UserService.getId());
+        const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+        setIsNewUser(userInfo.new_user);
+
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled:', error.message);
+        } else {
+          console.log('Error:', error.message);
         }
       }
     }
@@ -51,7 +49,7 @@ const App = () => {
 
       fetchUserInfo();
     }
-    
+
     return () => {
       source.cancel('Request canceled by App.jsx cleanup');
       clearInterval(tokenUpdateInterval);
@@ -67,11 +65,11 @@ const App = () => {
 
         <Routes>
           <Route index element={
-            <Home />}
-          />
+            <Home />
+          } />
 
           <Route path='/about' element={
-            <RenderOnAuth> <About /> </RenderOnAuth>
+            <About />
           } />
 
           <Route path='/mycharts' element={

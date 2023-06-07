@@ -27,16 +27,16 @@ class Plot(ABC):
 
     @property
     @abstractmethod # implemented at child
-    def valid_input(self): # pylint: disable=missing-function-docstring
+    def valid_input(self): 
         raise NotImplementedError
 
     @property
     @abstractmethod  # implemented at child
-    def matching_pairs(self): # pylint: disable=missing-function-docstring
+    def matching_pairs(self): 
         raise NotImplementedError
 
     @abstractmethod  # implemented at child
-    def _plot(self, **kwargs): # pylint: disable=missing-function-docstring
+    def _plot(self, **kwargs): 
         raise NotImplementedError
 
     def create_chart(self, img_format: Union[str, List[str]]) -> Dict[str, bytes]:
@@ -135,7 +135,7 @@ class SimplePlot(Plot):
     def matching_pairs(self):
         return self._matching_pairs
 
-    def _plot(self, x: List, y: List, x_label: str, y_label: str, title: str): # pylint: disable=arguments-differ
+    def _plot(self, x: List, y: List, x_label: str, y_label: str, title: str): 
         _, axis = plt.subplots()
         axis.plot(x, y)
 
@@ -176,7 +176,7 @@ class ScatterPlot(Plot):
     def matching_pairs(self):
         return self._matching_pairs
 
-    def _plot( # pylint: disable=arguments-differ
+    def _plot( 
         self,
         x: List, y: List,
         x_label: str, y_label: str,
@@ -216,7 +216,7 @@ class BarLabelPlot(Plot):
     def matching_pairs(self):
         return self._matching_pairs
 
-    def _plot(self, x_labels: List[str], bar_counts: Dict[str, List], title: str): # pylint: disable=arguments-differ
+    def _plot(self, x_labels: List[str], bar_counts: Dict[str, List], title: str): 
         width = 0.6  # bar width
 
         _, axis = plt.subplots()

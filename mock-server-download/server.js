@@ -1,9 +1,12 @@
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
 app.use(cors())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 
 app.get('/user/:userId', (req, res) => {
@@ -12,7 +15,30 @@ app.get('/user/:userId', (req, res) => {
     _id: req.params.userId,
     email: 'demos@testos.com',
     number_of_charts: 0,
-    credits: 0,
+    credits: 20,
+    last_login: 1682970603153
+  })
+})
+
+app.post('/ updateBalance', (req, res) => {
+  const email = req.body.email;
+  const credits = req.body.credits;
+
+  res.status 
+
+
+})
+
+app.post('/ purchaseCredits', (req, res) => {
+  const email = req.body.email;
+  const credits = req.body.credits;
+
+  res.status(200).json({
+    new_user: true,
+    _id: req.params.userId,
+    email: 'demos@testos.com',
+    number_of_charts: 0,
+    credits: 20,
     last_login: 1682970603153
   })
 })

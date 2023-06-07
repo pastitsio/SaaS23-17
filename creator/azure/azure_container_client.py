@@ -44,16 +44,16 @@ class AzureContainerClient:
         """
         blob_type = BlobType.BlockBlob # no append
         blob_client = self.container_client.get_blob_client(blob_filepath)
-
+        print(blob_client.url)
         # Upload content to the Page Blob
-        blob_client.upload_blob(data, blob_type=blob_type, overwrite=overwrite)
+        # blob_client.upload_blob(data, blob_type=blob_type, overwrite=overwrite)
 
 
     def delete_blob(self, blob_name):
         """Deletes blob"""
         blobs = list(self.list_blobs(name_starts_with=blob_name))
         if len(blobs) > 1:
-            raise Exception( # pylint: disable=W0719
+            raise Exception( 
                 f"""More than one blobs found in container with  \
                 name starting with {blobs}. 'Delete_blob aims at \
                 deleting only one blob, if this blob exists.""")
