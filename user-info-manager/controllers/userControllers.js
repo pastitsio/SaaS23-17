@@ -1,20 +1,20 @@
-const User = require("../models");
+const { User } = require("../models");
 const { CustomAPIError } = require("../errors/");
 const { StatusCodes } = require("http-status-codes");
 const { Producer, Consumer } = require("../kafka/");
 require("express-async-errors");
 
 // connect to kafka as a publisher
-const stream = Producer.createTopicStream("user-data");
+// const stream = Producer.createTopicStream("user-data");
 
-// read new user credits
-const consumer = Consumer.create("kafka12", "credit-data");
-const syncDB = async (msg) => {
-  const user = User.findOne({ email: msg.email });
-  user.credits = msg.credits;
-  await user.save();
-};
-Consumer.consume(consumer, syncDB);
+// // read new user credits
+// const consumer = Consumer.create("kafka12", "credit-data");
+// const syncDB = async (msg) => {
+//   const user = User.findOne({ email: msg.email });
+//   user.credits = msg.credits;
+//   await user.save();
+// };
+// Consumer.consume(consumer, syncDB);
 
 /**
  * @description gets user data from database and checks if its a new user or not
@@ -25,7 +25,8 @@ Consumer.consume(consumer, syncDB);
  * {newUser:true, email: String, last_login: Timestamp}
  */
 const userData = async (req, res) => {
-  const email = req.params.email;
+  const email = req.query.email;
+
   if (!email) {
     throw new CustomAPIError(
       "Please provide email address",
@@ -33,21 +34,20 @@ const userData = async (req, res) => {
     );
   }
 
-  const user = await User.findOne({ email });
+  var newUser;
+  var user = await User.findOne({ email });
   if (!user) {
-    return res.status(StatusCodes.OK).json({
-      newUser: true,
-      email,
+    newUser = true;
+    user = new User({
+      email: email,
       last_login: Date.now(),
-    });
+    }).toJSON();
+  } else {
+    newUser = false;
   }
-
-  res.status(StatusCodes.OK).json({
-    newUser: false,
-    email: user.email,
-    number_of_charts: user.number_of_charts,
-    credits: user.credits,
-    last_login: user.last_login,
+  return res.status(StatusCodes.OK).json({
+    newUser: newUser,
+    ...user
   });
 };
 
@@ -57,8 +57,8 @@ const userData = async (req, res) => {
  * @returns {JSON} {success: Boolean, msg: String}
  */
 const saveUser = async (req, res) => {
-  const { newUser, email, lastLoginTimestamp: last_login } = req.body.data;
-  if (!newUser || !email || !last_login) {
+  const { email, lastLoginTimestamp: last_login } = req.body.params;
+  if ( !email || !last_login) {
     throw new CustomAPIError(
       "Fields newUser: Boolean, email: String, lastLoginTimestamp: timestamp are required",
       StatusCodes.BAD_REQUEST
@@ -66,12 +66,10 @@ const saveUser = async (req, res) => {
   }
 
   const user = await User.create({ email: email, last_login: last_login });
+  console.log('user :>> ', user);
   res
     .status(StatusCodes.OK)
     .json({ success: true, msg: "User saved to db successfully" });
-
-  let event = { email, credits: Number(0) };
-  Producer.produce(event, stream);
 }
 
 

@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const CustomAPIError = require("../errors/custom-error");
+const { CustomAPIError } = require("../errors/");
 
 const authUser = (req, res, next) => {
   const email = req.body.email || req.params.email;
@@ -16,4 +16,4 @@ const authUser = (req, res, next) => {
   next();
 };
 
-module.exports = authUser ;
+module.exports = authUser;

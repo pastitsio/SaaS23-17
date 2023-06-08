@@ -25,9 +25,9 @@ const App = () => {
 
     const fetchUserInfo = async () => {
       try {
-        await BackendService.fetchUserInfo(UserService.getId());
+        await BackendService.fetchUserInfo(UserService.getTokenParsed().email);
         const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-        setIsNewUser(userInfo.new_user);
+        setIsNewUser(userInfo.newUser);
 
       } catch (error) {
         if (axios.isCancel(error)) {

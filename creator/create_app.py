@@ -65,6 +65,7 @@ def create_app(plot: Plot,
                         data=img_data, blob_filepath=blob_file
                     )
 
+                # !!TODO avro schema for message
                 # message is sent with acks set to 1, meaning the
                 # kafka_producer.send(
                 #     value={'imgUrl': blob_path, 'chartType': plot.__name__}

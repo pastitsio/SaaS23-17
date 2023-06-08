@@ -1,5 +1,5 @@
-import { UserService, api } from '..';
-import { readFileAsText, withTimeout } from './utils'
+import { api } from '..';
+import { readFileAsText, withTimeout } from './utils';
 
 // const fakeCondition = true;
 const fakeTimeout = 1000;
@@ -8,12 +8,12 @@ const fakeTimeout = 1000;
 const someCondition = true;
 
 // TODO: implement on modal.
-const mockBuyCredits = async (userId, credits) => {
+const mockBuyCredits = async (email, credits) => {
   return new Promise((resolve, reject) => {
     if (someCondition) {
       // TODO: POST REQUEST FOR CREDIT VALIDATION
       setTimeout(() => {
-        console.log(`Credits bought! :>> (ID: ${userId}, credits: ${credits}).`);
+        console.log(`Credits bought! :>> (ID: ${email}, credits: ${credits}).`);
         resolve();
       }, fakeTimeout);
     } else {
@@ -135,62 +135,67 @@ const mockFetchChartPreview = (fileInput) => {
 };
 
 
-const mockFetchTableData = async (userId) => {
-  const url = `${process.env.REACT_APP_BACKEND_api_url}/charts/user/${userId}`;
+const mockFetchTableData = async (email) => {
+  const url = `${process.env.REACT_APP_BACKEND_api_url}/charts/user/${email}`;
   try {
     const response = await withTimeout(api.get(url));
 
-    console.log(`Table data fetched! :>> userId: ${userId}`);
+    console.log(`Table data fetched! :>> email: ${email}`);
     return Promise.resolve(response.data);
   } catch (error) {
     throw new Error(`Error fetching table data: ${error.message}`);
   }
 };
 
-const mockFetchUserInfo = async (userId, force_reload = false) => {
+
+const mockFetchUserInfo = async (email, force_reload = false) => {
   const userInfo = sessionStorage.getItem('userInfo');
   // first check session storage
   if (userInfo)
     return Promise.resolve(userInfo);
 
   try {
-    const url = `${process.env.REACT_APP_BACKEND_api_url}/user/${userId}`;
-    const response = await withTimeout(api.get(url))
+    const url = `${process.env.REACT_APP_uim_api_url}/user`;
+    const response = await withTimeout(api.get(
+      url, { params: { email: email, } }
+    ))
 
     sessionStorage.setItem('userInfo', JSON.stringify(response.data));
-    console.log(`User info fetched! :>> userId :${response.data._id}`);
+    console.log(`User info fetched! :>> ${JSON.stringify(response.data)}`);
     if (force_reload) {
       window.location.reload();
     }
-    // return Promise.resolve(response.data)
   } catch (error) {
     throw new Error(`Error fetching user: ${error.message}`);
   }
 };
 
 
-const mockSaveUserToDB = async (userId) => {
+const mockSaveUserToDB = async (email) => {
   try {
     const url = `${process.env.REACT_APP_uim_api_url}/newUser`;
     const response = await withTimeout(api.post(
       url,
       {
-        mode: 'cors',
-        data: {
-          email: UserService.getTokenParsed().email,
-          lastLoginTimestamp: Date.now(),
-          newUser: true
+        params: {
+          email: email,
+          lastLoginTimestamp: Date.now()
         }
       }));
+
     console.log('response :>> ', response.data.msg);
   } catch (error) {
-    let errorMessage = error.response.data;
-    if (errorMessage instanceof Object) { // if CustomAPIError
-      errorMessage = errorMessage.msg;
+    let errorMessage = error.message;
+
+    if (error.response) {
+      if (error.response.data instanceof Object) { // if CustomAPIError
+        errorMessage = errorMessage.msg;
+      } else {
+        errorMessage = errorMessage.response.data;
+      }
     }
     throw new Error(
-      `Error fetching user:
-      ${errorMessage}`
+      `Error saving to DB: ${errorMessage}. Retry later.`
     );
   }
 };

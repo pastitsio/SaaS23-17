@@ -12,7 +12,7 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.saveUserToDB(userInfo._id);
+        await BackendService.saveUserToDB(userInfo.email);
         resolve(() => { setIsNewUser(false) });
       } catch (e) {
         reject(e)
