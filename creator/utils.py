@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import jsonify, request
 from shortuuid import uuid
 
-from config_loader import config
+from config_setup import config
 
 fields = ("is_type", "ndim", "optional")
 defaults = (None, 0, False)

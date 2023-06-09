@@ -2,7 +2,7 @@ import sys
 
 sys.path.append('../')
 
-from kafka_producer import KafkaProducer
+from creator.kafka.kafka_producer import KafkaProducer
 
 
 producer = KafkaProducer(

@@ -1,18 +1,19 @@
 """
 Server app creation with custom Plot object,
-Azure Container for storing created images
-and distinction between plot
+Azure Container for storing created images, 
+kafka producer for db sync
+and distinction between plot types.
 All plots utilize the custom Plot class.
 Distinction is done with cmd args.
 """
 import argparse
 
 from azure.azure_container_client import AzureContainerClient
-from config_loader import config
+from config_setup import config
 from create_app import create_app
-from kafka_producer import KafkaProducer
+from kafka_setup.kafka_producer import KafkaProducer
 from keycloak import KeycloakOpenID
-from plot import BarLabelPlot, ScatterPlot, SimplePlot
+from models.plot import BarLabelPlot, ScatterPlot, SimplePlot
 from utils import check_run_plot_type
 
 

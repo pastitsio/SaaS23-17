@@ -1,9 +1,12 @@
 import json
 import io
+import sys
 from typing import Dict
 
 import avro.io as avro_io
 from kafka import KafkaProducer as _KafkaProducer
+
+sys.path.append('../')
 from models.kafka_event import kafka_event
 
 

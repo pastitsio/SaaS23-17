@@ -1,6 +1,4 @@
-from datetime import datetime
 from io import BytesIO
-from typing import Dict
 
 from azure.storage.blob import BlobType, ContainerClient
 
@@ -44,9 +42,8 @@ class AzureContainerClient:
         """
         blob_type = BlobType.BlockBlob # no append
         blob_client = self.container_client.get_blob_client(blob_filepath)
-        print(blob_client.url)
         # Upload content to the Page Blob
-        # blob_client.upload_blob(data, blob_type=blob_type, overwrite=overwrite)
+        blob_client.upload_blob(data, blob_type=blob_type, overwrite=overwrite)
 
 
     def delete_blob(self, blob_name):

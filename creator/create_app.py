@@ -4,10 +4,10 @@ from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from keycloak import KeycloakOpenID
 
-from auth import kc_introspect_token
 from azure.azure_container_client import AzureContainerClient
-from kafka_producer import KafkaProducer
-from plot import Plot
+from keycloak_auth.keycloak import kc_introspect_token
+from kafka_setup.kafka_producer import KafkaProducer
+from models.plot import Plot
 from utils import (check_file,
                    generate_uuid,
                    preflight_OPTIONS_method)

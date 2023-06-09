@@ -1,12 +1,15 @@
 """Plot objects for each plot type supported by the app.
 """
 import io
+import sys
 from abc import ABC, abstractmethod
 from typing import Dict, List, Union
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+
+sys.path.append('../')
 from utils import Label, type2str
 
 matplotlib.use("Agg")  # non interactive

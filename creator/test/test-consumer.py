@@ -1,9 +1,10 @@
 import io
 import sys
-sys.path.append('..')
 
-from kafka import KafkaConsumer
 from avro.io import BinaryDecoder, DatumReader
+from kafka import KafkaConsumer
+
+sys.path.append('../')
 from models.kafka_event import kafka_event
 
 
