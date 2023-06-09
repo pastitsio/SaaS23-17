@@ -42,7 +42,7 @@ def create_app(plot: Plot,
     @app.route("/create", methods=["POST", "OPTIONS"])
     def create():
         try:
-            user_id = kc_introspect_token(kc_client=keycloak_client).get('sub')
+            user_email = kc_introspect_token(kc_client=keycloak_client).get('email')
 
             file = json.load(request.files["file"])
             _plot = plot(file)
@@ -56,8 +56,8 @@ def create_app(plot: Plot,
 
             if mode == "save":
                 images = _plot.create_chart(img_format="all")
-                img_id = generate_uuid(distinct=user_id) # user_id to mess with randomly-created uuid's seed.
-                blob_path = f'{user_id}/{img_id}'
+                img_id = generate_uuid(distinct=user_email) # user_id to mess with randomly-created uuid's seed.
+                blob_path = f'{user_email}/{img_id}'
                 for img_format, img_data in images.items():
                     # construct filepath with user, img and format info.
                     blob_file = f'{blob_path}/{img_format}'
@@ -65,11 +65,12 @@ def create_app(plot: Plot,
                         data=img_data, blob_filepath=blob_file
                     )
 
-                # !!TODO avro schema for message
-                # message is sent with acks set to 1, meaning the
-                # kafka_producer.send(
-                #     value={'imgUrl': blob_path, 'chartType': plot.__name__}
-                # )
+
+                # message is sent with acks set to 1, meaning the sender waits 
+                # so that is read by at least 1 broker.
+                kafka_producer.send(
+                    value={'imgUrl': blob_path, 'chartType': plot.__name__}
+                )
 
                 return "Success", 200
             raise ValueError("Mode should either be SAVE or PREVIEW.")

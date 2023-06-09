@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "chart_data",
+  "fields": [
+    {
+      "name": "imgUrl",
+      "type": "string"
+    },
+    {
+      "name": "chartType",
+      "type": "string"
+    }
+  ]
+}

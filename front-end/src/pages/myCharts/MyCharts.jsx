@@ -19,6 +19,7 @@ const MyCharts = () => {
   const [imgLoading, setImgLoading] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
+  const [prompt, setPrompt] = useState('Select a chart from the table ');
 
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -28,13 +29,14 @@ const MyCharts = () => {
       try {
         const tableData = await BackendService.fetchTableData(userInfo._id);
         setChartsTable(tableData);
-        setTableLoading(false);
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled:', error.message);
         } else {
           console.log('Error:', error.message);
         }
+        setPrompt(error.message)
+        setTableLoading(false);
       }
     }
 
@@ -113,10 +115,9 @@ const MyCharts = () => {
               </Container>
               <Container className='export-container' style={{ height: '30%' }}>
                 <Container className='export-buttons'>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='html' onClick={(event) => handleDownloadImage(event)}>HTML</Button>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='pdf' onClick={(event) => handleDownloadImage(event)}>PDF</Button>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='png' onClick={(event) => handleDownloadImage(event)}>PNG</Button>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='svg' onClick={(event) => handleDownloadImage(event)}>SVG</Button>
+                  {['html', 'pdf', 'png', 'svg'].map((imgFormat, idx) => (
+                    <Button key={idx} className={imgReady ? '' : 'disabled'} size='sm' name={imgFormat} onClick={(event) => handleDownloadImage(event)}>{imgFormat.toUpperCase()}</Button>
+                  ))}
                   <Container className='button-divider' >{" "}</Container>
                   <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
                 </Container>
@@ -137,7 +138,7 @@ const MyCharts = () => {
                       </Card.Body>
                     </>
                     :
-                    <p id='select-prompt'>Select a chart from the table </p>
+                    <p id='select-prompt'>{prompt}</p>
                   }
                 </Card>
               }
