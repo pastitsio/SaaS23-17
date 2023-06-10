@@ -1,5 +1,6 @@
 import { api } from '..';
 import { readFileAsText, withTimeout } from './utils';
+import Papa from 'papaparse';
 
 // const fakeCondition = true;
 const fakeTimeout = 1000;
@@ -23,42 +24,46 @@ const mockBuyCredits = async (email, credits) => {
 };
 
 
-const mockCreateChart = async (fileInput, mode) => {
+const createChart = async (fileInput, mode) => {
   mode = mode.toLowerCase();
   try {
-    const jsonDataStr = await readFileAsText(fileInput); // read file to extract plot type info
-    const jsonData = JSON.parse(jsonDataStr);
-
+    const fileAsStr = await readFileAsText(fileInput); // read file to extract plot type info
+    const data = Papa.parse(fileAsStr, { header: false }).data;
+    const jsonData = {};
+    for (const item of data) {
+      jsonData[item[0]] = item[1];
+    }
+    
     const plotType = jsonData['__type__'];
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
-
+        
     if (!plotTypes.includes(plotType)) {
       throw new Error(`__type__ should be on of [${plotTypes}]`);
     }
 
-    const formData = new FormData();
-    formData.append('file', fileInput);
+    // const formData = new FormData();
+    // formData.append('file', fileInput);
 
-    const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
-    const url = `${create_server_url}/create?mode=${mode}`;
+    // const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
+    // const url = `${create_server_url}/create?mode=${mode}`;
 
-    if (mode === 'preview') {
-      const response = await api.post(url, formData,
-        {
-          responseType: 'blob',
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+    // if (mode === 'preview') {
+    //   const response = await api.post(url, formData,
+    //     {
+    //       responseType: 'blob',
+    //       headers: { 'Content-Type': 'multipart/form-data' }
+    //     });
 
-      const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
+    //   const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
 
-      console.log(`Chart preview fetched!`);
-      return Promise.resolve(URL.createObjectURL(imgBlob));
-    }
+    //   console.log(`Chart preview fetched!`);
+    //   return Promise.resolve(URL.createObjectURL(imgBlob));
+    // }
 
-    if (mode === 'save') {
-      await api.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-      console.log(`Chart saved to DB!`);
-    }
+    // if (mode === 'save') {
+    //   await api.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+    //   console.log(`Chart saved to DB!`);
+    // }
 
   } catch (error) {
     let errorMessage = error.message;
@@ -97,29 +102,6 @@ const mockDownloadImgFormat = async (chartId, format) => {
 };
 
 
-const mockDownloadJSONPreset = async (presetId) => {
-  // const filename = `test${presetId}.json`;
-  const url = `${process.env.REACT_APP_BACKEND_api_url}/preset/${presetId}`;
-
-  try {
-    const response = await withTimeout(api.get(url, { responseType: 'blob' }));
-    const urlHTML = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-
-    const filename = `preset${presetId}.json`;
-
-    link.href = urlHTML;
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
-
-    console.log(`File downloaded! :>> filename: ${filename}`);
-  } catch (errorBlob) {
-    throw new Error(`Error downloading preset with ID: ${presetId}.`);
-  }
-};
-
 
 const mockFetchChartPreview = (fileInput) => {
   return new Promise((resolve, reject) => {
@@ -148,7 +130,7 @@ const mockFetchTableData = async (email) => {
 };
 
 
-const mockFetchUserInfo = async (email, force_reload = false) => {
+const fetchUserInfo = async (email, force_reload = false) => {
   const userInfo = sessionStorage.getItem('userInfo');
   // first check session storage
   if (userInfo)
@@ -171,7 +153,7 @@ const mockFetchUserInfo = async (email, force_reload = false) => {
 };
 
 
-const mockSaveUserToDB = async (email) => {
+const saveUserToDB = async (email) => {
   try {
     const url = `${process.env.REACT_APP_uim_api_url}/newUser`;
     const response = await withTimeout(api.post(
@@ -203,20 +185,14 @@ const mockSaveUserToDB = async (email) => {
 
 
 const buyCredits = mockBuyCredits;
-const createChart = mockCreateChart;
 const downloadImgFormat = mockDownloadImgFormat;
-const downloadJSONPreset = mockDownloadJSONPreset;
 const fetchChartPreview = mockFetchChartPreview;
 const fetchTableData = mockFetchTableData;
-const fetchUserInfo = mockFetchUserInfo;
-const saveUserToDB = mockSaveUserToDB;
-
 
 const BackendService = {
   buyCredits,
   createChart,
   downloadImgFormat,
-  downloadJSONPreset,
   fetchChartPreview,
   fetchTableData,
   fetchUserInfo,

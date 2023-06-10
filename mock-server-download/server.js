@@ -9,60 +9,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.get('/user/:email', (req, res) => {
-  res.status(200).json({
-    new_user: true,
-    email: req.params.email,
-    number_of_charts: 0,
-    credits: 20,
-    last_login: 1682970603153
-  })
-})
-
-app.post('/updateBalance', (req, res) => {
-  const email = req.body.email;
-  const credits = req.body.credits;
-
-  res.status 
-
-
-})
-
-app.post('/purchaseCredits', (req, res) => {
-  const email = req.body.email;
-  const credits = req.body.credits;
-
-  res.status(200).json({
-    new_user: true,
-    _id: req.params.userId,
-    email: 'demos@testos.com',
-    number_of_charts: 0,
-    credits: 20,
-    last_login: 1682970603153
-  })
-})
-
-
-app.get('/preset/:presetId', (req, res) => {
-  // Extract the JWT token from the request headers
-  const presetId = req.params.presetId;
-  const filename = `./presets/preset${presetId}.json`;
-
-  fs.readFile(filename, (err, data) => {
-    if (err) {
-      console.log(err.message);
-      res.status(500).json({
-        success: false,
-        message: err.message
-      });
-      return;
-    }
-    const jsonData = JSON.parse(data);
-    res.json(jsonData);
-  });
-});
-
-
 app.get('/chart/:id', (req, res) => {
   // const chartId = req.params.chartId;
   // const format  = req.query.format || 'png'; // default to PNG if not specified

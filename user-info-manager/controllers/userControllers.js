@@ -40,13 +40,13 @@ const userData = async (req, res) => {
     user = new User({
       email: email,
       last_login: Date.now(),
-    }).toJSON();
+    });
   }
 
 
   return res.status(StatusCodes.OK).json({
     newUser: newUser,
-    ...user
+    ...(user.toJSON())
   });
 };
 

@@ -1,4 +1,5 @@
-const timeoutDuration = 10000;
+
+const timeoutDuration = 10000; // 10 seconds max wait
 
 export const withTimeout = (promise, timeout = timeoutDuration) => {
   return Promise.race([

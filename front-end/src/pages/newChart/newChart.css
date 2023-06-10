@@ -1,8 +1,9 @@
 .or-container {
-    flex-basis: 10%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    /* flex-basis: 10%; */
+    /* display: flex; */
+    /* justify-content: center;
+    align-items: center; */
+    width: min-content !important;
 }
 
 .or-circle {
@@ -15,4 +16,29 @@
     height: 50px;
     border-radius: 50%;
     font-weight: bold;
+}
+
+.tabs {
+    background-color: var(--color-text);
+    border-radius: var(--border-radius);
+    padding: 1rem 0;
+    /* width: 100%; */
+}
+
+a.nav-link {
+    background-color: var(--color-text-light) !important;
+    color: var(--color-button) !important;
+    margin: 2px;
+    border-radius: var(--border-radius);
+    font-weight: 700;
+}
+
+a.nav-link:active {
+    color: var(--color-text-light);
+    background-color: var(--color-light) !important;
+}
+
+a.nav-link:visited {
+    color: var(--color-text-light);
+    background-color: var(--color-bg) !important;
 }
