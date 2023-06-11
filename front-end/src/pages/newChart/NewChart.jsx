@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap'
@@ -18,18 +18,29 @@ import img3 from '../../assets/simple_plot.webp'
 
 const NewChart = () => {
   const navigate = useNavigate();
-  const [inputFile, setInputFile] = useState(null);
-  const [selectedPreset, setSelectedPreset] = useState(null);
 
-  const handleDownloadChange = (e) => {
-    setSelectedPreset(e.target.value);
-  };
+  const [inputFile, setInputFile] = useState(null);
+  const [selectedPlotType, setSelectedPlotType] = useState(null);
+  const [chartData, setChartData] = useState({
+    title: '', x_label: '', y_label: ''
+  });
+  const fileRef = useRef(null);
+
+  const resetState = () => {
+    setInputFile(null);
+    setChartData({
+      title: '', x_label: '', y_label: ''
+    })
+    if (fileRef.current) {
+      fileRef.current.value = '';
+    }
+  }
 
   const handleDownloadButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
         const link = document.createElement('a');
-        const filename = `/presets/${selectedPreset}.csv`
+        const filename = `/presets/${selectedPlotType.split(' ').join('_').toLowerCase()}.csv`
         link.href = filename;
         link.download = filename;
         document.body.appendChild(link);
@@ -42,17 +53,31 @@ const NewChart = () => {
     })
   }
 
+  const handleFormChange = (e) => {
+    setChartData({
+      ...chartData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSideNavClick = (plotType) => {
+    setSelectedPlotType(plotType.name);
+    resetState();
+  }
+
   const handleCreateChange = (event) => {
     const file = event.target.files[0];
-    console.log(file);
-
     setInputFile(file);
   };
 
   const handleCreateButton = () => {
+    console.log(chartData, selectedPlotType)
+    console.log(inputFile);
+
     return new Promise(async (resolve, reject) => {
       try {
-        const previewImg = await BackendService.createChart(inputFile, 'preview');
+        const previewImg = await BackendService.createChart(inputFile, selectedPlotType, chartData, 'preview');
+        resetState();
         resolve(() => {
           navigate('/created', {
             state: {
@@ -69,14 +94,17 @@ const NewChart = () => {
   }
 
   const plotTypes = [
-    { name: 'BarLabelPlot', img: img1 },
-    { name: 'ScatterPlot', img: img2 },
-    { name: 'SimplePlot', img: img3 }
+    { name: 'bar_label_plot', img: img1 },
+    { name: 'scatter_plot', img: img2 },
+    { name: 'simple_plot', img: img3 }
   ];
 
+  const camel2title = (sentence) => {
+    return sentence.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  }
 
   return (
-    <Container className='overflow-hidden'>
+    <Container >
       <Container className='header-container'>
         <h2>Create your own chart with ease</h2>
         <h5 className='header-description'>Below are some demos. Click the demo title to see the interactive preview! </h5>
@@ -90,23 +118,23 @@ const NewChart = () => {
               <Col sm={3}>
                 <Nav variant="pills" className="flex-column">
                   {plotTypes.map((plotType, idx) =>
-                    <Nav.Item onClick={() => setSelectedPreset(plotType.name)}>
+                    <Nav.Item key={idx} onClick={() => handleSideNavClick(plotType)}>
                       <Nav.Link
-                        eventKey={idx}>{(selectedPreset === plotType.name) && <BsDot />} {plotType.name}</Nav.Link>
+                        eventKey={idx}>{(selectedPlotType === plotType.name) && <BsDot />} {camel2title(plotType.name)}</Nav.Link>
                     </Nav.Item>
                   )}
                 </Nav>
               </Col>
               <Col sm={9}>
                 <Tab.Content>
-                  {selectedPreset &&
+                  {selectedPlotType &&
                     plotTypes.map((plotType, idx) => (
-                      <Tab.Pane eventKey={idx}>
+                      <Tab.Pane key={idx} eventKey={idx}>
                         <Card className='d-grid mb-2'>
                           <Card.Text style={{ color: 'black', justifySelf: 'center' }}>
-                            {plotType.name}
+                            {camel2title(plotType.name)}
                           </Card.Text>
-                          <Card.Img variant="top" src={plotType.img} style={{ width: '350px', justifySelf: 'center' }} />
+                          <Card.Img variant="top" src={plotType.img} style={{ width: '400px', justifySelf: 'center' }} />
                           <Card.Body>
                             Click to download the preset and find out how this image was generated!
                             <SubmitWaitButton
@@ -119,16 +147,21 @@ const NewChart = () => {
                       </Tab.Pane>
                     ))
                   }
-                  {selectedPreset &&
+                  {selectedPlotType &&
                     <>
-                      < SimplePlotForm isBarLabel={selectedPreset === 'BarLabelPlot'} isonFileChange={handleCreateChange} />
-                      <Container className='px-0 py-2'>
+                      <SimplePlotForm
+                        isBarLabel={selectedPlotType === 'bar_label_plot'}
+                        onFileChange={handleCreateChange}
+                        handleFormChange={handleFormChange}
+                        formData={chartData}
+                        fileRef={fileRef}
+                      />
+                      <Container className='create-btn py-2'>
                         <SubmitWaitButton
                           action={handleCreateButton}
                           actionName='Create'
                           disabledIf={!inputFile}
                           color='green'
-                          resetParentState={() => { setInputFile(null) }}
                         />
                       </Container>
                     </>

@@ -19,7 +19,7 @@ const BuyCreditsModal = ({ show, onHide }) => {
 
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.buyCredits(userInfo._id, credits);
+        await BackendService.buyCredits(userInfo.email, credits);
         resolve(() => undefined);
       } catch (e) {
         reject(e)

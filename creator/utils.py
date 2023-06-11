@@ -16,10 +16,10 @@ def check_file():
     """Check request file exists and is json"""
     file = request.files.get("file")
     if not file:
-        return jsonify({"message": "No file uploaded. Expected JSON."}), 400
+        return jsonify({"message": "No file uploaded. Expected CSV."}), 400
 
-    if file.content_type != "application/json":
-        return jsonify({"message": "Unsupported file format. Expected JSON."}), 415
+    if file.content_type != "text/csv":
+        return jsonify({"message": "Unsupported file format. Expected CSV."}), 415
 
 
 def preflight_OPTIONS_method():

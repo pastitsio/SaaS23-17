@@ -43,10 +43,13 @@ def create_app(plot: Plot,
     def create():
         try:
             user_email = kc_introspect_token(kc_client=keycloak_client).get('email')
+            
+            chart_data = json.loads(request.form.get('data'))
+            file = request.files["file"]
 
-            file = json.load(request.files["file"])
-            _plot = plot(file)
-            _plot.validate()
+            raise ValueError("Mode should either be SAVE or PREVIEW.")
+
+            _plot = plot(file, chart_data)
 
             mode = request.args.get("mode")
             if mode == "preview":

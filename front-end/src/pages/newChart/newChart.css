@@ -42,3 +42,11 @@ a.nav-link:visited {
     color: var(--color-text-light);
     background-color: var(--color-bg) !important;
 }
+
+.create-btn {
+    padding-left: 1rem !important;
+    margin-top: 1rem;
+    background-color: var(--color-text-light);
+    border-radius: var(--border-radius);
+
+}

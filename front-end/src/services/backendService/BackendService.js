@@ -1,6 +1,5 @@
 import { api } from '..';
-import { readFileAsText, withTimeout } from './utils';
-import Papa from 'papaparse';
+import { withTimeout } from './utils';
 
 // const fakeCondition = true;
 const fakeTimeout = 1000;
@@ -24,46 +23,42 @@ const mockBuyCredits = async (email, credits) => {
 };
 
 
-const createChart = async (fileInput, mode) => {
-  mode = mode.toLowerCase();
+const createChart = async (inputFile, plotType, chartData, mode) => {
+  mode = mode.toLowerCase(); 
   try {
-    const fileAsStr = await readFileAsText(fileInput); // read file to extract plot type info
-    const data = Papa.parse(fileAsStr, { header: false }).data;
-    const jsonData = {};
-    for (const item of data) {
-      jsonData[item[0]] = item[1];
-    }
-    
-    const plotType = jsonData['__type__'];
+   
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
-        
+
     if (!plotTypes.includes(plotType)) {
       throw new Error(`__type__ should be on of [${plotTypes}]`);
     }
 
-    // const formData = new FormData();
-    // formData.append('file', fileInput);
+    const postData = new FormData();
+    postData.append('file', inputFile);
+    postData.append('data', JSON.stringify(chartData));
 
-    // const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
-    // const url = `${create_server_url}/create?mode=${mode}`;
+    console.log('postData :>> ', postData);
 
-    // if (mode === 'preview') {
-    //   const response = await api.post(url, formData,
-    //     {
-    //       responseType: 'blob',
-    //       headers: { 'Content-Type': 'multipart/form-data' }
-    //     });
+    const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
+    const url = `${create_server_url}/create?mode=${mode}`;
 
-    //   const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
+    if (mode === 'preview') {
+      const response = await api.post(url, postData,
+        {
+          responseType: 'blob',
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
 
-    //   console.log(`Chart preview fetched!`);
-    //   return Promise.resolve(URL.createObjectURL(imgBlob));
-    // }
+      const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
 
-    // if (mode === 'save') {
-    //   await api.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-    //   console.log(`Chart saved to DB!`);
-    // }
+      console.log(`Chart preview fetched!`);
+      return Promise.resolve(URL.createObjectURL(imgBlob));
+    }
+
+    if (mode === 'save') {
+      await api.post(url, postData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      console.log(`Chart saved to DB!`);
+    }
 
   } catch (error) {
     let errorMessage = error.message;
@@ -103,7 +98,7 @@ const mockDownloadImgFormat = async (chartId, format) => {
 
 
 
-const mockFetchChartPreview = (fileInput) => {
+const mockFetchChartPreview = (inputFile) => {
   return new Promise((resolve, reject) => {
     if (someCondition) {
       // TODO: POST REQUEST FOR FETCH PREVIEW
