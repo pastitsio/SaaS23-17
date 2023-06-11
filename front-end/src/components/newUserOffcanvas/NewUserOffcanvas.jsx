@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Container, Offcanvas } from 'react-bootstrap'
 
-import { FetchService, UserService } from '../../services'
+import { BackendService, UserService } from '../../services'
 
 import './newUserOffcanvas.css'
 import { SubmitWaitButton } from '../'
@@ -12,17 +12,17 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.saveUserToDB(userInfo._id);
-        resolve(()=> undefined);
+        await BackendService.saveUserToDB(userInfo.email);
+        resolve(() => { setIsNewUser(false) });
       } catch (e) {
         reject(e)
       }
-    })   
+    })
   }
 
 
   return (
-    <Offcanvas backdrop={true} show={isNewUser} placement='bottom'>
+    <Offcanvas backdrop={true} show={isNewUser} placement='start'>
       <Offcanvas.Header >
         <Offcanvas.Title>New user detected, <span id='welcome-span'>welcome aboard!</span></Offcanvas.Title>
       </Offcanvas.Header>
@@ -37,7 +37,6 @@ const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
             action={handleSaveButton}
             actionName='Continue'
             cssId="continue-button"
-            resetParentState={() => setIsNewUser(false)}
           />
         </Container>
       </Offcanvas.Body>

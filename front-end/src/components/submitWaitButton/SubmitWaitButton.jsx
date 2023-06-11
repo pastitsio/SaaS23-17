@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import { Button, Container, Spinner } from 'react-bootstrap'
+import ActionErrorModal from './actionErrorModal/ActionErrorModal';
 
 const SubmitWaitButton = (props) => {
 
+  const [actionErrorMessage, setActionErrorMessage] = useState('');
+  const [actionErrorShow, setActionErrorShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const [result, setResult] = useState(false);
@@ -11,7 +14,7 @@ const SubmitWaitButton = (props) => {
     setLoading(true);
     setReady(false);
 
-    // !performs fetch action when pressed the button.
+    // !performs fetch action when the button is pressed.
     try {
       const onResolveCallback = await props.action();
       if (typeof onResolveCallback === 'function') {
@@ -19,12 +22,15 @@ const SubmitWaitButton = (props) => {
       }
       setResult(true);
     } catch (err) {
-      console.log(`ERROR ${props.actionName} :>>`, err)
+      setActionErrorMessage(err.message);
+      setActionErrorShow(true);
       setResult(false);
     } finally {
       setLoading(false);
       setReady(true);
-      props.resetParentState(); // reset states on parent component
+      if (typeof props.resetParentState === 'function') {
+        props.resetParentState();
+      }
     }
   }
 
@@ -48,6 +54,12 @@ const SubmitWaitButton = (props) => {
               : <span style={{ 'color': 'red' }}><b>{props.actionName} Failed!</b></span>
         }
       </Container>
+
+      <ActionErrorModal
+        show={actionErrorShow}
+        onHide={() => setActionErrorShow(false)}
+        message={actionErrorMessage}
+      />
     </Container>
   )
 }

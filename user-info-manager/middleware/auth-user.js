@@ -1,8 +1,8 @@
 const { StatusCodes } = require("http-status-codes");
-const CustomAPIError = require("../errors/custom-error");
+const { CustomAPIError } = require("../errors/");
 
 const authUser = (req, res, next) => {
-  const email = req.body.email || req.params.email;
+  const email = req.query.email || req.body.params.email;
   if (!email) {
     throw new CustomAPIError(
       "Field email is mandatory in request",

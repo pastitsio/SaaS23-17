@@ -6,9 +6,9 @@ import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 
 import './previewCarousel.css'
 
-import img1 from '../../assets/line_chart.png'
-import img2 from '../../assets/multi_axes_line_chart.png'
-import img3 from '../../assets/radar.png'
+import img1 from '../../assets/bar_label_demo.png'
+import img2 from '../../assets/scatter.webp'
+import img3 from '../../assets/simple_plot.webp'
 
 
 const PreviewCarousel = () => {
@@ -18,9 +18,9 @@ const PreviewCarousel = () => {
   }
 
   const imgList = [
-    { 'src': img1, 'title': 'Line Chart', 'caption': 'Nulla vitae elit libero, a pharetra augue mollis interdum.' },
-    { 'src': img2, 'title': 'Multi Axes Line Chart', 'caption': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
-    { 'src': img3, 'title': 'Radar chart', 'caption': 'Praesent commodo cursus magna, vel scelerisque nisl consectetur.' }
+    { 'src': img1, 'title': 'Bar Label', 'caption': 'Nulla vitae elit libero, a pharetra augue mollis interdum.' },
+    { 'src': img2, 'title': 'Scatter Plot', 'caption': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' },
+    { 'src': img3, 'title': 'Simple Plot', 'caption': 'Praesent commodo cursus magna, vel scelerisque nisl consectetur.' }
   ]
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const PreviewCarousel = () => {
               </Container>
               <Container className={idx === shownImageIdx ? 'carousel-img-text' : 'd-none'}>
                 <span onClick={() => handleShowPreview(shownImageIdx)} id='img-title'>
-                  <u>{img.title}</u> <BsFillArrowUpRightCircleFill /> (Click me!)
+                  <u>{img.title}</u> <BsFillArrowUpRightCircleFill />
                 </span>
                 <br />
                 <span id='img-caption'>{img.caption}</span>

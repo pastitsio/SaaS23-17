@@ -13,7 +13,3 @@
 .header-container>.header-description {
   color: var(--color-button);
 }
-
-.offcanvas {
-  max-height: 30vh !important;
-}

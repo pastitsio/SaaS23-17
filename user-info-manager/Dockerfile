@@ -23,7 +23,7 @@ RUN npm install
 WORKDIR /usr/src/app/
 COPY . ./user-info-manager/
 COPY ./kafka ./choreographer/kafka/
-COPY ./models/EventType* ./choreographer/models/
+COPY ./models/KafkaEvent* ./choreographer/models/
 
 WORKDIR /usr/src/app/user-info-manager/
 ENV NODE_ENV=production

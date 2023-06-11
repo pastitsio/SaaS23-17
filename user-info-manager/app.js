@@ -1,45 +1,28 @@
-const express = require("express");
-const app = express();
-const router = require("./routes/userRouter");
-const connectDB = require("./db/connectDB");
-
-const pageNotFound = require("./middleware/page-not-found");
-const errorHandlerMiddleware = require("./middleware/error-handler");
 const cors = require("cors");
-const Keycloak = require("keycloak-connect");
-const session = require("express-session");
+const express = require("express");
+const path = require("path");
+
+const db = require("./db/");
+const { errorHandlerMiddleware, pageNotFound } = require("./middleware/");
+const keycloak = require('./keycloak-config').initKeycloak();
+const router = require("./routes/");
+
+const dotenvFilePath = `${path.dirname(__filename)}/.env`
 require("dotenv").config();
+
 
 const port = process.env.APP_PORT || 5000;
 const host = process.env.HOST || "localhost";
-const memoryStore = new session.MemoryStore();
-const keycloak = new Keycloak({ store: memoryStore });
 
-// middleware
-// app.use(express.static("../front-end/public"));
+
+const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: false,
-    store: memoryStore,
-    saveUninitialized: false
-  })
-  );
-app.use(
-  keycloak.middleware({
-    logout: "/logout",
-    admin: "/",
-  })
-  );
-  
-  // routes
-  app.use("/api/v1/", keycloak.protect("realm:user"), router);
-  app.get("/",  keycloak.protect("realm:user"), (req, res) => {
-    res.json({token: req.kauth.grant.access_token.token});
-  });
-  app.use("*", pageNotFound);
+app.use(keycloak.middleware()); // default to "/logout" for logout and "/" for root
+
+// routes
+app.use("/api/v1/", keycloak.protect('realm:user'), router); // protected
+app.use("*", pageNotFound);
 
 // error handler  
 app.use(errorHandlerMiddleware);
@@ -47,7 +30,7 @@ app.use(errorHandlerMiddleware);
 // server spin-up + connection to db
 const spinServer = async () => {
   try {
-    await connectDB(process.env.MONGO_URI);
+    await db.connect(process.env.MONGO_URI);
     app.listen(port, () =>
       console.log(`Running on http://${host}:${port}/api/v1 ...`)
     );

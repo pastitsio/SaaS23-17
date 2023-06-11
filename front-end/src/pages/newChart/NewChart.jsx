@@ -1,29 +1,51 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Container, Form } from 'react-bootstrap'
+import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap'
 
-import { PreviewCarousel, SubmitWaitButton } from '../../components'
+import { SimplePlotForm } from './forms'
 
+import { SubmitWaitButton } from '../../components'
+
+import { BsDot } from 'react-icons/bs'
+import { BackendService } from '../../services'
 import './newChart.css'
-import { FetchService } from '../../services'
+
+import img1 from '../../assets/bar_label_demo.png'
+import img2 from '../../assets/scatter.webp'
+import img3 from '../../assets/simple_plot.webp'
+
 
 const NewChart = () => {
+  const navigate = useNavigate();
 
-  const [fileInput, setFileInput] = useState(null);
-  const handleFileInputChange = (event) => {
-    setFileInput(event.target.files[0]);
-  };
+  const [inputFile, setInputFile] = useState(null);
+  const [selectedPlotType, setSelectedPlotType] = useState(null);
+  const [chartData, setChartData] = useState({
+    title: '', x_label: '', y_label: ''
+  });
+  const fileRef = useRef(null);
 
-  const [selectedPreset, setSelectedPreset] = useState('0');
-  const handleDownloadChange = (e) => {
-    setSelectedPreset(e.target.value);
-  };
+  const resetState = () => {
+    setInputFile(null);
+    setChartData({
+      title: '', x_label: '', y_label: ''
+    })
+    if (fileRef.current) {
+      fileRef.current.value = '';
+    }
+  }
 
   const handleDownloadButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.downloadJSONPreset(selectedPreset);
+        const link = document.createElement('a');
+        const filename = `/presets/${selectedPlotType.split(' ').join('_').toLowerCase()}.csv`
+        link.href = filename;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -31,65 +53,128 @@ const NewChart = () => {
     })
   }
 
+  const handleFormChange = (e) => {
+    setChartData({
+      ...chartData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSideNavClick = (plotType) => {
+    setSelectedPlotType(plotType.name);
+    resetState();
+  }
+
+  const handleCreateChange = (event) => {
+    const file = event.target.files[0];
+    setInputFile(file);
+  };
+
   const handleCreateButton = () => {
+    console.log(chartData, selectedPlotType)
+    console.log(inputFile);
+
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.validateFileInput(fileInput);
-        const chartId = await FetchService.createChart(fileInput);
-        resolve(() => navigate('/created', { state: { chartId: chartId } }));
+        const previewImg = await BackendService.createChart(inputFile, selectedPlotType, chartData, 'preview');
+        resetState();
+        resolve(() => {
+          navigate('/created', {
+            state: {
+              previewImg: previewImg,
+              inputFile: inputFile
+            },
+
+          });
+        });
       } catch (e) {
         reject(e)
       }
     })
   }
 
-  const navigate = useNavigate();
+  const plotTypes = [
+    { name: 'bar_label_plot', img: img1 },
+    { name: 'scatter_plot', img: img2 },
+    { name: 'simple_plot', img: img3 }
+  ];
+
+  const camel2title = (sentence) => {
+    return sentence.split('_').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  }
 
   return (
-    <>
+    <Container >
       <Container className='header-container'>
         <h2>Create your own chart with ease</h2>
         <h5 className='header-description'>Below are some demos. Click the demo title to see the interactive preview! </h5>
       </Container>
 
-      <PreviewCarousel />
+      <Container className='d-flex flex-column gap-5 mt-3'>
+        <Form.Group controlId="formFile" className='px-1 mb-2'>
+          <h5>Download/Upload your CSV preset</h5>
+          <Tab.Container defaultActiveKey="0">
+            <Row className='tabs'>
+              <Col sm={3}>
+                <Nav variant="pills" className="flex-column">
+                  {plotTypes.map((plotType, idx) =>
+                    <Nav.Item key={idx} onClick={() => handleSideNavClick(plotType)}>
+                      <Nav.Link
+                        eventKey={idx}>{(selectedPlotType === plotType.name) && <BsDot />} {camel2title(plotType.name)}</Nav.Link>
+                    </Nav.Item>
+                  )}
+                </Nav>
+              </Col>
+              <Col sm={9}>
+                <Tab.Content>
+                  {selectedPlotType &&
+                    plotTypes.map((plotType, idx) => (
+                      <Tab.Pane key={idx} eventKey={idx}>
+                        <Card className='d-grid mb-2'>
+                          <Card.Text style={{ color: 'black', justifySelf: 'center' }}>
+                            {camel2title(plotType.name)}
+                          </Card.Text>
+                          <Card.Img variant="top" src={plotType.img} style={{ width: '400px', justifySelf: 'center' }} />
+                          <Card.Body>
+                            Click to download the preset and find out how this image was generated!
+                            <SubmitWaitButton
+                              action={handleDownloadButton}
+                              actionName='Download'
+                              color='lightseagreen'
+                            />
+                          </Card.Body>
+                        </Card>
+                      </Tab.Pane>
+                    ))
+                  }
+                  {selectedPlotType &&
+                    <>
+                      <SimplePlotForm
+                        isBarLabel={selectedPlotType === 'bar_label_plot'}
+                        onFileChange={handleCreateChange}
+                        handleFormChange={handleFormChange}
+                        formData={chartData}
+                        fileRef={fileRef}
+                      />
+                      <Container className='create-btn py-2'>
+                        <SubmitWaitButton
+                          action={handleCreateButton}
+                          actionName='Create'
+                          disabledIf={!inputFile}
+                          color='green'
+                        />
+                      </Container>
+                    </>
+                  }
+                </Tab.Content>
+              </Col>
+            </Row>
+          </Tab.Container>
+        </Form.Group>
 
-      <Container className='d-flex flex-row gap-5 mt-3'>
-        <Container>
-          <h5>Download presets</h5>
-          <Form.Select value={selectedPreset} onChange={handleDownloadChange} aria-label="Default select example" className='mb-2'>
-            <option value="0">Open this select menu</option>
-            <option value="1">True</option>
-            <option value="5">False</option>
-          </Form.Select>
 
-          <SubmitWaitButton
-            action={handleDownloadButton}
-            actionName='Download'
-            disabledIf={selectedPreset === "0"}
-            color='lightseagreen'
-            resetParentState={() => setSelectedPreset("0")}
-          />
-        </Container>
-        <Container className='or-container'>
-          <Container className='or-circle'>OR</Container>
-        </Container>
-        <Container>
-          <Form.Group controlId="formFile" className='mb-2'>
-            <h5>Upload your JSON file</h5>
-            <Form.Control type="file" accept=".json" onChange={handleFileInputChange} />
-          </Form.Group>
-
-          <SubmitWaitButton
-            action={handleCreateButton}
-            actionName='Create'
-            disabledIf={!fileInput}
-            color='green'
-            resetParentState={() => setFileInput(null)}
-          />
-        </Container>
       </Container>
-    </>
+    </Container>
   )
 }
 
