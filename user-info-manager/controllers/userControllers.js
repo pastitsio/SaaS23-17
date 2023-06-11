@@ -57,6 +57,7 @@ const userData = async (req, res) => {
  */
 const saveUser = async (req, res) => {
   const { email, lastLoginTimestamp: last_login } = req.body.params; // need body because of axios post
+  console.log('email :>> ', email);
   if (!email || !last_login) {
     throw new CustomAPIError(
       "Fields newUser: Boolean, email: String, lastLoginTimestamp: timestamp are required",
