@@ -1,22 +1,20 @@
-const User = require("../models/User");
-const CustomAPIError = require("../errors/custom-error");
+const { User, KafkaEvent } = require("../models");
+const { CustomAPIError } = require("../errors/");
 const { StatusCodes } = require("http-status-codes");
-const queueMessage = require("../kafka/kafka-publisher");
-const readMessage = require("../kafka/kafka-subscriber");
-const { producerCreate, consumerCreate } = require("../kafka/kafka-connect");
+const { Producer, Consumer } = require("../kafka/");
 require("express-async-errors");
 
 // connect to kafka as a publisher
-const stream = producerCreate("user-data");
+const stream = Producer.createTopicStream("user-data");
 
 // read new user credits
-const consumer = consumerCreate("kafka12", "credit-data");
+const consumer = Consumer.create("kafka12", "credit-data");
 const syncDB = async (msg) => {
-  const user = User.findOne({ email: msg.email });
-  user.credits = msg.credits;
-  await user.save();
+  const filter = { email: msg.email };
+  const update = { credits: msg.credits };
+  await User.findOneAndUpdate(filter, update); // add argument `{ new: true }` to return updated entry.
 };
-readMessage(consumer, syncDB);
+Consumer.consume(consumer, syncDB);
 
 /**
  * @description gets user data from database and checks if its a new user or not
@@ -27,7 +25,7 @@ readMessage(consumer, syncDB);
  * {newUser:true, email: String, last_login: Timestamp}
  */
 const userData = async (req, res) => {
-  const email = req.params.email;
+  const email = req.query.email; // need body because of axios get
   if (!email) {
     throw new CustomAPIError(
       "Please provide email address",
@@ -35,21 +33,20 @@ const userData = async (req, res) => {
     );
   }
 
-  const user = await User.findOne({ email });
+  var newUser = false;
+  var user = await User.findOne({ email });
   if (!user) {
-    return res.status(StatusCodes.OK).json({
-      newUser: true,
-      email,
+    newUser = true;
+    user = new User({
+      email: email,
       last_login: Date.now(),
     });
   }
 
-  res.status(StatusCodes.OK).json({
-    newUser: false,
-    email: user.email,
-    number_of_charts: user.number_of_charts,
-    credits: user.credits,
-    last_login: user.last_login,
+
+  return res.status(StatusCodes.OK).json({
+    newUser: newUser,
+    ...(user.toJSON())
   });
 };
 
@@ -59,20 +56,24 @@ const userData = async (req, res) => {
  * @returns {JSON} {success: Boolean, msg: String}
  */
 const saveUser = async (req, res) => {
-  const { newUser, email, lastLoginTimestamp: last_login } = req.body;
-  if (!newUser || !email || !last_login) {
+  const { email, lastLoginTimestamp: last_login } = req.body.params; // need body because of axios post
+  if (!email || !last_login) {
     throw new CustomAPIError(
-      "Fields newUser: Boolean, email: String, last_login: timestamp are required",
+      "Fields newUser: Boolean, email: String, lastLoginTimestamp: timestamp are required",
       StatusCodes.BAD_REQUEST
     );
   }
 
-  const user = await User.create({ email: email, last_login: last_login });
+  await User.create({ email: email, last_login: last_login });
+
+  const event = { email: email, credits: Number(0) };
+  Producer.produce(event, stream);
+
   res
     .status(StatusCodes.OK)
-    .json({ success: true, msg: "user saved to db successfully" });
+    .json({ success: true, msg: "User saved to db successfully" });
 
-  queueMessage({ email, credits: Number(0) }, stream);
+  Producer.produce({ email: email, last_login: Number(last_login) }, stream);
 };
 
 /**
@@ -104,4 +105,8 @@ const lastLoginUpdate = async (req, res) => {
     .json({ success: true, msg: "User last login timestamp updated" });
 };
 
-module.exports = { userData, saveUser, lastLoginUpdate };
+const userController = {
+  userData, saveUser, lastLoginUpdate
+}
+
+module.exports = userController;

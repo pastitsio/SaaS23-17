@@ -20,8 +20,10 @@ syncDB("credit-data", "kafka", async (msg) => {
 syncDB("user-data", "kafka15", async (msg) => {
   const user = await Credits.findOne({ email: msg.email });
   if (!user) {
-    await Credits.create({ ...msg });
+    return await Credits.create({ ...msg });
   }
+  user.credits = msg.credits;
+  await user.save();
 });
 
 
