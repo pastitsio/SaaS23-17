@@ -8,10 +8,22 @@ const eventSchema = avro.Type.forSchema({
         type: 'string'
     },
     { 
-        name: "credits",
-        type: 'long'
+        name: "chart_url",
+        type: 'string'
     },
-  ],
+    { 
+        name: "chart_type",
+        type: 'string'
+    },
+    { 
+        name: "chart_name",
+        type: 'string'
+    },
+    { 
+        name: "created_on",
+        type: "string"
+    }
+  ]
 });
 
 module.exports = eventSchema;
