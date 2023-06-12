@@ -22,11 +22,6 @@ const chartSchema = new mongoose.Schema({
         type: Date,
         default: Date.now(),
         required: [true, 'Created on field is required to create a new collection']
-    },
-    format_type: {
-        type: String,
-        required: [true, 'Format type of chart is required'],
-        enum: ['pdf', 'png', 'svg', 'html', 'jpeg']
     }
 });
 
