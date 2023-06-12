@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { BsPlusCircle, BsCart3, BsTable, BsViewStacked } from "react-icons/bs";
 import { FaChartArea } from "react-icons/fa";
@@ -9,13 +9,25 @@ import { useNavigate } from "react-router-dom";
 import { BuyCreditsModal } from "../../";
 import './userProfileCard.css';
 
-const UserProfileCard = ({ userInfo }) => {
+const UserProfileCard = () => {
   const navigate = useNavigate();
 
   // Buy Credits Control
   const [showBuyCredits, setShowBuyCredits] = useState(false);
   const handleCloseBuyCredits = () => setShowBuyCredits(false);
   const handleShowBuyCredits = () => setShowBuyCredits(true);
+
+
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchUserInfo = () => {
+      const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+      setUserInfo(userInfo)
+    }
+    
+    fetchUserInfo();
+  })
 
   return (
     <Container className="user-info">
