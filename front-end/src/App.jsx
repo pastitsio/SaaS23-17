@@ -6,16 +6,16 @@ import { Container } from 'react-bootstrap'
 import { NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
 import { About, CreatedChart, Home, MyCharts, NewChart, PageNotFound } from './pages'
 
-import { FetchService, UserService } from './services'
+import { BackendService, UserService } from './services'
 
+import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
-import axios from 'axios'
 
 
 const App = () => {
   const [isNewUser, setIsNewUser] = useState(false);
-
+ 
   /**
    * If user is logged in, sets up session user info
    *     
@@ -24,18 +24,16 @@ const App = () => {
     const source = axios.CancelToken.source();
 
     const fetchUserInfo = async () => {
-      var userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-      if (!userInfo) {
-        try {
-          userInfo = await FetchService.fetchUserInfo(UserService.getId());
-          console.log('userInfo :>> ', userInfo);
-          setIsNewUser(userInfo.new_user);
-        } catch (error) {
-          if (axios.isCancel(error)) {
-            console.log('Request canceled:', error.message);
-          } else {
-            console.log('Error:', error.message);
-          }
+      try {
+        await BackendService.fetchUserInfo(UserService.getTokenParsed().email);
+        const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+        setIsNewUser(userInfo.newUser);
+
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled:', error.message);
+        } else {
+          console.log('Error:', error.message);
         }
       }
     }
@@ -51,7 +49,7 @@ const App = () => {
 
       fetchUserInfo();
     }
-    
+
     return () => {
       source.cancel('Request canceled by App.jsx cleanup');
       clearInterval(tokenUpdateInterval);
@@ -67,11 +65,11 @@ const App = () => {
 
         <Routes>
           <Route index element={
-            <Home />}
-          />
+            <Home />
+          } />
 
           <Route path='/about' element={
-            <RenderOnAuth> <About /> </RenderOnAuth>
+            <About />
           } />
 
           <Route path='/mycharts' element={

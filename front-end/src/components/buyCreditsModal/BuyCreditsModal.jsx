@@ -3,7 +3,7 @@ import { Button, Card, Container, Modal } from 'react-bootstrap';
 
 import './buyCreditsModal.css';
 import { SubmitWaitButton } from '..';
-import { FetchService } from '../../services';
+import { BackendService } from '../../services';
 
 const BuyCreditsModal = ({ show, onHide }) => {
   const [selectedCredits, setSelectedCredits] = useState(0);
@@ -14,12 +14,12 @@ const BuyCreditsModal = ({ show, onHide }) => {
   }
 
   const handlePurchaseButton = () => {
-    const userId = JSON.parse(sessionStorage.getItem('userInfo'))._id;
+    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
     const credits = selectedCredits;
 
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.buyCredits(userId, credits);
+        await BackendService.buyCredits(userInfo.email, credits);
         resolve(() => undefined);
       } catch (e) {
         reject(e)

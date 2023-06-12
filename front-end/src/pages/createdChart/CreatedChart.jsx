@@ -1,47 +1,63 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Card, Container, Spinner } from 'react-bootstrap'
+import { useEffect, useState } from 'react'
+import { Button, Card, Container } from 'react-bootstrap'
 
 import { SubmitWaitButton } from '../../components'
-import { FetchService, UserService } from '../../services'
 
-import sampleImg from '../../assets/line_chart_white-bg.png'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { BackendService } from '../../services'
 import './createdChart.css'
-import axios from 'axios'
-import { useLocation } from 'react-router-dom'
 
 const CreatedChart = () => {
+  const navigate = useNavigate();
   const { state } = useLocation();
 
-  const [imgLoading, setImgLoading] = useState(true);
-  const [createdImg, setCreatedImg] = useState(null);
+  const [img, setImg] = useState('');
+  const [saveSuccessful, setSaveSuccessful] = useState(false);
 
   useEffect(() => {
-    const source = axios.CancelToken.source();
+    const disableBackButton = () => {
+      // Replace the current URL with a new URL
+      const newUrl = `/new`;
+      window.history.replaceState(null, null, newUrl);
+    };
 
-    // TODO: GET created image preview
-    const fetchChartPreview = async () => {
-      try {
-        const imgPreview = await FetchService.fetchChartPreview(state.chartId);
-        setCreatedImg(imgPreview);
-        setImgLoading(false);
-      } catch (error) {
-        if (axios.isCancel(error)) {
-          console.log('Request canceled:', error.message);
-        } else {
-          console.log('Error:', error.message);
-        }
-      }
-    }
+    const cleanup = () => {
+      disableBackButton();
+    };
+    window.addEventListener('beforeunload', cleanup);
 
-    if (UserService.isLoggedIn()) {
-      fetchChartPreview();
+    // Check if the state is null, i.e. the component is directly accessed from browser url
+    if (state) { 
+      setImg(state.previewImg)
+    } else {
+      navigate('/new');
     }
 
     return () => {
-      source.cancel('Request canceled by MyCharts.jsx cleanup');
-    }
+      window.removeEventListener('beforeunload', cleanup);
+      cleanup();
+    };
+  }, [state, navigate]);
 
-  }, [state.chartId]);
+
+
+  const handleCancelButton = () => {
+    // prevent back button from loading this page again.
+    navigate('/');
+  }
+
+  const handleSaveButton = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await BackendService.createChart(state.inputFile, 'save');
+        setSaveSuccessful(true);
+        resolve(() => undefined);
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
 
   return (
     <>
@@ -50,27 +66,28 @@ const CreatedChart = () => {
       </Container>
       <Container className='wrapper-container flex-column'>
         <Container className="img-preview-container" style={{ height: '100%' }}>
-          {imgLoading
+          <Card className='preview-card' style={{ maxHeight: '600' }}>
+            <Card.Img variant='top' src={img} alt='preview' />
+            {/* <Card.Body>
+            <Card.Title >{createdImg.title}</Card.Title>
+            <Card.Text >{createdImg.caption}</Card.Text>
+          </Card.Body> */}
+            {/* {imgLoading
             ? <Spinner animation='border' variant='light' /> // if is loading: display spinner
-            : <Card className='preview-card'>
-              <Card.Img variant='top' src={sampleImg} alt='preview' />
-              <Card.Body>
-                <Card.Title >{createdImg.title}</Card.Title>
-                <Card.Text >{createdImg.caption}</Card.Text>
-              </Card.Body>
-            </Card>
-          }
+          } */}
+          </Card>
         </Container>
 
         <Container className='d-flex px-0 gap-2'>
-          <Button id='cancel-button'>Cancel</Button>
+          <Button onClick={handleCancelButton} disabled={saveSuccessful} id='cancel-button'>Cancel</Button>
           <SubmitWaitButton
-            action={() => undefined}
+            action={handleSaveButton}
             actionName='Save'
-            disabledIf={imgLoading}
             cssId="buy-button"
+            disabledIf={saveSuccessful}
             reset={() => undefined}
           />
+          
         </Container>
       </Container>
     </>

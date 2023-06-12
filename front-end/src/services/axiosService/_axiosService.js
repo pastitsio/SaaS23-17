@@ -6,9 +6,7 @@ import { UserService } from '..';
  * at the headers of every request.
  */
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_API_URL
-});
+const api = axios.create();
 
 api.interceptors.request.use(
   (config) => {

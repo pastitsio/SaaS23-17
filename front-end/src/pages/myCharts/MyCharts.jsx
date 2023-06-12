@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Button, Card, Container, Spinner, Table } from 'react-bootstrap'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
+import sampleImg from '../../assets/sample_img.png'
 import axios from 'axios'
-import { FetchService, UserService } from '../../services'
+import { BackendService, UserService } from '../../services'
 import './myCharts.css'
 
 const MyCharts = () => {
@@ -18,6 +19,7 @@ const MyCharts = () => {
   const [imgLoading, setImgLoading] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
+  const [prompt, setPrompt] = useState('Select a chart from the table ');
 
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -25,15 +27,16 @@ const MyCharts = () => {
     // TODO: GET fetch Table data, add error case
     const fetchTableData = async () => {
       try {
-        const tableData = await FetchService.fetchTableData(userInfo._id);
+        const tableData = await BackendService.fetchTableData(userInfo._id);
         setChartsTable(tableData);
-        setTableLoading(false);
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled:', error.message);
         } else {
           console.log('Error:', error.message);
         }
+        setPrompt(error.message)
+        setTableLoading(false);
       }
     }
 
@@ -53,9 +56,10 @@ const MyCharts = () => {
     setSelectedChartId(chartId);
 
     const fetchChartPreview = async () => {
-      const imgPreview = await FetchService.fetchChartPreview(chartId);
+      // eslint-disable-next-line no-unused-vars
+      const imgPreview = await BackendService.createChart(chartId);
 
-      setSelectedChart(imgPreview);
+      setSelectedChart(sampleImg);
       setImgLoading(false);
       setImgReady(true);
     }
@@ -71,7 +75,7 @@ const MyCharts = () => {
 
     return new Promise(async (resolve, reject) => {
       try {
-        await FetchService.downloadImgFormat(chartId, format);
+        await BackendService.downloadImgFormat(chartId, format);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -111,10 +115,9 @@ const MyCharts = () => {
               </Container>
               <Container className='export-container' style={{ height: '30%' }}>
                 <Container className='export-buttons'>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='html' onClick={(event) => handleDownloadImage(event)}>HTML</Button>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='pdf' onClick={(event) => handleDownloadImage(event)}>PDF</Button>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='png' onClick={(event) => handleDownloadImage(event)}>PNG</Button>
-                  <Button className={imgReady ? '' : 'disabled'} size='sm' name='svg' onClick={(event) => handleDownloadImage(event)}>SVG</Button>
+                  {['html', 'pdf', 'png', 'svg'].map((imgFormat, idx) => (
+                    <Button key={idx} className={imgReady ? '' : 'disabled'} size='sm' name={imgFormat} onClick={(event) => handleDownloadImage(event)}>{imgFormat.toUpperCase()}</Button>
+                  ))}
                   <Container className='button-divider' >{" "}</Container>
                   <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
                 </Container>
@@ -135,7 +138,7 @@ const MyCharts = () => {
                       </Card.Body>
                     </>
                     :
-                    <p id='select-prompt'>Select a chart from the table </p>
+                    <p id='select-prompt'>{prompt}</p>
                   }
                 </Card>
               }
