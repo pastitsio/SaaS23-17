@@ -3,3 +3,6 @@
 **/.vscode
 **/environment.yaml
 **/.env
+node_modules
+.env
+ vpp*.png

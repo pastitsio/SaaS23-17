@@ -105,8 +105,4 @@ const lastLoginUpdate = async (req, res) => {
     .json({ success: true, msg: "User last login timestamp updated" });
 };
 
-const userController = {
-  userData, saveUser, lastLoginUpdate
-}
-
-module.exports = userController;
+module.exports = { userData, saveUser, lastLoginUpdate };
