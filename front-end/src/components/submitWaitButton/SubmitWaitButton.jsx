@@ -25,12 +25,11 @@ const SubmitWaitButton = (props) => {
       setActionErrorMessage(err.message);
       setActionErrorShow(true);
       setResult(false);
+      if (typeof props.resetOnFail === 'function')
+        props.resetOnFail();
     } finally {
       setLoading(false);
       setReady(true);
-      if (typeof props.resetParentState === 'function') {
-        props.resetParentState();
-      }
     }
   }
 

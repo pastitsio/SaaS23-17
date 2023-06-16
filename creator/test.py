@@ -1,6 +1,6 @@
 import json
 import matplotlib
-from models.plot import SimplePlot
+from creator.plot import SimplePlot
 matplotlib.use('QtAgg')
 
 with open('../mock-server-download/presets/preset1.json', 'r') as f:

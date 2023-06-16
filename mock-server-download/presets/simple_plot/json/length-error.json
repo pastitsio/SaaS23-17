@@ -1,9 +1,0 @@
-{
-    "__comment__": "DO NOT CHANGE the type field",
-    "__type__": "simple_plot",
-    "x": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
-    "y": [0, 1, -2, 3, 4, -7, 8, 9, 10], 
-    "x_label": "x-axis tres jolie", 
-    "y_label": "y-axis tres bonne", 
-    "title": "Title tres tres"
-}

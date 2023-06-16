@@ -6,8 +6,8 @@ import { MdArrowBackIos, MdArrowForwardIos } from 'react-icons/md'
 
 import './previewCarousel.css'
 
-import img1 from '../../assets/bar_label_demo.png'
-import img2 from '../../assets/scatter.webp'
+import img1 from '../../assets/bar_label_plot.png'
+import img2 from '../../assets/scatter_plot.webp'
 import img3 from '../../assets/simple_plot.webp'
 
 

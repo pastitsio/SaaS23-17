@@ -7,7 +7,7 @@ import keycloak
 
 from flask import request
 
-def get_token_from_request():
+def _get_token_from_request():
     """GET JWT TOKEN"""
     token = request.headers.get("Authorization")
     token = token.split()[1]  # remove 'Bearer' word
@@ -25,7 +25,7 @@ def kc_introspect_token(kc_client):
     Returns:
         Dict: decoded token
     """
-    token = get_token_from_request()
+    token = _get_token_from_request()
     introspection_result = kc_client.introspect(token)
     if not introspection_result.get("active"):
         raise keycloak.exceptions.KeycloakInvalidTokenError('Invalid Token.')

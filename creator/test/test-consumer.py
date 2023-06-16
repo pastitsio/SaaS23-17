@@ -1,12 +1,8 @@
 import io
-import sys
 
 from avro.io import BinaryDecoder, DatumReader
 from kafka import KafkaConsumer
-
-sys.path.append('../')
-from models.kafka_event import kafka_event
-
+from kafka_setup.kafka_event import kafka_event
 
 consumer = KafkaConsumer(
     'chart-data',

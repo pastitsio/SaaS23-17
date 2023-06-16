@@ -1,4 +1,4 @@
-import { PageNotAuthorized } from '../../pages';
+import { PageNotAuthenticated } from '../../pages';
 import { UserService } from '../../services'
 
 const RenderOnAuth = ({ children, altComponent }) => (UserService.isLoggedIn())
@@ -7,7 +7,7 @@ const RenderOnAuth = ({ children, altComponent }) => (UserService.isLoggedIn())
 
 
 RenderOnAuth.defaultProps = {
-  altComponent: <PageNotAuthorized />
+  altComponent: <PageNotAuthenticated />
 }
 
 export default RenderOnAuth

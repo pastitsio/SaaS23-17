@@ -1,0 +1,5 @@
+.created-prompt {
+    background-color: var(--color-text-light);
+    margin: .5rem 0 0 .5rem !important;
+    border-radius: calc(var(--border-radius)/2);
+}

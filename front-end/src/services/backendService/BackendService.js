@@ -9,24 +9,25 @@ const someCondition = true;
 
 // TODO: implement on modal.
 const mockBuyCredits = async (email, credits) => {
-  return new Promise((resolve, reject) => {
-    if (someCondition) {
-      // TODO: POST REQUEST FOR CREDIT VALIDATION
-      setTimeout(() => {
-        console.log(`Credits bought! :>> (ID: ${email}, credits: ${credits}).`);
-        resolve();
-      }, fakeTimeout);
-    } else {
-      reject(new Error(`Failed to buy credits! Please retry in a few moments.`));
-    }
-  })
+  try {
+    const url = `${process.env.REACT_APP_uim_api_url}/purchaseCredits`;
+    const response = await withTimeout(api.post(
+      url,
+      {
+        params: { email: email, credits: credits }
+      }));
+
+    console.log('response :>> ', response.data.success);
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 
 const createChart = async (inputFile, plotType, chartData, mode) => {
-  mode = mode.toLowerCase(); 
+  mode = mode.toLowerCase();
   try {
-   
+
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
 
     if (!plotTypes.includes(plotType)) {
@@ -95,7 +96,6 @@ const mockDownloadImgFormat = async (chartId, format) => {
     throw new Error(`Error downloading image: ${error.message}`);
   }
 };
-
 
 
 const mockFetchChartPreview = (inputFile) => {

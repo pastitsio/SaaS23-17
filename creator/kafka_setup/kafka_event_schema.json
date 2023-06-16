@@ -3,6 +3,10 @@
   "name": "chart_data",
   "fields": [
     {
+      "name": "email",
+      "type": "string"
+    },
+    {
       "name": "imgUrl",
       "type": "string"
     },

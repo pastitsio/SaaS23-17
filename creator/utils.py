@@ -7,10 +7,6 @@ from shortuuid import uuid
 
 from config_setup import config
 
-fields = ("is_type", "ndim", "optional")
-defaults = (None, 0, False)
-Label = namedtuple("label", fields, defaults=defaults)
-
 
 def check_file():
     """Check request file exists and is json"""
