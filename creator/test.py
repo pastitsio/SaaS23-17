@@ -1,13 +1,22 @@
-import json
-import matplotlib
-from creator.plot import SimplePlot
-matplotlib.use('QtAgg')
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
-with open('../mock-server-download/presets/preset1.json', 'r') as f:
-  data = json.load(f)
+df = pd.read_csv('./front-end/public/presets/bar_label_plot.csv', header='infer')
+df.set_index('x_labels', inplace=True)
 
-p = SimplePlot(data)
-p.validate()
+_, axis = plt.subplots(dpi=150)
+bottom = np.zeros(len(df.columns))
 
-img = p.create_chart('jpeg')['svg']
+for idx in df.index:
+    p = axis.bar(df.columns, df.loc[idx].tolist(), 0.6, label=idx, bottom=bottom)
+    bottom += df.loc[idx].tolist()
+
+    axis.bar_label(p, label_type="center")
+
+axis.legend()
+plt.show()
+
+
+img = p.create_chart('jpeg')['jpeg']
 print(img)

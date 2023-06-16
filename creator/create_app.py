@@ -62,21 +62,21 @@ def create_app(plot: Plot,
                 # user_id to mess with randomly-created uuid's seed.
                 img_id = generate_uuid(distinct=user_email)
                 blob_path = f'{user_email}/{img_id}'
-                # for img_format, img_data in images.items():
-                #     # construct filepath with user, img and format info.
-                #     blob_file = f'{blob_path}/{img_format}'
-                #     azure_container_client.upload_to_blob(
-                #         data=img_data, blob_filepath=blob_file
-                #     )
+                for img_format, img_data in images.items():
+                    # construct filepath with user, img and format info.
+                    blob_file = f'{blob_path}/{img_format}'
+                    azure_container_client.upload_to_blob(
+                        data=img_data, blob_filepath=blob_file
+                    )
 
                 # message is sent with acks set to 1, meaning the sender waits
                 # so that the message is read by at least 1 broker.
-                # kafka_producer.send(
-                #     value={
-                #         'email': user_email,
-                #         'imgUrl': blob_path,
-                #         'chartType': plot.__name__}
-                # )
+                kafka_producer.send(
+                    value={
+                        'email': user_email,
+                        'imgUrl': blob_path,
+                        'chartType': plot.__name__}
+                )
 
                 return "Success", 200
             raise ValueError("Mode should either be SAVE or PREVIEW.")

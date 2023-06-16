@@ -1,3 +1,4 @@
+''' ! Must be run from 'creator' dir level'''
 import io
 
 from avro.io import BinaryDecoder, DatumReader

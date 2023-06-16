@@ -8,7 +8,7 @@ const eventSchema = avro.Type.forSchema({
         type: 'string'
     },
     { 
-        name: "last_login",
+        name: "credits",
         type: 'long'
     },
   ],

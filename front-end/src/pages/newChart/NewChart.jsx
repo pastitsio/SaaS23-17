@@ -2,13 +2,12 @@ import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap'
+import { BsDot } from 'react-icons/bs'
 
 import PlotForm from './PlotForm';
-
+import { BackendService } from '../../services'
 import { SubmitWaitButton } from '../../components'
 
-import { BsDot } from 'react-icons/bs'
-import { BackendService } from '../../services'
 import './newChart.css'
 
 import img1 from '../../assets/bar_label_plot.png'
@@ -71,6 +70,9 @@ const NewChart = () => {
   };
 
   const handleCreateButton = () => {
+    console.log(chartData, selectedPlotType)
+    console.log(inputFile);
+
     return new Promise(async (resolve, reject) => {
       try {
         const previewImg = await BackendService.createChart(inputFile, selectedPlotType, chartData, 'preview');

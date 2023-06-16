@@ -1,3 +1,4 @@
+''' ! Must be run from 'creator' dir level'''
 from kafka_setup.kafka_producer import KafkaProducer
 
 
@@ -7,7 +8,9 @@ producer = KafkaProducer(
 )
 
 producer.send(
-    value={"imgUrl": "Dominique", "chartType": "de Coco"}
+    value={"email": "Dom@DeCoco.com",
+           "imgUrl": "DominiqueDeCoco/adsfghjkl12345",
+           "chartType": "SimplePlot"}
 )
 
-producer.close() # much needed for accumulator
+producer.close()  # much needed for accumulator

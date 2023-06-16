@@ -1,14 +1,16 @@
 const Kafka = require("node-rdkafka");
-const CustomAPIError = require("../../user-info-manager/errors/custom-error");
+const { CustomAPIError } = require("../errors/custom-errors");
 const { StatusCodes } = require("http-status-codes");
-require("dotenv").config();
+require("dotenv").config({ path: "../" });
 
 // creates a producer and returns stram object
 const producerCreate = (topic) => {
   const stream = Kafka.Producer.createWriteStream(
     {
       "client.id": "kafka1",
-      "metadata.broker.list": `${process.env.HOST || "localhost"}:${process.env.KAFKA_PORT || 9092}`,
+      "metadata.broker.list": `${process.env.HOST || "localhost"}:${
+        process.env.KAFKA_PORT || 9092
+      }`,
     },
     {},
     { topic }
@@ -20,14 +22,18 @@ const producerCreate = (topic) => {
       err.status
     );
   });
+
+  console.log("Producer ready...");
   return stream;
 };
 
-// creates a consumer and returns it 
+// creates a consumer and returns it
 const consumerCreate = (group, topic) => {
   const consumer = new Kafka.KafkaConsumer({
     "group.id": group,
-    "metadata.broker.list": `${process.env.HOST || "localhost"}:${process.env.KAFKA_PORT || 9092}`,
+    "metadata.broker.list": `${process.env.HOST || "localhost"}:${
+      process.env.KAFKA_PORT || 9092
+    }`,
   });
 
   consumer.connect();

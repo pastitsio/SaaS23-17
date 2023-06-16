@@ -39,6 +39,6 @@ class KafkaProducer(_KafkaProducer):
 
     # override
     def send(self, value: Dict, **kwargs):
-        assert all(key in ['imgUrl', 'chartType']
+        assert all(key in ['email', 'imgUrl', 'chartType']
                    for key in value.keys()), 'Missing key.'
         super().send(topic=self._topic, value=value, **kwargs)
