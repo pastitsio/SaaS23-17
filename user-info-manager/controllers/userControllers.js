@@ -33,8 +33,8 @@ const userData = async (req, res) => {
     );
   }
 
-  var newUser = false;
-  var user = await User.findOne({ email });
+  let newUser = false;
+  let user = await User.findOne({ email });
   if (!user) {
     newUser = true;
     user = new User({
