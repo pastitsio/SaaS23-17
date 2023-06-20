@@ -12,7 +12,7 @@ const MyCharts = () => {
   const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
 
   const [chartsTable, setChartsTable] = useState([]);
-  const [selectedChartId, setSelectedChartId] = useState("");
+  const [selectedChartIdx, setSelectedChartIdx] = useState(null);
   const [selectedChart, setSelectedChart] = useState(null);
 
   const [tableLoading, setTableLoading] = useState(true);
@@ -27,8 +27,9 @@ const MyCharts = () => {
     // TODO: GET fetch Table data, add error case
     const fetchTableData = async () => {
       try {
-        const tableData = await BackendService.fetchTableData(userInfo._id);
+        const tableData = await BackendService.fetchTableData(userInfo.email);
         setChartsTable(tableData);
+        console.log('tableData :>> ', tableData);
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled:', error.message);
@@ -36,8 +37,8 @@ const MyCharts = () => {
           console.log('Error:', error.message);
         }
         setPrompt(error.message)
-        setTableLoading(false);
       }
+      setTableLoading(false);
     }
 
     if (UserService.isLoggedIn()) {
@@ -47,35 +48,35 @@ const MyCharts = () => {
     return () => {
       source.cancel('Request canceled by MyCharts.jsx cleanup');
     }
-  }, [userInfo._id]);
+  }, [userInfo.email]);
 
 
-  const handleRowClick = (chartId) => {
+  const handleRowClick = (chartIdx) => {
     setImgLoading(true);
     setImgReady(false);
-    setSelectedChartId(chartId);
+    setSelectedChartIdx(chartIdx);
 
     const fetchChartPreview = async () => {
       // eslint-disable-next-line no-unused-vars
-      const imgPreview = await BackendService.createChart(chartId);
+      const imgPreview = await BackendService.createChart(chartIdx);
 
-      setSelectedChart(sampleImg);
+      setSelectedChart(imgPreview);
       setImgLoading(false);
       setImgReady(true);
     }
 
     if (UserService.isLoggedIn()) {
-      fetchChartPreview(selectedChartId);
+      fetchChartPreview(selectedChartIdx);
     }
   }
 
   const handleDownloadImage = (event) => {
-    const chartId = selectedChartId;
+    const chartIdx = selectedChartIdx;
     const format = event.target.name;
 
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.downloadImgFormat(chartId, format);
+        await BackendService.downloadImgFormat(chartIdx, format);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -102,12 +103,12 @@ const MyCharts = () => {
                   <tbody>
                     {chartsTable.map((chartTableEntry, idx) => (
                       <tr key={idx}
-                        onClick={() => handleRowClick(chartTableEntry.id)}
+                        onClick={() => handleRowClick(idx)}
                         disabled={!imgLoading}
-                        className={selectedChartId === chartTableEntry.id ? 'table-active' : ''}>
-                        <td>{chartTableEntry.type}</td>
-                        <td>{chartTableEntry.name}</td>
-                        <td>{new Date(chartTableEntry.createdTimestamp).toDateString()}</td>
+                        className={selectedChartIdx === idx ? 'table-active' : ''}>
+                        <td>{chartTableEntry.chart_type}</td>
+                        <td>{chartTableEntry.chart_name}</td>
+                        <td>{new Date(chartTableEntry.created_on * 1000).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -131,10 +132,10 @@ const MyCharts = () => {
                   {imgReady // else:
                     ? // if image is ready: load card
                     <>
-                      <Card.Img variant='top' src={selectedChart} alt='preview' />
+                      <Card.Img variant='top' src={selectedChart.src} alt='preview' />
                       <Card.Body>
                         <Card.Title >{selectedChart.title}</Card.Title>
-                        <Card.Text >{selectedChart.caption}</Card.Text>
+                        {/* <Card.Text >{selectedChart.caption}</Card.Text> */}
                       </Card.Body>
                     </>
                     :

@@ -98,27 +98,28 @@ const mockDownloadImgFormat = async (chartId, format) => {
 };
 
 
-const mockFetchChartPreview = (inputFile) => {
-  return new Promise((resolve, reject) => {
-    if (someCondition) {
-      // TODO: POST REQUEST FOR FETCH PREVIEW
-      setTimeout(() => {
-        resolve(3);
-      }, fakeTimeout);
-    } else {
-      reject(new Error('Failed to validate file input! Please retry in a few moments'));
-    }
-  })
+const mockFetchChartPreview = async (blobFilepath) => {
+  try {
+    const url = `${process.env.REACT_APP_dl_api_url}/api/v1/preview/${blobFilepath}`;
+    const response = await withTimeout(api.get(url));
+
+    console.log(`Table data fetched! :>> email: ${blobFilepath}`);
+
+    return Promise.resolve(response.data.result);
+  } catch (error) {
+    throw new Error(`Error fetching table data: ${error.message}`);
+  }
 };
 
 
-const mockFetchTableData = async (email) => {
-  const url = `${process.env.REACT_APP_BACKEND_api_url}/charts/user/${email}`;
+const fetchTableData = async (email) => {
   try {
+    const url = `${process.env.REACT_APP_cim_api_url}/api/v1/chartInfo/${email}`;
     const response = await withTimeout(api.get(url));
 
     console.log(`Table data fetched! :>> email: ${email}`);
-    return Promise.resolve(response.data);
+
+    return Promise.resolve(response.data.result);
   } catch (error) {
     throw new Error(`Error fetching table data: ${error.message}`);
   }
@@ -182,7 +183,6 @@ const saveUserToDB = async (email) => {
 const buyCredits = mockBuyCredits;
 const downloadImgFormat = mockDownloadImgFormat;
 const fetchChartPreview = mockFetchChartPreview;
-const fetchTableData = mockFetchTableData;
 
 const BackendService = {
   buyCredits,

@@ -76,11 +76,10 @@ def create_app(plot: Plot,
                     value={
                         'email': user_email,
                         'chart_name': chart_data['chart_name'],
-                        'chart_type': plot.__name__,
+                        'chart_type': _plot.name(),
                         'chart_url': blob_path,
-                        'created_on': datetime.now().date()
+                        'created_on': int(datetime.now().timestamp())
                         }
-
                 )
 
                 return "Success", 200

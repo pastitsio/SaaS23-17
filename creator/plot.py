@@ -41,6 +41,10 @@ class Plot(ABC):
         raise NotImplementedError
 
     @abstractmethod  # implemented at child
+    def name(self):
+        raise NotImplementedError
+
+    @abstractmethod  # implemented at child
     def _plot_fn(self, **kwargs):
         raise NotImplementedError
 
@@ -140,8 +144,8 @@ class SimplePlot(Plot):
             ),
         }
 
-    def __name__(self):
-        return  'Simple Plot'
+    def name(self):
+        return 'Simple Plot'
     
     @property
     def valid_input(self):
@@ -192,7 +196,7 @@ class ScatterPlot(Plot):
             ),
         }
     
-    def __name__(self):
+    def name(self):
         return 'Scatter Plot'
 
     @property
@@ -249,7 +253,7 @@ class BarLabelPlot(Plot):
             )
         }
 
-    def __name__(self):
+    def name(self):
         return 'Bar Label Plot'
 
     @property
