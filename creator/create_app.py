@@ -1,5 +1,6 @@
 import json
 
+from datetime import datetime
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from keycloak import KeycloakOpenID
@@ -74,8 +75,12 @@ def create_app(plot: Plot,
                 kafka_producer.send(
                     value={
                         'email': user_email,
-                        'imgUrl': blob_path,
-                        'chartType': plot.__name__}
+                        'chart_name': chart_data['chart_name'],
+                        'chart_type': plot.__name__,
+                        'chart_url': blob_path,
+                        'created_on': datetime.now().date()
+                        }
+
                 )
 
                 return "Success", 200

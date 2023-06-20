@@ -5,6 +5,17 @@ const PlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, fileRe
   return (
     <>
       <InputGroup className="mb-1">
+        <InputGroup.Text id="chart_name">Name</InputGroup.Text>
+        <Form.Control
+          onChange={handleFormChange}
+          name="chart_name"
+          placeholder="Mandatory"
+          value={formData.chart_name}
+          aria-label="chart_name"
+        />
+      </InputGroup>
+
+      <InputGroup className="mb-1">
         <InputGroup.Text id="title">Title</InputGroup.Text>
         <Form.Control
           onChange={handleFormChange}
@@ -42,12 +53,12 @@ const PlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, fileRe
 
       {isBarLabel && <InputGroup className="mb-1">
         <InputGroup.Text>Bar Width</InputGroup.Text>
-        <Form.Control 
-        onChange={handleFormChange}
-        name="bar_width"
-        placeholder="Optional (Default 0.6)"
-        value={formData.bar_width}
-        aria-label="Amount (to the nearest dollar)" />
+        <Form.Control
+          onChange={handleFormChange}
+          name="bar_width"
+          placeholder="Optional (Default 0.6)"
+          value={formData.bar_width}
+          aria-label="Amount (to the nearest dollar)" />
       </InputGroup>
       }
 

@@ -21,14 +21,14 @@ const NewChart = () => {
   const [inputFile, setInputFile] = useState(null);
   const [selectedPlotType, setSelectedPlotType] = useState(null);
   const [chartData, setChartData] = useState({
-    title: '', x_label: '', y_label: '', bar_width: .6
+    chart_name: '', title: '', x_label: '', y_label: '', bar_width: .6
   });
   const fileRef = useRef(null);
 
   const resetState = () => {
     setInputFile(null);
     setChartData({
-      title: '', x_label: '', y_label: '', bar_width: .6
+      chart_name: '', title: '', x_label: '', y_label: '', bar_width: .6
     })
     if (fileRef.current) {
       fileRef.current.value = '';
@@ -75,8 +75,18 @@ const NewChart = () => {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const previewImg = await BackendService.createChart(inputFile, selectedPlotType, chartData, 'preview');
+        if (!chartData.chart_name) {
+          throw new Error('Name cannot be empty!')
+        }
+
+        const previewImg = await BackendService.createChart(
+          inputFile,
+          selectedPlotType,
+          chartData,
+          'preview');
+
         resetState();
+
         resolve(() => {
           navigate('/created', {
             state: {

@@ -7,12 +7,23 @@
       "type": "string"
     },
     {
-      "name": "imgUrl",
+      "name": "chart_name",
       "type": "string"
     },
     {
-      "name": "chartType",
+      "name": "chart_url",
       "type": "string"
+    },
+    {
+      "name": "chart_type",
+      "type": "string"
+    },
+    {
+      "name": "created_on" ,
+      "type": {
+        "type": "int",
+        "logicalType": "date"
+      }
     }
   ]
 }

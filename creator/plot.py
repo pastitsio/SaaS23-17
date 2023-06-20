@@ -31,6 +31,7 @@ class Plot(ABC):
         self.title = chart_data['title']
         self.x_label = chart_data['x_label']
         self.y_label = chart_data['y_label']
+        self.chart_name = chart_data['chart_name']
 
         self.df = pd.read_csv(input_file, header='infer')
 
@@ -124,6 +125,7 @@ class SimplePlot(Plot):
 
     def __init__(self, input_file, chart_data):
         super().__init__(input_file, chart_data)
+        
 
         self._valid_input = {
             "x": Label(
@@ -138,6 +140,9 @@ class SimplePlot(Plot):
             ),
         }
 
+    def __name__(self):
+        return  'Simple Plot'
+    
     @property
     def valid_input(self):
         return self._valid_input
@@ -159,6 +164,7 @@ class ScatterPlot(Plot):
 
     def __init__(self, input_file, chart_data):
         super().__init__(input_file, chart_data)
+        
         self.df = self.df.rename(columns={'sizes': 's'})
 
         self._valid_input = {
@@ -185,6 +191,9 @@ class ScatterPlot(Plot):
                 optional=True
             ),
         }
+    
+    def __name__(self):
+        return 'Scatter Plot'
 
     @property
     def valid_input(self):
@@ -222,6 +231,7 @@ class BarLabelPlot(Plot):
 
     def __init__(self, input_file, chart_data):
         super().__init__(input_file, chart_data)
+        
         try:
             self.bar_width = float(chart_data['bar_width'])
             if self.bar_width <= 0:
@@ -238,6 +248,9 @@ class BarLabelPlot(Plot):
                     'error_msg': 'must be strings'}
             )
         }
+
+    def __name__(self):
+        return 'Bar Label Plot'
 
     @property
     def valid_input(self):
