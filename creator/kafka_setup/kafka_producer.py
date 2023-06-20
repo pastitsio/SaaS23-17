@@ -1,14 +1,11 @@
-import json
 import io
-import sys
+import json
 from typing import Dict
 
 import avro.io as avro_io
 from kafka import KafkaProducer as _KafkaProducer
 
-sys.path.append('../')
-from models.kafka_event import kafka_event
-
+from kafka_setup.kafka_event import kafka_event
 
 
 class KafkaProducer(_KafkaProducer):
@@ -19,10 +16,14 @@ class KafkaProducer(_KafkaProducer):
     def __init__(self, topic, encoding='avro', **configs):
 
         self._topic = topic
-        
+        self._msg_valid_keys = ['email',
+                               'chart_name',
+                               'chart_type',
+                               'chart_url',
+                               'created_on']
         if encoding == 'avro':
             def _serializer(v):
-                writer = avro_io.DatumWriter(kafka_event) 
+                writer = avro_io.DatumWriter(kafka_event)
                 bytes_writer = io.BytesIO()
                 writer.write(v, avro_io.BinaryEncoder(bytes_writer))
                 return bytes_writer.getvalue()
@@ -35,13 +36,12 @@ class KafkaProducer(_KafkaProducer):
                          **configs
                          )
 
-
     @property
     def topic(self):
         return self._topic
 
     # override
     def send(self, value: Dict, **kwargs):
-        assert all(key in ['imgUrl', 'chartType']
+        assert all(key in self._msg_valid_keys
                    for key in value.keys()), 'Missing key.'
         super().send(topic=self._topic, value=value, **kwargs)

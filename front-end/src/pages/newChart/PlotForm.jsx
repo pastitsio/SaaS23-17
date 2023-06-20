@@ -1,9 +1,20 @@
 import React from 'react'
 import { Form, InputGroup } from 'react-bootstrap'
 
-const SimplePlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, fileRef}) => {
+const PlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, fileRef }) => {
   return (
     <>
+      <InputGroup className="mb-1">
+        <InputGroup.Text id="chart_name">Name</InputGroup.Text>
+        <Form.Control
+          onChange={handleFormChange}
+          name="chart_name"
+          placeholder="Mandatory"
+          value={formData.chart_name}
+          aria-label="chart_name"
+        />
+      </InputGroup>
+
       <InputGroup className="mb-1">
         <InputGroup.Text id="title">Title</InputGroup.Text>
         <Form.Control
@@ -21,7 +32,8 @@ const SimplePlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, 
         <Form.Control
           onChange={handleFormChange}
           name="x_label"
-          placeholder={isBarLabel ? "No x-label for Bar Plot" : "Optional"}
+          placeholder={isBarLabel ? "X-labels as .csv headers" : "Optional"}
+          disabled={isBarLabel}
           value={formData.x_label}
           aria-label="x_label"
           readOnly={isBarLabel}
@@ -39,6 +51,17 @@ const SimplePlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, 
         />
       </InputGroup>
 
+      {isBarLabel && <InputGroup className="mb-1">
+        <InputGroup.Text>Bar Width</InputGroup.Text>
+        <Form.Control
+          onChange={handleFormChange}
+          name="bar_width"
+          placeholder="Optional (Default 0.6)"
+          value={formData.bar_width}
+          aria-label="Amount (to the nearest dollar)" />
+      </InputGroup>
+      }
+
       <Form.Label ><b>CSV here...</b></Form.Label>
       <InputGroup>
         <Form.Control ref={fileRef} onChange={onFileChange} type="file" accept=".csv" />
@@ -53,4 +76,4 @@ const SimplePlotForm = ({ isBarLabel, onFileChange, handleFormChange, formData, 
   )
 }
 
-export default SimplePlotForm
+export default PlotForm

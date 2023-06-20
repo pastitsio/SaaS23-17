@@ -72,9 +72,9 @@ const saveUser = async (req, res) => {
   res
     .status(StatusCodes.OK)
     .json({ success: true, msg: "User saved to db successfully" });
+}
 
-  Producer.produce({ email: email, last_login: Number(last_login) }, stream);
-};
+
 
 /**
  * @description updates last login attribute, front end has to save login time and when user log outs update the value

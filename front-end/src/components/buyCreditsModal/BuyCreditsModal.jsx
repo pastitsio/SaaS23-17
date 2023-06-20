@@ -15,11 +15,11 @@ const BuyCreditsModal = ({ show, onHide }) => {
 
   const handlePurchaseButton = () => {
     const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-    const credits = selectedCredits;
 
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.buyCredits(userInfo.email, credits);
+        await BackendService.buyCredits(userInfo.email, selectedCredits);
+        setSelectedCredits(0); // resetValue
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -72,7 +72,6 @@ const BuyCreditsModal = ({ show, onHide }) => {
             actionName='Purchase'
             disabledIf={selectedCredits === 0}
             cssId="purchase-button"
-            resetParentState={() => setSelectedCredits(0)}
           />
         </Container>
       </Modal.Footer>

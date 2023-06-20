@@ -2,17 +2,16 @@ import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap'
+import { BsDot } from 'react-icons/bs'
 
-import { SimplePlotForm } from './forms'
-
+import PlotForm from './PlotForm';
+import { BackendService } from '../../services'
 import { SubmitWaitButton } from '../../components'
 
-import { BsDot } from 'react-icons/bs'
-import { BackendService } from '../../services'
 import './newChart.css'
 
-import img1 from '../../assets/bar_label_demo.png'
-import img2 from '../../assets/scatter.webp'
+import img1 from '../../assets/bar_label_plot.png'
+import img2 from '../../assets/scatter_plot.webp'
 import img3 from '../../assets/simple_plot.webp'
 
 
@@ -22,14 +21,14 @@ const NewChart = () => {
   const [inputFile, setInputFile] = useState(null);
   const [selectedPlotType, setSelectedPlotType] = useState(null);
   const [chartData, setChartData] = useState({
-    title: '', x_label: '', y_label: ''
+    chart_name: '', title: '', x_label: '', y_label: '', bar_width: .6
   });
   const fileRef = useRef(null);
 
   const resetState = () => {
     setInputFile(null);
     setChartData({
-      title: '', x_label: '', y_label: ''
+      chart_name: '', title: '', x_label: '', y_label: '', bar_width: .6
     })
     if (fileRef.current) {
       fileRef.current.value = '';
@@ -76,13 +75,25 @@ const NewChart = () => {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const previewImg = await BackendService.createChart(inputFile, selectedPlotType, chartData, 'preview');
+        if (!chartData.chart_name) {
+          throw new Error('Name cannot be empty!')
+        }
+
+        const previewImg = await BackendService.createChart(
+          inputFile,
+          selectedPlotType,
+          chartData,
+          'preview');
+
         resetState();
+
         resolve(() => {
           navigate('/created', {
             state: {
               previewImg: previewImg,
-              inputFile: inputFile
+              inputFile: inputFile,
+              selectedPlotType: selectedPlotType,
+              chartData: chartData
             },
 
           });
@@ -149,7 +160,7 @@ const NewChart = () => {
                   }
                   {selectedPlotType &&
                     <>
-                      <SimplePlotForm
+                      <PlotForm
                         isBarLabel={selectedPlotType === 'bar_label_plot'}
                         onFileChange={handleCreateChange}
                         handleFormChange={handleFormChange}

@@ -12,7 +12,7 @@ const chartSchema = new mongoose.Schema({
     chart_type: {
         type: String,
         required: [true, 'Chart type field is required to create a new collection'],
-        enum: ['Bar Label', 'Simple Plot', 'Scatter Plot']
+        enum: ['Bar Label Plot', 'Simple Plot', 'Scatter Plot']
     },
     chart_name: {
         type: String,

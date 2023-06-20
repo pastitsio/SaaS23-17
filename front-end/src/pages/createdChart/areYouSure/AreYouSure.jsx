@@ -1,36 +1,38 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
+import { SubmitWaitButton } from '../../../components';
 
-const AreYouSure = ({onConfirm, showConfirm, setShowConfirm}) => {
+const AreYouSure = ({ onConfirm, show, setShow }) => {
   const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-
+  
   const handleCloseModal = () => {
-    setShowConfirm(false);
-  };
-
-  const handleConfirm = () => {
-    onConfirm();
-    handleCloseModal();
-  };
+    setShow(false);
+  }
 
   return (
     <div>
-      <Modal show={showConfirm} onHide={handleCloseModal}>
+      <Modal show={show} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           Saving the image will charge you <b>10</b> credits!
-          <br/>
+          <br />
           Your new balance will be <b>{userInfo.credits - 10}</b>.
         </Modal.Body>
-        <Modal.Footer>
-          <Button id="cancel-button" onClick={handleCloseModal}>
+        <Modal.Footer className='d-flex flex-column' >
+          <Button id="cancel-button" onClick={handleCloseModal} className='align-self-start'>
             Cancel
           </Button>
-          <Button id="purchase-button" onClick={handleConfirm}>
+          <SubmitWaitButton
+            action={onConfirm}
+            actionName='Confirm'
+            cssId="buy-button"
+          />
+
+          {/* <Button id="purchase-button" onClick={handleConfirm}>
             Confirm
-          </Button>
+          </Button> */}
         </Modal.Footer>
       </Modal>
     </div>

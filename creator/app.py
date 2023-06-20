@@ -13,7 +13,7 @@ from config_setup import config
 from create_app import create_app
 from kafka_setup.kafka_producer import KafkaProducer
 from keycloak import KeycloakOpenID
-from models.plot import BarLabelPlot, ScatterPlot, SimplePlot
+from plot import BarLabelPlot, ScatterPlot, SimplePlot
 from utils import check_run_plot_type
 
 
@@ -39,7 +39,12 @@ def main():
     #############################
 
     plot_type = args.type
-    plot = globals()[plot_type] # plot_type gets matched with imported class
+    if plot_type == 'BarLabelPlot':
+        plot = BarLabelPlot
+    elif plot_type == 'ScatterPlot':
+        plot = ScatterPlot
+    elif plot_type == 'SimplePlot':
+        plot = SimplePlot
 
     ##########################################
     # Setup Azure storage for created images #

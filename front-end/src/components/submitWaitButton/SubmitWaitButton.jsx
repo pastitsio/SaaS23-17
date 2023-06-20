@@ -2,6 +2,14 @@ import React, { useState } from 'react'
 import { Button, Container, Spinner } from 'react-bootstrap'
 import ActionErrorModal from './actionErrorModal/ActionErrorModal';
 
+/*
+ * Button component with spinner waiting for result.
+ * 
+ * Uses promise syntax for succesful/failed result and
+ * resets parent component state.
+*/
+
+
 const SubmitWaitButton = (props) => {
 
   const [actionErrorMessage, setActionErrorMessage] = useState('');
@@ -18,19 +26,18 @@ const SubmitWaitButton = (props) => {
     try {
       const onResolveCallback = await props.action();
       if (typeof onResolveCallback === 'function') {
-        onResolveCallback();
+        onResolveCallback(); // also performs resets on parent component, hence only resetOnFail exists
       }
       setResult(true);
     } catch (err) {
       setActionErrorMessage(err.message);
       setActionErrorShow(true);
       setResult(false);
+      if (typeof props.resetOnFail === 'function')
+        props.resetOnFail();
     } finally {
       setLoading(false);
       setReady(true);
-      if (typeof props.resetParentState === 'function') {
-        props.resetParentState();
-      }
     }
   }
 

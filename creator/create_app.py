@@ -1,5 +1,6 @@
 import json
 
+from datetime import datetime
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
 from keycloak import KeycloakOpenID
@@ -7,7 +8,7 @@ from keycloak import KeycloakOpenID
 from azure.azure_container_client import AzureContainerClient
 from keycloak_auth.keycloak import kc_introspect_token
 from kafka_setup.kafka_producer import KafkaProducer
-from models.plot import Plot
+from plot import Plot
 from utils import (check_file,
                    generate_uuid,
                    preflight_OPTIONS_method)
@@ -42,24 +43,25 @@ def create_app(plot: Plot,
     @app.route("/create", methods=["POST", "OPTIONS"])
     def create():
         try:
-            user_email = kc_introspect_token(kc_client=keycloak_client).get('email')
-            
+            user_email = kc_introspect_token(
+                kc_client=keycloak_client).get('email')
+
             chart_data = json.loads(request.form.get('data'))
             file = request.files["file"]
 
-            raise ValueError("Mode should either be SAVE or PREVIEW.")
-
             _plot = plot(file, chart_data)
+            _plot.validate()
 
             mode = request.args.get("mode")
             if mode == "preview":
                 # always create previews in JPEG format
-                image = _plot.create_chart(img_format="jpeg")["jpeg"]
+                image = _plot.create_chart(img_format="jpeg", mode=mode)["jpeg"]
                 return Response(image, mimetype="image/jpeg"), 200
 
             if mode == "save":
-                images = _plot.create_chart(img_format="all")
-                img_id = generate_uuid(distinct=user_email) # user_id to mess with randomly-created uuid's seed.
+                images = _plot.create_chart(img_format="all", mode=mode)
+                # user_id to mess with randomly-created uuid's seed.
+                img_id = generate_uuid(distinct=user_email)
                 blob_path = f'{user_email}/{img_id}'
                 for img_format, img_data in images.items():
                     # construct filepath with user, img and format info.
@@ -68,11 +70,17 @@ def create_app(plot: Plot,
                         data=img_data, blob_filepath=blob_file
                     )
 
-
-                # message is sent with acks set to 1, meaning the sender waits 
-                # so that is read by at least 1 broker.
+                # message is sent with acks set to 1, meaning the sender waits
+                # so that the message is read by at least 1 broker.
                 kafka_producer.send(
-                    value={'imgUrl': blob_path, 'chartType': plot.__name__}
+                    value={
+                        'email': user_email,
+                        'chart_name': chart_data['chart_name'],
+                        'chart_type': plot.__name__,
+                        'chart_url': blob_path,
+                        'created_on': datetime.now().date()
+                        }
+
                 )
 
                 return "Success", 200

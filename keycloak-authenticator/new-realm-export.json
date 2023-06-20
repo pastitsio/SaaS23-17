@@ -331,11 +331,11 @@
       "admin-cli": [],
       "user-info-manager-ms": [
         {
-          "id": "b5258edf-76ac-4c82-89be-6005f0fc3cd3",
+          "id": "996ff1b2-eab4-46a2-ae5a-7a27dda54c1a",
           "name": "uma_protection",
           "composite": false,
           "clientRole": true,
-          "containerId": "9ddb0bc3-e49c-41cd-b3e4-0d7d692e61ee",
+          "containerId": "cc124e39-1558-497f-b1a7-30f827005b2a",
           "attributes": {}
         }
       ],
@@ -462,9 +462,9 @@
   "otpPolicyPeriod": 30,
   "otpPolicyCodeReusable": false,
   "otpSupportedApplications": [
+    "totpAppMicrosoftAuthenticatorName",
     "totpAppFreeOTPName",
-    "totpAppGoogleName",
-    "totpAppMicrosoftAuthenticatorName"
+    "totpAppGoogleName"
   ],
   "webAuthnPolicyRpEntityName": "keycloak",
   "webAuthnPolicySignatureAlgorithms": [
@@ -513,8 +513,8 @@
       "groups": []
     },
     {
-      "id": "c189bf0c-8af0-4e89-9d14-c57c9ff8447e",
-      "createdTimestamp": 1686143294916,
+      "id": "352fe449-5b5f-4efe-90b8-ee0a63092c1c",
+      "createdTimestamp": 1686065033060,
       "username": "service-account-user-info-manager-ms",
       "enabled": true,
       "totp": false,
@@ -1009,12 +1009,12 @@
       }
     },
     {
-      "id": "9ddb0bc3-e49c-41cd-b3e4-0d7d692e61ee",
+      "id": "cc124e39-1558-497f-b1a7-30f827005b2a",
       "clientId": "user-info-manager-ms",
       "name": "User Info Manager MS",
       "description": "",
       "rootUrl": "http://localhost:5000",
-      "adminUrl": "",
+      "adminUrl": "http://localhost:5000",
       "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
@@ -1022,10 +1022,10 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        ""
+        "http://localhost:5000/*"
       ],
       "webOrigins": [
-        "http://localhost:5000/*"
+        "http://localhost:5000"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -1036,14 +1036,13 @@
       "serviceAccountsEnabled": true,
       "authorizationServicesEnabled": true,
       "publicClient": false,
-      "frontchannelLogout": false,
+      "frontchannelLogout": true,
       "protocol": "openid-connect",
       "attributes": {
         "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1686143096",
-        "backchannel.logout.session.required": "false",
         "oauth2.device.authorization.grant.enabled": "false",
-        "display.on.consent.screen": "false",
+        "client.secret.creation.time": "1686065033",
+        "backchannel.logout.session.required": "true",
         "backchannel.logout.revoke.offline.tokens": "false"
       },
       "authenticationFlowBindingOverrides": {},
@@ -1051,21 +1050,21 @@
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
         {
-          "id": "bf567f7e-4af4-4d10-86ff-63d909bfdd47",
-          "name": "Client IP Address",
+          "id": "dfb62f49-f043-431e-845f-4fa7c0f40e38",
+          "name": "Client ID",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
           "consentRequired": false,
           "config": {
-            "user.session.note": "clientAddress",
+            "user.session.note": "client_id",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "clientAddress",
+            "claim.name": "client_id",
             "jsonType.label": "String"
           }
         },
         {
-          "id": "84c1ac24-d1e8-4734-bbd8-3c2173c7155e",
+          "id": "6a292487-f360-4447-aa7c-d55a20e48fc4",
           "name": "Client Host",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
@@ -1079,16 +1078,16 @@
           }
         },
         {
-          "id": "f8f84826-3502-48a6-8414-854808b672b8",
-          "name": "Client ID",
+          "id": "7981af52-8e3c-4f02-a97a-70a9dbf97302",
+          "name": "Client IP Address",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-usersessionmodel-note-mapper",
           "consentRequired": false,
           "config": {
-            "user.session.note": "client_id",
+            "user.session.note": "clientAddress",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "client_id",
+            "claim.name": "clientAddress",
             "jsonType.label": "String"
           }
         }
@@ -1115,7 +1114,7 @@
             "type": "urn:user-info-manager-ms:resources:default",
             "ownerManagedAccess": false,
             "attributes": {},
-            "_id": "2c1c2f5e-5375-4599-a929-0c6c8383863c",
+            "_id": "9cdba2fe-154a-4e72-909a-73e45f2c37b2",
             "uris": [
               "/*"
             ]
@@ -1123,7 +1122,7 @@
         ],
         "policies": [
           {
-            "id": "b61a4597-7019-4db2-ba64-8f73c6f6e570",
+            "id": "711bba0f-1911-4731-8deb-ca2289a1aa4c",
             "name": "Default Policy",
             "description": "A policy that grants access only for users within this realm",
             "type": "js",
@@ -1134,7 +1133,7 @@
             }
           },
           {
-            "id": "40b2ea76-a880-485a-86dd-326df2a7d057",
+            "id": "e8c34417-9276-4eb4-91af-588881bcd55e",
             "name": "Default Permission",
             "description": "A permission that applies to the default resource type",
             "type": "resource",
