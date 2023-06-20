@@ -14,8 +14,6 @@ const AccountControl = () => {
     UserService.doLogin();
   }
 
-  const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-
   return (
     <Container id='account-control-container'>
 
@@ -23,13 +21,13 @@ const AccountControl = () => {
         <Dropdown drop="start">
 
           <Dropdown.Toggle id='navbar-username'>
-            <u>{UserService.getUsername()} {userInfo ? "" : " !"}</u>
+            <u>{UserService.getUsername()}</u>
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
             
             <Dropdown.Item as='li' id='user-profile-card'>
-              <UserProfileCard userInfo={userInfo} />
+              <UserProfileCard />
             </Dropdown.Item>
 
             <Dropdown.Divider />
