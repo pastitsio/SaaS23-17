@@ -46,6 +46,8 @@ def main():
         plot = ScatterPlot
     elif run_type == 'SimplePlot':
         plot = SimplePlot
+    elif run_type == 'Downloader': 
+        pass
 
     ##########################################
     # Setup Azure storage for created images #

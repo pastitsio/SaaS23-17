@@ -39,7 +39,7 @@ const userChartsInfo = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ success: true, result: charts });
   } catch (error) {
-    res.status(error.status).json({ success: false, message: error.msg });
+    res.status(error.status).json({ success: false, message: error.message });
   }
 };
 

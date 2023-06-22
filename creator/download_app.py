@@ -47,6 +47,6 @@ def download_app(keycloak_client: KeycloakOpenID,
 
         except Exception as exc:
             print(exc)
-            return jsonify({"message": str(exc)}), 500
+            return jsonify({"msg": str(exc)}), 500
     
     return app

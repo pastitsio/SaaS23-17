@@ -39,14 +39,12 @@ const MyCharts = () => {
 
     const fetchTableData = async () => {
       try {
-        const tableData = await BackendService.fetchTableData(userInfo.email);
+        const tableData = await BackendService.fetchChartTableData(userInfo.email);
         setChartsTable(tableData);
         setPrompt('Select a chart from the table ')
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled:', error.message);
-        } else {
-          console.log('Error:', error.message);
         }
         setPrompt(error.message)
       }
@@ -82,6 +80,7 @@ const MyCharts = () => {
         setSelectedChart({ src: imgPreview, title: chart_name });
         setImgReady(true);
       } catch (error) {
+        setSelectedChartIdx(-1);
         setImgReady(false);
         setPrompt(error.message)
       }

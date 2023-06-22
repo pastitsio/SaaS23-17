@@ -2,14 +2,18 @@ import { api } from '..';
 import { withTimeout } from './utils';
 
 // TODO: implement on modal.
-const mockBuyCredits = async (email, credits) => {
+const buyCredits = async (email, credits) => {
   try {
     const url = `${process.env.REACT_APP_uim_api_url}/purchaseCredits`;
-    const response = await withTimeout(api.post(
-      url,
-      {
-        params: { email: email, credits: credits }
-      }));
+    const response = await withTimeout(
+      api.post(url,
+        {
+          params: {
+            email: email,
+            credits: credits
+          }
+        })
+    );
 
     console.log('response :>> ', response.data.success);
   } catch (error) {
@@ -21,9 +25,8 @@ const mockBuyCredits = async (email, credits) => {
 const createChart = async (inputFile, plotType, chartData, mode) => {
   mode = mode.toLowerCase();
   try {
-
+    // plot type creators are on diff servers-ms's
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
-
     if (!plotTypes.includes(plotType)) {
       throw new Error(`__type__ should be on of [${plotTypes}]`);
     }
@@ -32,47 +35,40 @@ const createChart = async (inputFile, plotType, chartData, mode) => {
     postData.append('file', inputFile);
     postData.append('data', JSON.stringify(chartData));
 
-    console.log('postData :>> ', postData);
-
     const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
+    // ! "save/preview" distinguishment is done through <mode>
     const url = `${create_server_url}/create?mode=${mode}`;
-
-    if (mode === 'preview') {
-      const response = await withTimeout(api.post(url, postData,
+    const response = await withTimeout(
+      api.post(url, postData,
         {
           responseType: 'blob',
           headers: { 'Content-Type': 'multipart/form-data' }
         })
-      );
-      console.log(`Chart preview fetched!`);
+    );
+
+    if (mode === 'preview') { // fetches newly created preview.
+      console.log(`Preview created!`);
 
       const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
       const downloadedURL = URL.createObjectURL(imgBlob);
 
       return Promise.resolve(downloadedURL);
     }
-
-    // TODO: response type blob as well, for uniform error handling
     if (mode === 'save') {
-      await withTimeout(api.post(url, postData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        }));
-
       console.log(`Chart saved to DB!`);
     }
 
-  } catch (error) {
-    let errorMessage = error.message;
-    if (error.response) {
-      const errorData = error.response.data;
-      if (errorData instanceof Blob) {
-        // responseType was set to blob, so need to read as text->json.
-        const blobText = await errorData.text();
-        errorMessage = JSON.parse(blobText).message;
-      }
+  } catch (err) {
+    let errorMessage;
+    if (err.response) { // API Error => responseType is blob
+      const res = await err.response.data.text();
+      errorMessage = JSON.parse(res).msg;
+    } else if (err.request) { // NetworkError
+      errorMessage = err.message;
+    } else {
+      errorMessage = 'Error setting up the request'
     }
-    throw new Error(`Error creating chart: ${errorMessage}`);
+    throw new Error(`Error creating chart: ${errorMessage}. Retry later!`);
 
   }
 };
@@ -90,19 +86,29 @@ const downloadPreset = (plotType) => {
 
 
 const fetchChart = async (blobFilepath, fileFormat) => {
-  try {
-    let responseFileType;
-    if (fileFormat === 'svg') { responseFileType = 'image/svg+xml' }
-    else if (fileFormat === 'png') { responseFileType = 'image/png' }
-    else if (fileFormat === 'pdf') { responseFileType = 'application/pdf' }
-    else { responseFileType = 'text/html' }
+  let responseFileType;
+  switch (fileFormat) {
+    case 'svg':
+      responseFileType = 'image/svg+xml';
+      break;
+    case 'png':
+      responseFileType = 'image/png';
+      break;
+    case 'pdf':
+      responseFileType = 'application/pdf';
+      break;
+    default:
+      responseFileType = 'text/html'
+  }
 
+  try {
     const url = `${process.env.REACT_APP_dl_api_url}/download/${blobFilepath}?format=${fileFormat}`;
-    const response = await withTimeout(api.get(url,
-      {
-        responseType: 'blob',
-        headers: { 'Content-Type': 'multipart/form-data' }
-      })
+    const response = await withTimeout(
+      api.get(url,
+        {
+          responseType: 'blob',
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
     );
     console.log(`Chart preview fetched!`);
 
@@ -111,47 +117,60 @@ const fetchChart = async (blobFilepath, fileFormat) => {
 
     return Promise.resolve(downloadedURL);
 
-  } catch (error) {
-    console.log('error :>> ', error);
-    if (!error.response) {
-      throw new Error(`Error fetching chart preview: ${error.message}`);
+  } catch (err) {
+    let errorMessage;
+    if (err.response) { // API Error => responseType is blob
+      const res = await err.response.data.text();
+      errorMessage = JSON.parse(res).msg;
+    } else if (err.request) { // NetworkError
+      errorMessage = err.message;
+    } else {
+      errorMessage = 'Error setting up the request'
     }
-    throw new Error(`Error fetching chart preview: ${error.response.data}`);
+    throw new Error(`Error fetching chart: ${errorMessage}. Retry later!`);
   }
 };
 
 
-const fetchTableData = async (email) => {
+const fetchChartTableData = async (email) => {
   try {
     const url = `${process.env.REACT_APP_cim_api_url}/chartInfo/${email}`;
-    const response = await withTimeout(api.get(url));
-
+    const response = await withTimeout(
+      api.get(url)
+    );
     console.log(`Table data fetched! :>> email: ${email}`);
 
     return Promise.resolve(response.data.result);
-  } catch (error) {
-    if (!error.response.data.success) {
+
+  } catch (err) {
+    if (!err.response.data.success) { // API error
       throw new Error(`No charts found! Create one`);
+    } else { // Network Error
+      throw new Error(`Error fetching table data: ${err.message}`);
     }
-    throw new Error(`Error fetching table data: ${error.message}`);
   }
 };
 
 
 const fetchUserInfo = async (email, force_reload = false) => {
-  const userInfo = sessionStorage.getItem('userInfo');
   // first check session storage
+  const userInfo = sessionStorage.getItem('userInfo');
   if (userInfo)
     return Promise.resolve(userInfo);
 
   try {
     const url = `${process.env.REACT_APP_uim_api_url}/user`;
-    const response = await withTimeout(api.get(
-      url, { params: { email: email, } }
-    ))
+    const response = await withTimeout(
+      api.get(url,
+        {
+          params: {
+            email: email,
+          }
+        })
+    );
+    console.log(`User info fetched! :>> ${JSON.stringify(response.data)}`);
 
     sessionStorage.setItem('userInfo', JSON.stringify(response.data));
-    console.log(`User info fetched! :>> ${JSON.stringify(response.data)}`);
     if (force_reload) {
       window.location.reload();
     }
@@ -164,42 +183,38 @@ const fetchUserInfo = async (email, force_reload = false) => {
 const saveUserToDB = async (email) => {
   try {
     const url = `${process.env.REACT_APP_uim_api_url}/newUser`;
-    const response = await withTimeout(api.post(
-      url,
-      {
-        params: {
-          email: email,
-          lastLoginTimestamp: Date.now()
-        }
-      }));
+    const response = await withTimeout(
+      api.post(url,
+        {
+          params: {
+            email: email,
+            lastLoginTimestamp: Date.now()
+          }
+        })
+    );
 
     console.log('response :>> ', response.data.msg);
-  } catch (error) {
-    let errorMessage = error.message;
-
-    if (error.response) {
-      if (error.response.data instanceof Object) { // if CustomAPIError
-        errorMessage = errorMessage.msg;
-      } else {
-        errorMessage = errorMessage.response.data;
-      }
+  } catch (err) {
+    let errorMessage;
+    if (err.response) { // API Error
+      errorMessage = err.response.data.msg;
+    } else if (err.request) { // NetworkError
+      errorMessage = err.message;
+    } else {
+      errorMessage = 'Error setting up the request'
     }
-    throw new Error(
-      `Error saving to DB: ${errorMessage}. Retry later.`
-    );
+    throw new Error(`Error saving user to DB: ${errorMessage + '. Retry later!'}`);
   }
 };
 
 
-
-const buyCredits = mockBuyCredits;
 
 export {
   buyCredits,
   createChart,
   downloadPreset,
   fetchChart,
-  fetchTableData,
+  fetchChartTableData,
   fetchUserInfo,
   saveUserToDB,
 };
