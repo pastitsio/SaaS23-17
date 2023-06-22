@@ -4,7 +4,7 @@ import { withTimeout } from './utils';
 // TODO: implement on modal.
 const buyCredits = async (email, credits) => {
   try {
-    const url = `${process.env.REACT_APP_uim_api_url}/purchaseCredits`;
+    const url = `${process.env.REACT_APP_user_info_manager_api_url}/purchaseCredits`;
     const response = await withTimeout(
       api.post(url,
         {
@@ -102,7 +102,7 @@ const fetchChart = async (blobFilepath, fileFormat) => {
   }
 
   try {
-    const url = `${process.env.REACT_APP_dl_api_url}/download/${blobFilepath}?format=${fileFormat}`;
+    const url = `${process.env.REACT_APP_downloader_api_url}/download/${blobFilepath}?format=${fileFormat}`;
     const response = await withTimeout(
       api.get(url,
         {
@@ -134,7 +134,7 @@ const fetchChart = async (blobFilepath, fileFormat) => {
 
 const fetchChartTableData = async (email) => {
   try {
-    const url = `${process.env.REACT_APP_cim_api_url}/chartInfo/${email}`;
+    const url = `${process.env.REACT_APP_chart_info_manager_api_url}/chartInfo/${email}`;
     const response = await withTimeout(
       api.get(url)
     );
@@ -159,7 +159,7 @@ const fetchUserInfo = async (email, force_reload = false) => {
     return Promise.resolve(userInfo);
 
   try {
-    const url = `${process.env.REACT_APP_uim_api_url}/user`;
+    const url = `${process.env.REACT_APP_user_info_manager_api_url}/user`;
     const response = await withTimeout(
       api.get(url,
         {
@@ -182,7 +182,7 @@ const fetchUserInfo = async (email, force_reload = false) => {
 
 const saveUserToDB = async (email) => {
   try {
-    const url = `${process.env.REACT_APP_uim_api_url}/newUser`;
+    const url = `${process.env.REACT_APP_user_info_manager_api_url}/newUser`;
     const response = await withTimeout(
       api.post(url,
         {
