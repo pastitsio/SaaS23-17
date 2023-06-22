@@ -43,7 +43,7 @@ const purchase = async (req, res) => {
  * @param {JSON} req.body {email: String, credits: Number}
  * @returns  {JSON} {success: Boolean, result: Obj} Obj has email and new credit balance
  */
-const udpate = async (req, res) => {
+const update = async (req, res) => {
   const newUserData = await controllersController(req, res, (x, y) => {
     return x - y;
   });
@@ -77,4 +77,4 @@ async function controllersController(req, res, fn) {
   return { email: user.email, credits: user.credits };
 }
 
-module.exports = { purchase, udpate };
+module.exports = { purchase, update };
