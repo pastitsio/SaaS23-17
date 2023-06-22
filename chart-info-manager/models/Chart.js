@@ -5,23 +5,23 @@ const chartSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    chart_url: {
+    chart_name: {
         type: String,
-        required: [true, 'Chart url field is required in order to create a new collection']
+        required: [true, '"chart_name" field is required to create a new collection']
     },
     chart_type: {
         type: String,
-        required: [true, 'Chart type field is required to create a new collection'],
+        required: [true, '"chart_type" field is required to create a new collection'],
         enum: ['Bar Label Plot', 'Simple Plot', 'Scatter Plot']
     },
-    chart_name: {
+    chart_url: {
         type: String,
-        required: [true, 'Chart name field is required to create a new collection']
+        required: [true, '"chart_url" field is required in order to create a new collection']
     },
     created_on: {
-        type: Date,
+        type: Number,
         default: Date.now(),
-        required: [true, 'Created on field is required to create a new collection']
+        required: [true, '"created_on" field is required to create a new collection']
     }
 });
 

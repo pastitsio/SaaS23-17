@@ -10,7 +10,6 @@ const group = 'kafka0233403';
 const topic = 'chart-data';
 const consumer = consumerCreate(group, topic);
 const parseMsg = async (msg) => {
-  // msg.created_on = Number(msg.created_on);
   const chart = new Chart({...msg});
   await chart.save();
 };
@@ -21,7 +20,7 @@ readMessage(consumer, parseMsg);
  * @description controller gets an email and returns all the charts that are owned by that user
  * @param {JSON} req.params {email: String}
  * @param {JSON} res {success: Bool, result: Obj} 
- * Obj = {email:String, chart_url: String, chart_type: String, chart_name: String, created_at: timestamp}
+ * Obj = {email:String, chart_url: String, chart_type: String, chart_name: String, created_on: int(timestamp)}
  */
 const userChartsInfo = async (req, res) => {
   const email = req.params.email;
@@ -40,7 +39,7 @@ const userChartsInfo = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ success: true, result: charts });
   } catch (error) {
-    res.status(error.status).json({ success: false, message: error.msg });
+    res.status(error.status).json({ success: false, message: error.message });
   }
 };
 

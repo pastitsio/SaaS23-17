@@ -8,7 +8,7 @@ const eventSchema = avro.Type.forSchema({
         type: 'string'
     },
     { 
-        name: "chart_url",
+        name: "chart_name",
         type: 'string'
     },
     { 
@@ -16,12 +16,12 @@ const eventSchema = avro.Type.forSchema({
         type: 'string'
     },
     { 
-        name: "chart_name",
+        name: "chart_url",
         type: 'string'
     },
     { 
         name: "created_on",
-        type: "string"
+        type: "int"
     }
   ]
 });

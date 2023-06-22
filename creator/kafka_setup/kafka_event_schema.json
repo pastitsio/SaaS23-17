@@ -11,19 +11,16 @@
       "type": "string"
     },
     {
-      "name": "chart_url",
-      "type": "string"
-    },
-    {
       "name": "chart_type",
       "type": "string"
     },
     {
-      "name": "created_on" ,
-      "type": {
-        "type": "int",
-        "logicalType": "date"
-      }
+      "name": "chart_url",
+      "type": "string"
+    },
+    {
+      "name": "created_on",
+      "type": "int"
     }
   ]
 }

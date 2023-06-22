@@ -21,11 +21,6 @@ def create_app(plot: Plot,
                ) -> Flask:
     """Creates app using runtime-resolved configuration.
 
-    Args:
-        user (str): plot type
-        plot (Plot): plot_type class
-        client (AzureContainerClient): azure container client
-
     Raises:
         ValueError: Create route mode should either be 'preview' or 'save'
 
@@ -54,39 +49,44 @@ def create_app(plot: Plot,
 
             mode = request.args.get("mode")
             if mode == "preview":
-                # always create previews in JPEG format
-                image = _plot.create_chart(img_format="jpeg", mode=mode)["jpeg"]
-                return Response(image, mimetype="image/jpeg"), 200
 
-            if mode == "save":
+                # always create previews in JPEG format
+                image = _plot.create_chart(
+                    img_format="jpeg", mode=mode)["jpeg"]
+
+                return Response(response=image, mimetype="image/jpeg", status=200)
+
+            elif mode == "save":
+                # generate new image uuid
                 images = _plot.create_chart(img_format="all", mode=mode)
-                # user_id to mess with randomly-created uuid's seed.
                 img_id = generate_uuid(distinct=user_email)
                 blob_path = f'{user_email}/{img_id}'
+
+                # store image in AZ container
                 for img_format, img_data in images.items():
-                    # construct filepath with user, img and format info.
+                    # append format in filepath
                     blob_file = f'{blob_path}/{img_format}'
                     azure_container_client.upload_to_blob(
                         data=img_data, blob_filepath=blob_file
                     )
 
-                # message is sent with acks set to 1, meaning the sender waits
-                # so that the message is read by at least 1 broker.
+                # kafkify chart creation
                 kafka_producer.send(
                     value={
                         'email': user_email,
                         'chart_name': chart_data['chart_name'],
-                        'chart_type': plot.__name__,
+                        'chart_type': _plot.name(),
                         'chart_url': blob_path,
-                        'created_on': datetime.now().date()
-                        }
-
+                        'created_on': int(datetime.now().timestamp())
+                    }
                 )
 
-                return "Success", 200
-            raise ValueError("Mode should either be SAVE or PREVIEW.")
+                return jsonify({"msg": "Success"}), 200
+
+            else:
+                raise ValueError("Mode should either be 'save' or 'preview'.")
 
         except Exception as exc:
-            return jsonify({"message": str(exc)}), 500
+            return jsonify({"msg": str(exc)}), 500
 
     return app
