@@ -11,6 +11,7 @@ import argparse
 from azure.azure_container_client import AzureContainerClient
 from config_setup import config
 from create_app import create_app
+from download_app import download_app
 from kafka_setup.kafka_producer import KafkaProducer
 from keycloak import KeycloakOpenID
 from plot import BarLabelPlot, ScatterPlot, SimplePlot
@@ -25,7 +26,7 @@ def main():
     parser.add_argument(
         "-t",
         "--type",
-        type=lambda x: check_run_plot_type(x, config['PLOT']['TYPES']),
+        type=lambda x: check_run_plot_type(x, config['RUN']['TYPES']),
         help="Type of plotting app.",
         required=True,
     )
@@ -38,12 +39,12 @@ def main():
     # Setup runtime environment #
     #############################
 
-    plot_type = args.type
-    if plot_type == 'BarLabelPlot':
+    run_type = args.type
+    if run_type == 'BarLabelPlot':
         plot = BarLabelPlot
-    elif plot_type == 'ScatterPlot':
+    elif run_type == 'ScatterPlot':
         plot = ScatterPlot
-    elif plot_type == 'SimplePlot':
+    elif run_type == 'SimplePlot':
         plot = SimplePlot
 
     ##########################################
@@ -72,19 +73,22 @@ def main():
     keycloak_client = KeycloakOpenID(
         server_url=kc_config['SERVER_URL'],
         realm_name=kc_config['REALM_NAME'],
-        client_id=kc_config[plot_type]['CLIENT_ID'],
-        client_secret_key=kc_config[plot_type]['CLIENT_SECRET_KEY']
+        client_id=kc_config[run_type]['CLIENT_ID'],
+        client_secret_key=kc_config[run_type]['CLIENT_SECRET_KEY']
     )
 
     #####################
     # Create app and run#
     #####################
-    app = create_app(
-        plot=plot,
-        keycloak_client=keycloak_client,
-        azure_container_client=azure_container_client,
-        kafka_producer=kafka_producer
-    )
+    if run_type == 'Downloader':
+        app = download_app(keycloak_client=keycloak_client,
+                           azure_container_client=azure_container_client)
+    else: 
+        app = create_app(plot=plot,
+                         keycloak_client=keycloak_client,
+                         azure_container_client=azure_container_client,
+                         kafka_producer=kafka_producer
+                         )
 
     port = args.port
     app.run(debug=True, port=port)

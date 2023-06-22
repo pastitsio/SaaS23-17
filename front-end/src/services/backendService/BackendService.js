@@ -1,12 +1,6 @@
 import { api } from '..';
 import { withTimeout } from './utils';
 
-// const fakeCondition = true;
-const fakeTimeout = 1000;
-
-// const someCondition = UserService.isLoggedIn() && fakeCondition;
-const someCondition = true;
-
 // TODO: implement on modal.
 const mockBuyCredits = async (email, credits) => {
   try {
@@ -44,20 +38,27 @@ const createChart = async (inputFile, plotType, chartData, mode) => {
     const url = `${create_server_url}/create?mode=${mode}`;
 
     if (mode === 'preview') {
-      const response = await api.post(url, postData,
+      const response = await withTimeout(api.post(url, postData,
         {
           responseType: 'blob',
           headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        })
+      );
+      console.log(`Chart preview fetched!`);
 
       const imgBlob = new Blob([response.data], { type: 'image/jpeg' });
+      const downloadedURL = URL.createObjectURL(imgBlob);
 
-      console.log(`Chart preview fetched!`);
-      return Promise.resolve(URL.createObjectURL(imgBlob));
+      return Promise.resolve(downloadedURL);
     }
 
+    // TODO: response type blob as well, for uniform error handling
     if (mode === 'save') {
-      await api.post(url, postData, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await withTimeout(api.post(url, postData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }));
+
       console.log(`Chart saved to DB!`);
     }
 
@@ -77,50 +78,61 @@ const createChart = async (inputFile, plotType, chartData, mode) => {
 };
 
 
-const mockDownloadImgFormat = async (chartId, format) => {
-  const url = `/chart/${chartId}?format=${format}`;
+const downloadPreset = (plotType) => {
+  const filename = `/presets/${plotType.split(' ').join('_').toLowerCase()}.csv`
+  const link = document.createElement('a');
+  link.href = filename;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+}
+
+
+const fetchChart = async (blobFilepath, fileFormat) => {
   try {
-    const response = await withTimeout(api.get(url, { responseType: 'blob' }));
-    const urlHTML = window.URL.createObjectURL(new Blob([response.data]));
+    let responseFileType;
+    if (fileFormat === 'svg') { responseFileType = 'image/svg+xml' }
+    else if (fileFormat === 'png') { responseFileType = 'image/png' }
+    else if (fileFormat === 'pdf') { responseFileType = 'application/pdf' }
+    else { responseFileType = 'text/html' }
 
-    // create and destroy hidden download button
-    const link = document.createElement('a');
-    link.href = urlHTML;
-    link.setAttribute('download', `${chartId}.${format}`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    const url = `${process.env.REACT_APP_dl_api_url}/download/${blobFilepath}?format=${fileFormat}`;
+    const response = await withTimeout(api.get(url,
+      {
+        responseType: 'blob',
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    );
+    console.log(`Chart preview fetched!`);
 
-    console.log(`Chart downloaded! :>> chartId :${chartId}, format: ${format}`);
+    const imgBlob = new Blob([response.data], { type: responseFileType });
+    const downloadedURL = URL.createObjectURL(imgBlob);
+
+    return Promise.resolve(downloadedURL);
+
   } catch (error) {
-    throw new Error(`Error downloading image: ${error.message}`);
-  }
-};
-
-
-const mockFetchChartPreview = async (blobFilepath) => {
-  try {
-    const url = `${process.env.REACT_APP_dl_api_url}/api/v1/preview/${blobFilepath}`;
-    const response = await withTimeout(api.get(url));
-
-    console.log(`Table data fetched! :>> email: ${blobFilepath}`);
-
-    return Promise.resolve(response.data.result);
-  } catch (error) {
-    throw new Error(`Error fetching table data: ${error.message}`);
+    console.log('error :>> ', error);
+    if (!error.response) {
+      throw new Error(`Error fetching chart preview: ${error.message}`);
+    }
+    throw new Error(`Error fetching chart preview: ${error.response.data}`);
   }
 };
 
 
 const fetchTableData = async (email) => {
   try {
-    const url = `${process.env.REACT_APP_cim_api_url}/api/v1/chartInfo/${email}`;
+    const url = `${process.env.REACT_APP_cim_api_url}/chartInfo/${email}`;
     const response = await withTimeout(api.get(url));
 
     console.log(`Table data fetched! :>> email: ${email}`);
 
     return Promise.resolve(response.data.result);
   } catch (error) {
+    if (!error.response.data.success) {
+      throw new Error(`No charts found! Create one`);
+    }
     throw new Error(`Error fetching table data: ${error.message}`);
   }
 };
@@ -181,17 +193,14 @@ const saveUserToDB = async (email) => {
 
 
 const buyCredits = mockBuyCredits;
-const downloadImgFormat = mockDownloadImgFormat;
-const fetchChartPreview = mockFetchChartPreview;
 
-const BackendService = {
+export {
   buyCredits,
   createChart,
-  downloadImgFormat,
-  fetchChartPreview,
+  downloadPreset,
+  fetchChart,
   fetchTableData,
   fetchUserInfo,
   saveUserToDB,
 };
 
-export default BackendService;

@@ -2,34 +2,46 @@ import React, { useEffect, useState } from 'react'
 import { Button, Card, Container, Spinner, Table } from 'react-bootstrap'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
-import sampleImg from '../../assets/sample_img.png'
 import axios from 'axios'
 import { BackendService, UserService } from '../../services'
 import './myCharts.css'
 
 const MyCharts = () => {
 
-  const userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
-
   const [chartsTable, setChartsTable] = useState([]);
-  const [selectedChartIdx, setSelectedChartIdx] = useState(null);
+  const [selectedChartIdx, setSelectedChartIdx] = useState(-1);
   const [selectedChart, setSelectedChart] = useState(null);
 
   const [tableLoading, setTableLoading] = useState(true);
   const [imgLoading, setImgLoading] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
+  const [userInfo, setUserInfo] = useState(null)
   const [prompt, setPrompt] = useState('Select a chart from the table ');
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const storedUserInfo = sessionStorage.getItem('userInfo');
+      if (storedUserInfo) {
+        setUserInfo(JSON.parse(storedUserInfo));
+        clearInterval(interval); // Stop the polling once userInfo is found
+      }
+    }, 400);
+
+    return () => {
+      clearInterval(interval); // Clean up the interval on component unmount
+    };
+  }, []);
 
   useEffect(() => {
     const source = axios.CancelToken.source();
 
-    // TODO: GET fetch Table data, add error case
     const fetchTableData = async () => {
       try {
         const tableData = await BackendService.fetchTableData(userInfo.email);
         setChartsTable(tableData);
-        console.log('tableData :>> ', tableData);
+        setPrompt('Select a chart from the table ')
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled:', error.message);
@@ -42,46 +54,60 @@ const MyCharts = () => {
     }
 
     if (UserService.isLoggedIn()) {
-      fetchTableData();
+      if (userInfo)
+        fetchTableData();
     }
 
     return () => {
       source.cancel('Request canceled by MyCharts.jsx cleanup');
     }
-  }, [userInfo.email]);
+  }, [userInfo]);
 
 
   const handleRowClick = (chartIdx) => {
+    if (chartIdx === selectedChartIdx) {
+      return;
+    }
+    
+    setSelectedChartIdx(chartIdx);
     setImgLoading(true);
     setImgReady(false);
-    setSelectedChartIdx(chartIdx);
-
+    
     const fetchChartPreview = async () => {
-      // eslint-disable-next-line no-unused-vars
-      const imgPreview = await BackendService.createChart(chartIdx);
+      try {
+        const { chart_url, chart_name } = chartsTable.at(chartIdx);
 
-      setSelectedChart(imgPreview);
+        const imgPreview = await BackendService.fetchChart(chart_url, 'jpeg');
+
+        setSelectedChart({ src: imgPreview, title: chart_name });
+        setImgReady(true);
+      } catch (error) {
+        setImgReady(false);
+        setPrompt(error.message)
+      }
       setImgLoading(false);
-      setImgReady(true);
     }
-
-    if (UserService.isLoggedIn()) {
-      fetchChartPreview(selectedChartIdx);
-    }
+    fetchChartPreview();
   }
 
-  const handleDownloadImage = (event) => {
-    const chartIdx = selectedChartIdx;
-    const format = event.target.name;
+  const handleDownloadImage = async (event) => {
+    const imgFormat = event.target.name;
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        await BackendService.downloadImgFormat(chartIdx, format);
-        resolve(() => undefined);
-      } catch (e) {
-        reject(e)
-      }
-    })
+    try {
+      const { chart_url, chart_name } = chartsTable.at(selectedChartIdx);
+
+      const downloadedURL = await BackendService.fetchChart(chart_url, imgFormat);
+
+      const link = document.createElement('a');
+      link.href = downloadedURL;
+      link.download = `${chart_name}.${imgFormat}`;
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (e) {
+      setImgReady(false);
+      setPrompt(e.message)
+    }
   }
 
   return (
@@ -97,7 +123,7 @@ const MyCharts = () => {
               <Container className='table-container' style={{ height: '70%' }}>
                 <Table className=''>
                   <thead>
-                    <tr><th>Type</th><th>Name</th><th>Created Date</th>
+                    <tr><th>Type</th><th>Name</th><th>Date Created</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -117,10 +143,15 @@ const MyCharts = () => {
               <Container className='export-container' style={{ height: '30%' }}>
                 <Container className='export-buttons'>
                   {['html', 'pdf', 'png', 'svg'].map((imgFormat, idx) => (
-                    <Button key={idx} className={imgReady ? '' : 'disabled'} size='sm' name={imgFormat} onClick={(event) => handleDownloadImage(event)}>{imgFormat.toUpperCase()}</Button>
+                    <Button
+                      key={idx}
+                      className={imgReady ? '' : 'disabled'}
+                      size='sm' name={imgFormat}
+                      onClick={handleDownloadImage}
+                    >{imgFormat.toUpperCase()}</Button>
                   ))}
                   <Container className='button-divider' >{" "}</Container>
-                  <Button id='interactive-button' className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
+                  <Button id='interactive-button' disabled className={imgReady ? '' : 'disabled'}>Interactive Preview <BsFillArrowUpRightCircleFill /></Button>
                 </Container>
                 <u className='export-label' >Export as:</u>
               </Container>

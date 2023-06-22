@@ -1,6 +1,7 @@
 FRONTEND:
     SERVER_URL: http://localhost:4007
 
+RUN:
+    TYPES: BarLabelPlot,ScatterPlot,SimplePlot,Downloader
 PLOT:
-    TYPES: BarLabelPlot,ScatterPlot,SimplePlot
     FORMATS: jpeg,png,svg

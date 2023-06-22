@@ -38,13 +38,7 @@ const NewChart = () => {
   const handleDownloadButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const link = document.createElement('a');
-        const filename = `/presets/${selectedPlotType.split(' ').join('_').toLowerCase()}.csv`
-        link.href = filename;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
+        await BackendService.downloadPreset(selectedPlotType);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
