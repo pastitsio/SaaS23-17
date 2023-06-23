@@ -1,18 +1,18 @@
-import React, { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap'
-import { BsDot } from 'react-icons/bs'
+import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap';
+import { BsDot } from 'react-icons/bs';
 
+import { SubmitWaitButton } from '../../components';
+import { BackendService } from '../../services';
 import PlotForm from './PlotForm';
-import { BackendService } from '../../services'
-import { SubmitWaitButton } from '../../components'
 
-import './newChart.css'
+import './newChart.css';
 
-import img1 from '../../assets/bar_label_plot.png'
-import img2 from '../../assets/scatter_plot.webp'
-import img3 from '../../assets/simple_plot.webp'
+import img1 from '../../assets/bar_label_plot.png';
+import img2 from '../../assets/scatter_plot.webp';
+import img3 from '../../assets/simple_plot.webp';
 
 
 const NewChart = () => {
@@ -38,7 +38,7 @@ const NewChart = () => {
   const handleDownloadButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.downloadPreset(selectedPlotType);
+        BackendService.downloadPreset(selectedPlotType);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -69,6 +69,9 @@ const NewChart = () => {
 
     return new Promise(async (resolve, reject) => {
       try {
+        const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+        await BackendService.validateCredits(userInfo.email, 10);
+
         if (!chartData.chart_name) {
           throw new Error('Name cannot be empty!')
         }

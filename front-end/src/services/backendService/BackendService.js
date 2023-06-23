@@ -2,24 +2,36 @@ import { api } from '..';
 import { withTimeout } from './utils';
 
 // TODO: implement on modal.
-const buyCredits = async (email, credits) => {
+const validateCredits = async (email, credits) => {
   try {
-    const url = `${process.env.REACT_APP_user_info_manager_api_url}/purchaseCredits`;
-    const response = await withTimeout(
-      api.post(url,
+    const url = `${process.env.REACT_APP_credit_validator_api_url}/creditValidation`;
+    await withTimeout(
+      api.get(url,
         {
           params: {
             email: email,
-            credits: credits
+            price: credits
           }
         })
     );
+    console.log('User is able to buy');
 
-    console.log('response :>> ', response.data.success);
-  } catch (error) {
-    throw new Error(error);
+  } catch (err) {
+    if (err.response) { // API Error
+      if (err.response.status === 402) {
+        throw new Error("Not enough credits! Consider buying some from the top right corner.");
+      } else {
+        throw new Error(err.response.data);
+      }
+    } else { // Network Error
+      throw new Error(err.message);
+    }
   }
 };
+
+const buyCredits = async (credits) => {
+
+}
 
 
 const createChart = async (inputFile, plotType, chartData, mode) => {
@@ -63,7 +75,7 @@ const createChart = async (inputFile, plotType, chartData, mode) => {
     if (err.response) { // API Error => responseType is blob
       const res = await err.response.data.text();
       errorMessage = JSON.parse(res).msg;
-    } else if (err.request) { // NetworkError
+    } else if (err.request) { // Network Error
       errorMessage = err.message;
     } else {
       errorMessage = 'Error setting up the request'
@@ -122,7 +134,7 @@ const fetchChart = async (blobFilepath, fileFormat) => {
     if (err.response) { // API Error => responseType is blob
       const res = await err.response.data.text();
       errorMessage = JSON.parse(res).msg;
-    } else if (err.request) { // NetworkError
+    } else if (err.request) { // Network Error
       errorMessage = err.message;
     } else {
       errorMessage = 'Error setting up the request'
@@ -164,7 +176,7 @@ const fetchUserInfo = async (email, force_reload = false) => {
       api.get(url,
         {
           params: {
-            email: email,
+            email: email
           }
         })
     );
@@ -174,8 +186,8 @@ const fetchUserInfo = async (email, force_reload = false) => {
     if (force_reload) {
       window.location.reload();
     }
-  } catch (error) {
-    throw new Error(`Error fetching user: ${error.message}`);
+  } catch (err) {
+    throw new err(`Error fetching user: ${err.message}`);
   }
 };
 
@@ -198,7 +210,7 @@ const saveUserToDB = async (email) => {
     let errorMessage;
     if (err.response) { // API Error
       errorMessage = err.response.data.msg;
-    } else if (err.request) { // NetworkError
+    } else if (err.request) { // Network Error
       errorMessage = err.message;
     } else {
       errorMessage = 'Error setting up the request'
@@ -217,5 +229,6 @@ export {
   fetchChartTableData,
   fetchUserInfo,
   saveUserToDB,
+  validateCredits
 };
 
