@@ -1,6 +1,6 @@
 const avro = require("avsc");
 
-const eventSchema = avro.Type.forSchema({
+const creditsEventSchema = avro.Type.forSchema({
   type: 'record',
   name: 'user_data',
   fields: [
@@ -15,4 +15,4 @@ const eventSchema = avro.Type.forSchema({
   ],
 });
 
-module.exports = eventSchema;
+module.exports = creditsEventSchema;

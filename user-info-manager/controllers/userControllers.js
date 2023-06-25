@@ -1,4 +1,4 @@
-const { User, KafkaEvent } = require("../models");
+const { User, ChartsKafkaEvent, CreditsKafkaEvent } = require("../models");
 const { CustomAPIError } = require("../errors/");
 const { StatusCodes } = require("http-status-codes");
 const { Producer, Consumer } = require("../kafka/");
@@ -8,13 +8,22 @@ require("express-async-errors");
 const stream = Producer.createTopicStream("user-data");
 
 // read new user credits
-const consumer = Consumer.create("kafka12", "credit-data");
-const syncDB = async (msg) => {
+const creditConsumer = Consumer.create("kafka12", "credit-data");
+const syncCreditsDB = async (msg) => {
   const filter = { email: msg.email };
   const update = { credits: msg.credits };
   await User.findOneAndUpdate(filter, update); // add argument `{ new: true }` to return updated entry.
 };
-Consumer.consume(consumer, syncDB);
+Consumer.consume(creditConsumer, CreditsKafkaEvent, syncCreditsDB);
+
+// update number of charts in user
+const chartsConsumer = Consumer.create("kafka12", "chart-data");
+const syncUsersDB = async (msg) => {
+  const filter = { email: msg.email };
+  const update = { $inc: {number_of_charts: 1} };
+  await User.findOneAndUpdate(filter, update); // add argument `{ new: true }` to return updated entry.
+};
+Consumer.consume(chartsConsumer, ChartsKafkaEvent, syncUsersDB);
 
 /**
  * @description gets user data from database and checks if its a new user or not
@@ -67,7 +76,7 @@ const saveUser = async (req, res) => {
   await User.create({ email: email, last_login: last_login });
 
   const event = { email: email, credits: Number(0) };
-  Producer.produce(event, stream);
+  Producer.produce(event, CreditsKafkaEvent, stream);
 
   res
     .status(StatusCodes.OK)

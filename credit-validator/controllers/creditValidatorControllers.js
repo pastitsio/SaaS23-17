@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const { BadRequest, NotFound } = require("../errors/errors");
+const { BadRequest, NotFound } = require("../errors/Errors");
 const Credits = require("../models/Credits");
 require("express-async-errors");
 
@@ -47,11 +47,12 @@ const validateCredit = async (req, res) => {
   }
 
   if (user.credits > price || user.credits == price) {
-    return res
+    res
       .status(StatusCodes.OK)
       .json({ user: user.email, enoughCredits: true });
+  } else {
+    res.status(StatusCodes.PAYMENT_REQUIRED).json({ user: user.email, enoughCredits: false });
   }
-  res.status(StatusCodes.OK).json({ user: user.email, enoughCredits: false });
 };
 
 module.exports = validateCredit;

@@ -1,9 +1,11 @@
-import React from 'react';
+import {useContext} from 'react';
 import { Button, Modal } from 'react-bootstrap';
+
+import { UserContext } from '../../../UserContext';
 import { SubmitWaitButton } from '../../../components';
 
-const AreYouSure = ({ onConfirm, show, setShow }) => {
-  const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+const AreYouSure = ({ onConfirm, show, setShow, charge }) => {
+  const { userInfo } = useContext(UserContext);
   
   const handleCloseModal = () => {
     setShow(false);
@@ -16,9 +18,9 @@ const AreYouSure = ({ onConfirm, show, setShow }) => {
           <Modal.Title>Are you sure?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Saving the image will charge you <b>10</b> credits!
+          Saving the image will charge you <b>{charge}</b> credits!
           <br />
-          Your new balance will be <b>{userInfo.credits - 10}</b>.
+          Your new balance will be <b>{userInfo.credits - charge}</b>.
         </Modal.Body>
         <Modal.Footer className='d-flex flex-column' >
           <Button id="cancel-button" onClick={handleCloseModal} className='align-self-start'>
@@ -29,10 +31,6 @@ const AreYouSure = ({ onConfirm, show, setShow }) => {
             actionName='Confirm'
             cssId="buy-button"
           />
-
-          {/* <Button id="purchase-button" onClick={handleConfirm}>
-            Confirm
-          </Button> */}
         </Modal.Footer>
       </Modal>
     </div>

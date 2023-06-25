@@ -1,8 +1,9 @@
 const { Producer } = require("../kafka");
+const { CreditsKafkaEvent } = require("../models");
 
 const stream = Producer.createTopicStream("user-data");
 const message = {
-  email: "demos@testos.com",
-  credits: 5,
+  email: "kokos@marokos.gr",
+  credits: 0,
 };
-Producer.produce(message,stream);
+Producer.produce(message, CreditsKafkaEvent, stream);

@@ -1,25 +1,27 @@
-import React, { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap'
-import { BsDot } from 'react-icons/bs'
+import { Button, Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap';
+import { BsDot } from 'react-icons/bs';
 
+import { SubmitWaitButton } from '../../components';
+import { BackendService } from '../../services';
 import PlotForm from './PlotForm';
-import { BackendService } from '../../services'
-import { SubmitWaitButton } from '../../components'
 
-import './newChart.css'
+import './newChart.css';
 
-import img1 from '../../assets/bar_label_plot.png'
-import img2 from '../../assets/scatter_plot.webp'
-import img3 from '../../assets/simple_plot.webp'
+import img1 from '../../assets/bar_label_plot.png';
+import img2 from '../../assets/scatter_plot.webp';
+import img3 from '../../assets/simple_plot.webp';
+import { UserContext } from '../../UserContext';
 
 
 const NewChart = () => {
   const navigate = useNavigate();
+  const { userInfo } = useContext(UserContext);
 
   const [inputFile, setInputFile] = useState(null);
-  const [selectedPlotType, setSelectedPlotType] = useState(null);
+  const [selectedPlot, setSelectedPlot] = useState(null);
   const [chartData, setChartData] = useState({
     chart_name: '', title: '', x_label: '', y_label: '', bar_width: .6
   });
@@ -38,7 +40,7 @@ const NewChart = () => {
   const handleDownloadButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.downloadPreset(selectedPlotType);
+        BackendService.downloadPreset(selectedPlot.name);
         resolve(() => undefined);
       } catch (e) {
         reject(e)
@@ -54,7 +56,7 @@ const NewChart = () => {
   };
 
   const handleSideNavClick = (plotType) => {
-    setSelectedPlotType(plotType.name);
+    setSelectedPlot(plotType);
     resetState();
   }
 
@@ -64,20 +66,20 @@ const NewChart = () => {
   };
 
   const handleCreateButton = () => {
-    console.log(chartData, selectedPlotType)
-    console.log(inputFile);
-
     return new Promise(async (resolve, reject) => {
       try {
+        await BackendService.creditsValidate(userInfo.email, selectedPlot.charge);
+
         if (!chartData.chart_name) {
           throw new Error('Name cannot be empty!')
         }
 
         const previewImg = await BackendService.createChart(
           inputFile,
-          selectedPlotType,
+          selectedPlot.name,
           chartData,
-          'preview');
+          'preview'
+        );
 
         resetState();
 
@@ -86,10 +88,9 @@ const NewChart = () => {
             state: {
               previewImg: previewImg,
               inputFile: inputFile,
-              selectedPlotType: selectedPlotType,
-              chartData: chartData
-            },
-
+              plot: selectedPlot,
+              chartData: chartData,
+            }
           });
         });
       } catch (e) {
@@ -99,9 +100,9 @@ const NewChart = () => {
   }
 
   const plotTypes = [
-    { name: 'bar_label_plot', img: img1 },
-    { name: 'scatter_plot', img: img2 },
-    { name: 'simple_plot', img: img3 }
+    { name: 'bar_label_plot', img: img1, charge: 20 },
+    { name: 'scatter_plot', img: img2, charge: 10 },
+    { name: 'simple_plot', img: img3, charge: 5 }
   ];
 
   const camel2title = (sentence) => {
@@ -124,15 +125,16 @@ const NewChart = () => {
                 <Nav variant="pills" className="flex-column">
                   {plotTypes.map((plotType, idx) =>
                     <Nav.Item key={idx} onClick={() => handleSideNavClick(plotType)}>
-                      <Nav.Link
-                        eventKey={idx}>{(selectedPlotType === plotType.name) && <BsDot />} {camel2title(plotType.name)}</Nav.Link>
+                      <Nav.Link eventKey={idx}>
+                        {selectedPlot && (selectedPlot.name === plotType.name) && <BsDot />} {camel2title(plotType.name)}
+                      </Nav.Link>
                     </Nav.Item>
                   )}
                 </Nav>
               </Col>
               <Col sm={9}>
                 <Tab.Content>
-                  {selectedPlotType &&
+                  {selectedPlot &&
                     plotTypes.map((plotType, idx) => (
                       <Tab.Pane key={idx} eventKey={idx}>
                         <Card className='d-grid mb-2'>
@@ -152,22 +154,27 @@ const NewChart = () => {
                       </Tab.Pane>
                     ))
                   }
-                  {selectedPlotType &&
+                  {selectedPlot &&
                     <>
                       <PlotForm
-                        isBarLabel={selectedPlotType === 'bar_label_plot'}
+                        isBarLabel={selectedPlot.name === 'bar_label_plot'}
                         onFileChange={handleCreateChange}
                         handleFormChange={handleFormChange}
                         formData={chartData}
                         fileRef={fileRef}
                       />
-                      <Container className='create-btn py-2'>
+                      <Container className='create-btn py-2 d-flex flex-row'>
                         <SubmitWaitButton
                           action={handleCreateButton}
                           actionName='Create'
                           disabledIf={!inputFile}
                           color='green'
                         />
+                        <Container className='d-flex flex-row px-0 align-items-center justify-content-end'>
+                          <Button id='cost-label' disabled={true}>
+                            <b>{`Cost: ${selectedPlot.charge}`}</b>
+                          </Button>
+                        </Container>
                       </Container>
                     </>
                   }
@@ -176,8 +183,6 @@ const NewChart = () => {
             </Row>
           </Tab.Container>
         </Form.Group>
-
-
       </Container>
     </Container>
   )

@@ -1,5 +1,5 @@
 const EventType = require("../models/EventType");
-const CustomAPIError = require("../../user-info-manager/errors/custom-error");
+const CustomAPIError = require("../errors/custom-errors");
 const { StatusCodes } = require("http-status-codes");
 
 // writes message to stream

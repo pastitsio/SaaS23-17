@@ -3,8 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 
 const { brokersList } = require('./kafka-config');
 const { CustomAPIError } = require("../errors");
-const { KafkaEvent } = require("../models");
-
 
 // creates a consumer and returns it
 const create = (group, topic) => {
@@ -19,11 +17,11 @@ const create = (group, topic) => {
     .on("ready", () => {
       consumer.subscribe([topic]);
       consumer.consume();
-      console.log("Consumer ready...");
+      console.log(`<${topic}> consumer ready...`);
     })
     .on("error", () => {
       throw new CustomAPIError(
-        `Kafka consumer bursted`,
+        `Kafka <${topic}> consumer bursted`,
         StatusCodes.INTERNAL_SERVER_ERROR
       );
     });
@@ -32,10 +30,10 @@ const create = (group, topic) => {
 };
 
 // reads message from stream
-const consume = async (consumer, onConsumeCallback) => {
+const consume = async (consumer, kafkaEventType, onConsumeCallback) => {
   await consumer.on("data", (data) => {
-    console.log('read:', KafkaEvent.fromBuffer(data.value));
-    onConsumeCallback(KafkaEvent.fromBuffer(data.value));
+    console.log(`read:`, kafkaEventType.fromBuffer(data.value));
+    onConsumeCallback(kafkaEventType.fromBuffer(data.value));
   });
 };
 

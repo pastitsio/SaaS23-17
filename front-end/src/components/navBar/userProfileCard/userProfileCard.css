@@ -18,7 +18,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 .user-info-item {
@@ -28,7 +27,7 @@
 }
 
 .user-info-label {
-  color: var(--color-bg) !important;
+  color: rgb(44, 16, 16);
   font-weight: bold;
   margin-right: 10px;
 }
@@ -41,44 +40,3 @@
   border-radius: 5px !important;
 }
 
-.user-info-footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.user-info-button {
-  margin: 2px;
-  font-weight: bold !important;
-  border: none !important;
-}
-
-.user-info-button>a,
-.user-info-button>a:hover {
-  text-decoration: none;
-  color: inherit;
-}
-
-#new-button {
-  background-color: rgb(67, 116, 222) !important;
-}
-
-#new-button:hover {
-  background-color: rgb(12, 60, 164) !important;
-}
-
-#view-button {
-  background-color: rgb(154, 77, 178) !important;
-}
-
-#view-button:hover {
-  background-color: rgb(86, 25, 104) !important;
-}
-
-#buy-button {
-  background-color: rgb(238, 97, 37) !important;
-}
-
-#buy-button:hover {
-  background-color: rgb(143, 46, 5) !important
-}

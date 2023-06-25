@@ -1,5 +1,5 @@
 const Kafka = require("node-rdkafka");
-const CustomAPIError = require("../../user-info-manager/errors/custom-error");
+const CustomAPIError = require("../errors/CustomAPIError");
 const { StatusCodes } = require("http-status-codes");
 require("dotenv").config({ path: "../" });
 

@@ -4,13 +4,13 @@ import io
 import numbers
 from abc import ABC, abstractmethod
 from collections import namedtuple
-from typing import Dict, List, Union
+from typing import Dict
 
 import matplotlib
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt, mpld3
 import numpy as np
 import pandas as pd
-from utils import type2str
+
 
 matplotlib.use("Agg")  # non interactive
 
@@ -63,7 +63,7 @@ class Plot(ABC):
         """
         formats = ['jpeg']  # default
         if img_format == "all":
-            formats += ["svg", "png"]
+            formats = ["jpeg", "svg", "png", "pdf", "html"]
 
         dpi = 75 if mode == 'preview' else 400
 
@@ -71,8 +71,12 @@ class Plot(ABC):
 
         images = {}
         for img_format in formats:
-            img_stream = io.BytesIO()
-            axis.figure.savefig(img_stream, format=img_format, dpi=dpi)
+            if img_format == 'html':
+                html_fig = mpld3.fig_to_html(axis.figure)    
+                img_stream = io.BytesIO(html_fig.encode())
+            else:
+                img_stream = io.BytesIO()
+                axis.figure.savefig(img_stream, format=img_format, dpi=dpi)
             img_stream.seek(0)
             images[img_format] = img_stream.getvalue()
 
