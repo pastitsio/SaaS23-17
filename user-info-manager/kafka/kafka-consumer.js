@@ -19,11 +19,11 @@ const create = (group, topic) => {
     .on("ready", () => {
       consumer.subscribe([topic]);
       consumer.consume();
-      console.log("Consumer ready...");
+      console.log(`<${topic}> consumer ready...`);
     })
     .on("error", () => {
       throw new CustomAPIError(
-        `Kafka consumer bursted`,
+        `Kafka <${topic}> consumer bursted`,
         StatusCodes.INTERNAL_SERVER_ERROR
       );
     });
@@ -34,7 +34,7 @@ const create = (group, topic) => {
 // reads message from stream
 const consume = async (consumer, onConsumeCallback) => {
   await consumer.on("data", (data) => {
-    console.log('read:', KafkaEvent.fromBuffer(data.value));
+    console.log(`read:`, KafkaEvent.fromBuffer(data.value));
     onConsumeCallback(KafkaEvent.fromBuffer(data.value));
   });
 };
