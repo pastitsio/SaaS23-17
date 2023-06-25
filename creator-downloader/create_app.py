@@ -82,11 +82,6 @@ def create_app(plot: Plot,
                     }
                 )
 
-                # kafka_producer.send(
-                #     topic='credit-data',
-                #     value={}
-                # )
-
                 return jsonify({"msg": "Success"}), 201
 
             else:
