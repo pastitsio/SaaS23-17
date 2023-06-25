@@ -13,7 +13,7 @@ const UserProfileCard = () => {
 
   return (
     <Container className="user-info">
-      {!userInfo
+      {Object.keys(userInfo).length === 0
         ? <Container><h4>User info service is down at the moment. <br /> Retry later.</h4></Container>
         :
         <>
