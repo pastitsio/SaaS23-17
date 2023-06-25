@@ -3,8 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 
 const { brokersList } = require('./kafka-config');
 const { CustomAPIError } = require("../errors");
-const { KafkaEvent } = require("../models");
-
 
 // creates a consumer and returns it
 const create = (group, topic) => {
@@ -32,10 +30,10 @@ const create = (group, topic) => {
 };
 
 // reads message from stream
-const consume = async (consumer, onConsumeCallback) => {
+const consume = async (consumer, kafkaEvent, onConsumeCallback) => {
   await consumer.on("data", (data) => {
-    console.log(`read:`, KafkaEvent.fromBuffer(data.value));
-    onConsumeCallback(KafkaEvent.fromBuffer(data.value));
+    console.log(`read:`, kafkaEvent.fromBuffer(data.value));
+    onConsumeCallback(kafkaEvent.fromBuffer(data.value));
   });
 };
 

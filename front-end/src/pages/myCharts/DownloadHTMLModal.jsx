@@ -30,11 +30,11 @@ const DownloadHTMLModal = ({ show, setShow, htmlContent }) => {
             {`${htmlContent.substring(0, 200)}`}<br />{` more...`}
           </Container>
         </Modal.Body>
-        <Modal.Footer>
-          <h4 style={{ display: copied ? '' : 'none' }}>Complete!</h4>
+        <Modal.Footer className='justify-content-space-between'>
           <Button id="copyToClipboard" onClick={handleCopy} variant='success'>
-            Copy to Clipboard
+            <b>Copy to Clipboard</b>
           </Button>
+          <h4 style={{ display: copied ? '' : 'none', color: 'DarkGreen' }}>Copied!</h4>
         </Modal.Footer>
       </Modal>
     </>

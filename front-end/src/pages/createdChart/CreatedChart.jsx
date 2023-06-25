@@ -56,6 +56,7 @@ const CreatedChart = () => {
           'save');
         setUserInfo({
           ...userInfo,
+          credits: userInfo.credits - state.plot.charge,
           number_of_charts: userInfo.number_of_charts + 1
         })
         setSaveSuccessful(true);
@@ -77,9 +78,9 @@ const CreatedChart = () => {
         <Container className="img-preview-container" style={{ height: '100%' }}>
           <Row>
             <Col md={3}>
-              <Container className='created-prompt'>
+              <Container className='created-prompt py-3'>
                 <h4>This is your preview.</h4>
-                Click the button below to <b>save</b> creation without getting charged.
+                <p className='pt-3' >Click the button below to <b>save</b> creation without getting charged.</p>
               </Container>
             </Col>
             <Col sm={9}>

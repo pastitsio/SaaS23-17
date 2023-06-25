@@ -1,7 +1,9 @@
 const User = require('./User');
-const KafkaEvent = require('./KafkaEvent');
+const ChartsKafkaEvent = require('./ChartsKafkaEvent');
+const CreditsKafkaEvent = require('./CreditsKafkaEvent');
 
 module.exports = {
     User,
-    KafkaEvent
+    ChartsKafkaEvent,
+    CreditsKafkaEvent
 }

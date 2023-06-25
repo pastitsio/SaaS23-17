@@ -1,4 +1,4 @@
-const { User, KafkaEvent } = require("../models");
+const { User, ChartsKafkaEvent, CreditsKafkaEvent } = require("../models");
 const { CustomAPIError } = require("../errors/");
 const { StatusCodes } = require("http-status-codes");
 const { Producer, Consumer } = require("../kafka/");
@@ -14,16 +14,16 @@ const syncCreditsDB = async (msg) => {
   const update = { credits: msg.credits };
   await User.findOneAndUpdate(filter, update); // add argument `{ new: true }` to return updated entry.
 };
-Consumer.consume(creditConsumer, syncCreditsDB);
+Consumer.consume(creditConsumer, CreditsKafkaEvent, syncCreditsDB);
 
 // update number of charts in user
-const chratsConsumer = Consumer.create("kafka12", "chart-data");
+const chartsConsumer = Consumer.create("kafka12", "chart-data");
 const syncUsersDB = async (msg) => {
   const filter = { email: msg.email };
   const update = { $inc: {number_of_charts: 1} };
   await User.findOneAndUpdate(filter, update); // add argument `{ new: true }` to return updated entry.
 };
-Consumer.consume(chratsConsumer, syncUsersDB);
+Consumer.consume(chartsConsumer, ChartsKafkaEvent, syncUsersDB);
 
 /**
  * @description gets user data from database and checks if its a new user or not

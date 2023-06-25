@@ -11,7 +11,6 @@ import './userProfileCard.css';
 const UserProfileCard = () => {
   const { userInfo } = useContext(UserContext);
 
-
   return (
     <Container className="user-info">
       {!userInfo
