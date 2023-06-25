@@ -72,6 +72,7 @@ def create_app(plot: Plot,
 
                 # kafkify chart creation
                 kafka_producer.send(
+                    topic='chart-data',
                     value={
                         'email': user_email,
                         'chart_name': chart_data['chart_name'],
@@ -81,7 +82,12 @@ def create_app(plot: Plot,
                     }
                 )
 
-                return jsonify({"msg": "Success"}), 200
+                # kafka_producer.send(
+                #     topic='credit-data',
+                #     value={}
+                # )
+
+                return jsonify({"msg": "Success"}), 201
 
             else:
                 raise ValueError("Mode should either be 'save' or 'preview'.")

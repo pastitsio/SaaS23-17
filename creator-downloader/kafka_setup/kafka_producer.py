@@ -9,18 +9,21 @@ from kafka_setup.kafka_event import kafka_event
 
 
 class KafkaProducer(_KafkaProducer):
-    """KafkaProdcuer with fixed topic.
+    """KafkaProdcuer with extra func for 
+    serializer and key-checker for messages.
     See super class for config.
     """
 
-    def __init__(self, topic, encoding='avro', **configs):
+    def __init__(self, encoding='avro', **configs):
 
-        self._topic = topic
-        self._msg_valid_keys = ['email',
-                               'chart_name',
-                               'chart_type',
-                               'chart_url',
-                               'created_on']
+        self._msg_valid_keys = {'chart-data': ['email',
+                                               'chart_name',
+                                               'chart_type',
+                                               'chart_url',
+                                               'created_on'],
+                                'credit-data': ['email',
+                                                'credits']
+                                }
         if encoding == 'avro':
             def _serializer(v):
                 writer = avro_io.DatumWriter(kafka_event)
@@ -41,7 +44,9 @@ class KafkaProducer(_KafkaProducer):
         return self._topic
 
     # override
-    def send(self, value: Dict, **kwargs):
-        assert all(key in self._msg_valid_keys
+    def send(self, topic: str, value: Dict, **kwargs):
+        valid_keys = self._msg_valid_keys[topic]
+        assert all(key in valid_keys
                    for key in value.keys()), 'Missing key.'
-        super().send(topic=self._topic, value=value, **kwargs)
+
+        super().send(topic=topic, value=value, **kwargs)

@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Card, Col, Container, Row } from 'react-bootstrap'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import { BackendService } from '../../services'
 import './createdChart.css'
 import AreYouSure from './areYouSure/AreYouSure'
+import { UserContext } from '../../UserContext'
 
 const CreatedChart = () => {
   const navigate = useNavigate();
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const { state } = useLocation();
 
   const [img, setImg] = useState('');
@@ -37,23 +39,25 @@ const CreatedChart = () => {
       window.removeEventListener('beforeunload', cleanup);
       cleanup();
     };
-  }, [state, navigate]);
-
-
+  }, [state, navigate])
 
   const handleGoBack = () => {
     navigate('/new');
   }
 
-  const handleSaveButton = () => {
+  const handleConfirmButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
+        await BackendService.creditsUpdate(userInfo.email, state.plot.charge);
         await BackendService.createChart(
           state.inputFile,
-          state.selectedPlotType,
+          state.plot.name,
           state.chartData,
           'save');
-
+        setUserInfo({
+          ...userInfo,
+          number_of_charts: userInfo.number_of_charts + 1
+        })
         setSaveSuccessful(true);
         setShowConfirm(false);
         resolve(() => undefined);
@@ -84,6 +88,9 @@ const CreatedChart = () => {
                   alt='preview'
                   draggable={false}
                   onContextMenu={(e) => e.preventDefault()} />
+                <Card.Body>
+                  <Card.Title >{state.chartData.chart_name}</Card.Title>
+                </Card.Body>
               </Card>
             </Col>
           </Row>
@@ -102,9 +109,11 @@ const CreatedChart = () => {
       </Container>
 
       <AreYouSure
-        onConfirm={handleSaveButton}
+        onConfirm={handleConfirmButton}
         show={showConfirm}
-        setShow={setShowConfirm} />
+        setShow={setShowConfirm}
+        charge={state.plot.charge}
+      />
     </>
   )
 }

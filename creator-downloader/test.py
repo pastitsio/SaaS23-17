@@ -1,9 +1,9 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt, mpld3
 import numpy as np
 
-df = pd.read_csv('./front-end/public/presets/bar_label_plot.csv', header='infer')
-df.set_index('x_labels', inplace=True)
+df = pd.read_csv('../front-end/public/presets/bar_label_plot.csv', header='infer')
+df.set_index('x_labels/categories', inplace=True)
 
 _, axis = plt.subplots(dpi=150)
 bottom = np.zeros(len(df.columns))
@@ -15,8 +15,6 @@ for idx in df.index:
     axis.bar_label(p, label_type="center")
 
 axis.legend()
+with open("./test.html", 'a+') as f:
+    f.write(mpld3.fig_to_html(axis.figure))
 plt.show()
-
-
-img = p.create_chart('jpeg')['jpeg']
-print(img)

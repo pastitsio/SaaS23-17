@@ -1,38 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Card, Container, Spinner, Table } from 'react-bootstrap'
 import { BsFillArrowUpRightCircleFill } from 'react-icons/bs'
 
 import axios from 'axios'
 import { BackendService, UserService } from '../../services'
+import DownloadHTMLModal from './DownloadHTMLModal'
+import { UserContext } from '../../UserContext'
 import './myCharts.css'
 
 const MyCharts = () => {
+  const { userInfo } = useContext(UserContext)
 
   const [chartsTable, setChartsTable] = useState([]);
-  const [selectedChartIdx, setSelectedChartIdx] = useState(-1);
-  const [selectedChart, setSelectedChart] = useState(null);
-
   const [tableLoading, setTableLoading] = useState(true);
+
   const [imgLoading, setImgLoading] = useState(false);
   const [imgReady, setImgReady] = useState(false);
 
-  const [userInfo, setUserInfo] = useState(null)
+  const [selectedChart, setSelectedChart] = useState(null);
+  const [selectedChartIdx, setSelectedChartIdx] = useState(-1);
+
+  const [showHTMLPrompt, setShowHTMLPrompt] = useState(false);
+  const [htmlContent, setHTMLContent] = useState("");
+
   const [prompt, setPrompt] = useState('Select a chart from the table ');
 
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const storedUserInfo = sessionStorage.getItem('userInfo');
-      if (storedUserInfo) {
-        setUserInfo(JSON.parse(storedUserInfo));
-        clearInterval(interval); // Stop the polling once userInfo is found
-      }
-    }, 400);
-
-    return () => {
-      clearInterval(interval); // Clean up the interval on component unmount
-    };
-  }, []);
 
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -66,11 +58,11 @@ const MyCharts = () => {
     if (chartIdx === selectedChartIdx) {
       return;
     }
-    
+
     setSelectedChartIdx(chartIdx);
     setImgLoading(true);
     setImgReady(false);
-    
+
     const fetchChartPreview = async () => {
       try {
         const { chart_url, chart_name } = chartsTable.at(chartIdx);
@@ -96,13 +88,18 @@ const MyCharts = () => {
       const { chart_url, chart_name } = chartsTable.at(selectedChartIdx);
 
       const downloadedURL = await BackendService.fetchChart(chart_url, imgFormat);
-
-      const link = document.createElement('a');
-      link.href = downloadedURL;
-      link.download = `${chart_name}.${imgFormat}`;
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+      if (imgFormat === 'html') {
+        const html = await fetch(downloadedURL);
+        setHTMLContent(await html.text())
+        setShowHTMLPrompt(true)
+      } else {
+        const link = document.createElement('a');
+        link.href = downloadedURL;
+        link.download = `${chart_name}.${imgFormat}`;
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      }
     } catch (e) {
       setImgReady(false);
       setPrompt(e.message)
@@ -111,6 +108,7 @@ const MyCharts = () => {
 
   return (
     <>
+      <DownloadHTMLModal show={showHTMLPrompt} setShow={setShowHTMLPrompt} htmlContent={htmlContent} />
       <Container className="header-container">
         <h2>Your Charts</h2>
       </Container>
@@ -165,7 +163,6 @@ const MyCharts = () => {
                       <Card.Img variant='top' src={selectedChart.src} alt='preview' />
                       <Card.Body>
                         <Card.Title >{selectedChart.title}</Card.Title>
-                        {/* <Card.Text >{selectedChart.caption}</Card.Text> */}
                       </Card.Body>
                     </>
                     :

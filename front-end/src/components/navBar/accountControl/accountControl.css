@@ -23,18 +23,62 @@
     font-weight: 800;
 
     border: none;
-    border-radius: calc(var(--border-radius) / 2);;
+    border-radius: calc(var(--border-radius) / 2);
+    ;
 }
 
-.dropdown-menu, #user-profile-card {
+.dropdown-menu,
+#user-profile-card {
     background-color: var(--color-button-bg-username) !important;
 }
 
-.dropdown-menu > li:active {
-	background-color: var(--color-button-bg-username) !important;
+.dropdown-menu>li:active {
+    background-color: var(--color-button-bg-username) !important;
 }
 
 .dropdown-menu {
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.6);
     border: 1px solid var(--color-button-bg-username) !important;
 }
+
+.account-control-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.account-action-button {
+    margin: 2px;
+    font-weight: bold !important;
+    border: none !important;
+  }
+  
+  .account-action-button>a,
+  .account-action-button>a:hover {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  #new-button {
+    background-color: rgb(67, 116, 222) !important;
+  }
+  
+  #new-button:hover {
+    background-color: rgb(12, 60, 164) !important;
+  }
+  
+  #view-button {
+    background-color: rgb(154, 77, 178) !important;
+  }
+  
+  #view-button:hover {
+    background-color: rgb(86, 25, 104) !important;
+  }
+  
+  #buy-button {
+    background-color: rgb(238, 97, 37) !important;
+  }
+  
+  #buy-button:hover {
+    background-color: rgb(143, 46, 5) !important
+  }

@@ -6,6 +6,7 @@ import { Container } from 'react-bootstrap'
 import { NavBar, NewUserOffcanvas, RenderOnAuth } from './components'
 import { About, CreatedChart, Home, MyCharts, NewChart, PageNotFound } from './pages'
 
+import { UserContext } from './UserContext'
 import { BackendService, UserService } from './services'
 
 import axios from 'axios'
@@ -15,10 +16,10 @@ import './App.css'
 
 const App = () => {
   const [isNewUser, setIsNewUser] = useState(false);
- 
+  const [userInfo, setUserInfo] = useState({});
+
   /**
    * If user is logged in, sets up session user info
-   *     
    */
   useEffect(() => {
     const source = axios.CancelToken.source();
@@ -27,8 +28,8 @@ const App = () => {
       try {
         await BackendService.fetchUserInfo(UserService.getTokenParsed().email);
         const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+        setUserInfo(userInfo);
         setIsNewUser(userInfo.newUser);
-
       } catch (error) {
         if (axios.isCancel(error)) {
           console.log('Request canceled:', error.message);
@@ -58,35 +59,36 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <NavBar />
-      <Container className='main-container'>
+      <UserContext.Provider value={{ userInfo, setUserInfo }}>
+        <NavBar />
+        <Container className='main-container'>
+          <NewUserOffcanvas isNewUser={isNewUser} setIsNewUser={setIsNewUser} />
 
-        <NewUserOffcanvas isNewUser={isNewUser} setIsNewUser={setIsNewUser} />
+          <Routes>
+            <Route index element={
+              <Home />
+            } />
 
-        <Routes>
-          <Route index element={
-            <Home />
-          } />
+            <Route path='/about' element={
+              <About />
+            } />
 
-          <Route path='/about' element={
-            <About />
-          } />
+            <Route path='/mycharts' element={
+              <RenderOnAuth> <MyCharts /> </RenderOnAuth>
+            } />
 
-          <Route path='/mycharts' element={
-            <RenderOnAuth> <MyCharts /> </RenderOnAuth>
-          } />
+            <Route path='/new' element={
+              <RenderOnAuth> <NewChart /> </RenderOnAuth>
+            } />
 
-          <Route path='/new' element={
-            <RenderOnAuth> <NewChart /> </RenderOnAuth>
-          } />
+            <Route path='/created' element={
+              <RenderOnAuth> <CreatedChart /> </RenderOnAuth>
+            } />
 
-          <Route path='/created' element={
-            <RenderOnAuth> <CreatedChart /> </RenderOnAuth>
-          } />
-
-          <Route path='*' element={<PageNotFound />} />
-        </Routes>
-      </Container>
+            <Route path='*' element={<PageNotFound />} />
+          </Routes>
+        </Container>
+      </UserContext.Provider>
     </BrowserRouter>
   );
 }

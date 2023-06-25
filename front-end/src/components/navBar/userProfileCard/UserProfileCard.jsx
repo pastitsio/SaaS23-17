@@ -1,33 +1,16 @@
-import { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
-import { BsPlusCircle, BsCart3, BsTable, BsViewStacked } from "react-icons/bs";
+import { useContext } from "react";
+import { Container } from "react-bootstrap";
+import { BsTable } from "react-icons/bs";
 import { FaChartArea } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr";
 
-import { useNavigate } from "react-router-dom";
 
-import { BuyCreditsModal } from "../../";
+import { UserContext } from "../../../UserContext";
 import './userProfileCard.css';
 
 const UserProfileCard = () => {
-  const navigate = useNavigate();
+  const { userInfo } = useContext(UserContext);
 
-  // Buy Credits Control
-  const [showBuyCredits, setShowBuyCredits] = useState(false);
-  const handleCloseBuyCredits = () => setShowBuyCredits(false);
-  const handleShowBuyCredits = () => setShowBuyCredits(true);
-
-
-  const [userInfo, setUserInfo] = useState(null);
-
-  useEffect(() => {
-    const fetchUserInfo = () => {
-      const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-      setUserInfo(userInfo)
-    }
-    
-    fetchUserInfo();
-  }, [])
 
   return (
     <Container className="user-info">
@@ -49,22 +32,7 @@ const UserProfileCard = () => {
               <span className="user-info-value">{new Date(userInfo.last_login).toDateString()} <BsTable /></span>
             </Container>
           </Container >
-          <Container className="user-info-footer">
-            <Button onClick={() => navigate('/new')} className="user-info-button" id="new-button">
-              New <BsPlusCircle />
-            </Button>{" "}
-            <Button
-              onClick={() => navigate('/mycharts')}
-              className="user-info-button"
-              id="view-button">
-              View <BsViewStacked />
-            </Button>{" "}
-            <Button onClick={handleShowBuyCredits} className="user-info-button" id="buy-button">
-              Buy credits < BsCart3 />
-            </Button>{" "}
-
-            <BuyCreditsModal show={showBuyCredits} onHide={handleCloseBuyCredits} />
-          </Container>
+          
         </>
       }
     </Container >

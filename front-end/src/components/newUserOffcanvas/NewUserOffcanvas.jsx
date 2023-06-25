@@ -1,18 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button, Container, Offcanvas } from 'react-bootstrap'
 
 import { BackendService, UserService } from '../../services'
 
 import './newUserOffcanvas.css'
 import { SubmitWaitButton } from '../'
+import { UserContext } from '../../UserContext'
 
 const NewUserOffcanvas = ({ isNewUser, setIsNewUser }) => {
+  const { userInfo, setUserInfo } = useContext(UserContext);
 
   const handleSaveButton = () => {
-    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+
     return new Promise(async (resolve, reject) => {
       try {
         await BackendService.saveUserToDB(userInfo.email);
+        setUserInfo((prev) => ({ // update context on success
+          ...prev,
+          newUser: false
+        }))
         resolve(() => { setIsNewUser(false) });
       } catch (e) {
         reject(e)

@@ -1,8 +1,55 @@
 import { api } from '..';
 import { withTimeout } from './utils';
 
-// TODO: implement on modal.
-const validateCredits = async (email, credits) => {
+const creditsBuy = async (email, credits) => {
+  try {
+    const url = `${process.env.REACT_APP_credit_manager_api_url}/purchaseCredits`;
+    const response = await withTimeout(
+      api.post(url,
+        {
+          email: email,
+          credits: credits
+        }
+      )
+    );
+    console.log(`User bought ${credits} credits`);
+    fetchUserInfo(email, true) // update sessionStorage
+    return Promise.resolve(response.data.result)
+  } catch (err) {
+    if (err.response) { // API Error
+      throw new Error(err.response.data.msg);
+    } else { // Network Error
+      throw new Error(err.message);
+    }
+  }
+}
+
+
+const creditsUpdate = async (email, credits) => {
+  try {
+    const url = `${process.env.REACT_APP_credit_manager_api_url}/updateBalance`;
+    const response = await withTimeout(
+      api.post(url,
+        {
+          email: email,
+          credits: credits
+        }
+      )
+    );
+    console.log(`User spent ${credits} credits`);
+    fetchUserInfo(email, true) // update sessionStorage
+    return Promise.resolve(response.data.result)
+  } catch (err) {
+    if (err.response) { // API Error
+      throw new Error(err.response.data.msg);
+    } else { // Network Error
+      throw new Error(err.message);
+    }
+  }
+}
+
+
+const creditsValidate = async (email, credits) => {
   try {
     const url = `${process.env.REACT_APP_credit_validator_api_url}/creditValidation`;
     await withTimeout(
@@ -15,23 +62,18 @@ const validateCredits = async (email, credits) => {
         })
     );
     console.log('User is able to buy');
-
   } catch (err) {
     if (err.response) { // API Error
       if (err.response.status === 402) {
         throw new Error("Not enough credits! Consider buying some from the top right corner.");
       } else {
-        throw new Error(err.response.data);
+        throw new Error(err.response.data.msg);
       }
     } else { // Network Error
       throw new Error(err.message);
     }
   }
 };
-
-const buyCredits = async (credits) => {
-
-}
 
 
 const createChart = async (inputFile, plotType, chartData, mode) => {
@@ -155,20 +197,24 @@ const fetchChartTableData = async (email) => {
     return Promise.resolve(response.data.result);
 
   } catch (err) {
-    if (!err.response.data.success) { // API error
-      throw new Error(`No charts found! Create one`);
-    } else { // Network Error
-      throw new Error(`Error fetching table data: ${err.message}`);
+    if (err.response) {
+      if (!err.response.data.success) { // API error
+        throw new Error(`No charts found! Create one`);
+      }
     }
+    // Network Error
+    throw new Error(`Error fetching table data: ${err.message}`);
   }
 };
 
 
-const fetchUserInfo = async (email, force_reload = false) => {
+const fetchUserInfo = async (email, skipSessionStorage = true) => {
   // first check session storage
-  const userInfo = sessionStorage.getItem('userInfo');
-  if (userInfo)
-    return Promise.resolve(userInfo);
+  if (!skipSessionStorage) {
+    const userInfo = sessionStorage.getItem('userInfo');
+    if (userInfo)
+      return Promise.resolve(userInfo);
+  }
 
   try {
     const url = `${process.env.REACT_APP_user_info_manager_api_url}/user`;
@@ -183,9 +229,7 @@ const fetchUserInfo = async (email, force_reload = false) => {
     console.log(`User info fetched! :>> ${JSON.stringify(response.data)}`);
 
     sessionStorage.setItem('userInfo', JSON.stringify(response.data));
-    if (force_reload) {
-      window.location.reload();
-    }
+
   } catch (err) {
     throw new err(`Error fetching user: ${err.message}`);
   }
@@ -204,8 +248,8 @@ const saveUserToDB = async (email) => {
           }
         })
     );
-
     console.log('response :>> ', response.data.msg);
+    fetchUserInfo(email, true) // update sessionStorage
   } catch (err) {
     let errorMessage;
     if (err.response) { // API Error
@@ -222,13 +266,14 @@ const saveUserToDB = async (email) => {
 
 
 export {
-  buyCredits,
+  creditsBuy,
+  creditsUpdate,
+  creditsValidate,
   createChart,
   downloadPreset,
   fetchChart,
   fetchChartTableData,
   fetchUserInfo,
-  saveUserToDB,
-  validateCredits
+  saveUserToDB
 };
 

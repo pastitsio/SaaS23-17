@@ -64,7 +64,6 @@ def main():
     ########################
     kafka_config = config['KAFKA']
     kafka_producer = KafkaProducer(
-        topic=kafka_config['TOPIC'],
         bootstrap_servers=f"{kafka_config['HOST']}:{kafka_config['PORT']}",
     )
 

@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button, Card, Container, Modal } from 'react-bootstrap';
 
 import './buyCreditsModal.css';
 import { SubmitWaitButton } from '..';
 import { BackendService } from '../../services';
+import { UserContext } from '../../UserContext';
 
 const BuyCreditsModal = ({ show, onHide }) => {
   const [selectedCredits, setSelectedCredits] = useState(0);
+  const { userInfo, setUserInfo } = useContext(UserContext);
 
   const handleHide = () => {
     setSelectedCredits(0);
@@ -14,11 +16,15 @@ const BuyCreditsModal = ({ show, onHide }) => {
   }
 
   const handlePurchaseButton = () => {
-    const userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
 
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.buyCredits(userInfo.email, selectedCredits);
+        const result = await BackendService.creditsBuy(userInfo.email, selectedCredits);
+        // update Context on success
+        setUserInfo({ 
+          ...userInfo,
+          credits: result.newCredits
+        })
         setSelectedCredits(0); // resetValue
         resolve(() => undefined);
       } catch (e) {
