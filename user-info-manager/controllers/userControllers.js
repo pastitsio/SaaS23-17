@@ -76,7 +76,7 @@ const saveUser = async (req, res) => {
   await User.create({ email: email, last_login: last_login });
 
   const event = { email: email, credits: Number(0) };
-  Producer.produce(event, stream);
+  Producer.produce(event, CreditsKafkaEvent, stream);
 
   res
     .status(StatusCodes.OK)

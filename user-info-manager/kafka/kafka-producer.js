@@ -3,7 +3,6 @@ const { StatusCodes } = require("http-status-codes");
 
 const { brokersList } = require('./kafka-config');
 const { CustomAPIError } = require("../errors");
-const { KafkaEvent } = require("../models");
 
 // creates a producer and returns stream object
 const createTopicStream = (topic) => {
@@ -32,9 +31,9 @@ const createTopicStream = (topic) => {
 
 
 // produces message to stream
-const produce = async (event, stream) => {
+const produce = async (event, kafkaEventType, stream) => {
   // validate with avro
-  const validateEvent = KafkaEvent.isValid(event);
+  const validateEvent = kafkaEventType.isValid(event);
   if (!validateEvent) {
     throw new CustomAPIError(
       `Invalid event: ${JSON.stringify(event)}`,
@@ -43,7 +42,7 @@ const produce = async (event, stream) => {
   }
   
   // write to stream
-  const success = await stream.write(KafkaEvent.toBuffer(event));
+  const success = await stream.write(kafkaEventType.toBuffer(event));
   if (!success) {
     throw new CustomAPIError(
       `Error producing event ${JSON.stringify(event)}`,

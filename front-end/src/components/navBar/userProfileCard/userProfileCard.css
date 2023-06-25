@@ -27,7 +27,7 @@
 }
 
 .user-info-label {
-  color: var(--color-bg) !important;
+  color: rgb(44, 16, 16);
   font-weight: bold;
   margin-right: 10px;
 }

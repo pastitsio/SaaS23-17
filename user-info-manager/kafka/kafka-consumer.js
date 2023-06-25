@@ -30,10 +30,10 @@ const create = (group, topic) => {
 };
 
 // reads message from stream
-const consume = async (consumer, kafkaEvent, onConsumeCallback) => {
+const consume = async (consumer, kafkaEventType, onConsumeCallback) => {
   await consumer.on("data", (data) => {
-    console.log(`read:`, kafkaEvent.fromBuffer(data.value));
-    onConsumeCallback(kafkaEvent.fromBuffer(data.value));
+    console.log(`read:`, kafkaEventType.fromBuffer(data.value));
+    onConsumeCallback(kafkaEventType.fromBuffer(data.value));
   });
 };
 
