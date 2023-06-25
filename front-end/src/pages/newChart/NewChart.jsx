@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap';
+import { Button, Card, Col, Container, Form, Nav, Row, Tab } from 'react-bootstrap';
 import { BsDot } from 'react-icons/bs';
 
 import { SubmitWaitButton } from '../../components';
@@ -66,12 +66,9 @@ const NewChart = () => {
   };
 
   const handleCreateButton = () => {
-    console.log(chartData, selectedPlot)
-    console.log(inputFile);
-
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.creditsValidate(userInfo.email, 10);
+        await BackendService.creditsValidate(userInfo.email, selectedPlot.charge);
 
         if (!chartData.chart_name) {
           throw new Error('Name cannot be empty!')
@@ -166,13 +163,18 @@ const NewChart = () => {
                         formData={chartData}
                         fileRef={fileRef}
                       />
-                      <Container className='create-btn py-2'>
+                      <Container className='create-btn py-2 d-flex flex-row'>
                         <SubmitWaitButton
                           action={handleCreateButton}
                           actionName='Create'
                           disabledIf={!inputFile}
                           color='green'
                         />
+                        <Container className='d-flex flex-row px-0 align-items-center justify-content-end'>
+                          <Button id='cost-label' disabled={true}>
+                            <b>{`Cost: ${selectedPlot.charge}`}</b>
+                          </Button>
+                        </Container>
                       </Container>
                     </>
                   }
@@ -181,8 +183,6 @@ const NewChart = () => {
             </Row>
           </Tab.Container>
         </Form.Group>
-
-
       </Container>
     </Container>
   )

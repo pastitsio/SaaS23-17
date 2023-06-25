@@ -50,3 +50,11 @@ a.nav-link:visited {
     border-radius: var(--border-radius);
 
 }
+
+#cost-label {
+    width: 8rem !important;
+    background-color: rgb(189, 142, 126) !important;
+    color: rgb(0, 0, 0);
+    opacity: 100 !important;
+    border: None;
+}
