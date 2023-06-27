@@ -1,11 +1,10 @@
 """Various utilities"""
-from collections import namedtuple
+import os
+
 from datetime import datetime
 
 from flask import jsonify, request
 from shortuuid import uuid
-
-from config_setup import config
 
 
 def check_file():
@@ -24,9 +23,7 @@ def preflight_OPTIONS_method():
     """
     if request.method == "OPTIONS":
         response = jsonify()
-        response.headers["Access-Control-Allow-Origin"] = config["FRONTEND"][
-            "SERVER_URL"
-        ]
+        response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
 
@@ -38,15 +35,6 @@ def generate_uuid(distinct=None):
     return uuid(name=f'{distinct}{str(round(datetime.now().timestamp() * 1000))}')
 
 
-def check_run_plot_type(value, valid_values):
-    """Check if user is valid."""
-    if value not in valid_values:
-        raise ValueError(
-            f'Invalid value for "type". Allowed values are: {", ".join(valid_values)}'
-        )
-    return value
-
-
 def type2str(type_name):
     """Extract human-readable type name."""
     try:
@@ -55,3 +43,31 @@ def type2str(type_name):
         label_type = str(type_name).split(" ")[1][1:-2]
 
     return label_type
+
+
+def try_string_to_int(string):
+    """
+    Converts a string integer into integer.
+    If the string is non-integer then the initial string is returned
+    """
+    if string.isnumeric():
+        return int(string)
+    else:
+        return string
+
+
+def configuration_obj_to_dict(value):
+    """
+    Converts Configuration object to Python dict
+    IMPORTANT NOTE: Environment variables should start with '$' symbol
+    """
+    if isinstance(value, str):
+        return os.environ.get(value[1:], '') if value.startswith('$') else value.replace('$', '')
+    elif isinstance(value, dict):
+        for key, val in value.items():
+            value[key] = configuration_obj_to_dict(val)
+    elif isinstance(value, list):
+        for i, val in enumerate(value):
+            value[i] = configuration_obj_to_dict(val)
+
+    return value

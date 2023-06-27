@@ -3,22 +3,13 @@
 Returns:
     Dict: config dict
 """
-import yaml
+import confuse
 
-from settings import DEFAULT_CONF_FILEPATH, ENVIRONMENT_CONF_FILEPATH
+from settings import ENVIRONMENT_CONF_FILEPATH
+from utils import configuration_obj_to_dict
+# Load YAML default configurations
+configuration_obj = confuse.Configuration('creator-downloader', __name__)
+configuration_obj.set_file(ENVIRONMENT_CONF_FILEPATH)
 
-def load_config(filepath):
-    """Loads configuration file from filepath.
-
-    Args:
-        filepath (str): conf file path
-
-    Returns:
-        Dict: dict of loaded config.
-    """
-    with open(filepath, "r", encoding='utf-8') as file:
-        config_data = yaml.safe_load(file)
-    return config_data
-
-# Load configurations from the YAML file
-config = load_config(DEFAULT_CONF_FILEPATH) | load_config(ENVIRONMENT_CONF_FILEPATH)
+# Convert Configuration object to Python dict
+config = configuration_obj_to_dict(configuration_obj.get())

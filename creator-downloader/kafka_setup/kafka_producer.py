@@ -5,16 +5,13 @@ from typing import Dict
 import avro.io as avro_io
 from kafka import KafkaProducer as _KafkaProducer
 
-from kafka_setup.kafka_event import kafka_event
-
-
 class KafkaProducer(_KafkaProducer):
     """KafkaProdcuer with extra func for 
     serializer and key-checker for messages.
     See super class for config.
     """
 
-    def __init__(self, encoding='avro', **configs):
+    def __init__(self, kafka_event, encoding='avro', **configs):
 
         self._msg_valid_keys = {'chart-data': ['email',
                                                'chart_name',

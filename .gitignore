@@ -1,8 +1,5 @@
 **/node_modules
 **/__pycache__
 **/.vscode
-**/environment.yaml
 **/.env
-node_modules
-.env
- vpp*.png
+vpp*.png

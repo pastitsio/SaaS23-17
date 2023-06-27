@@ -17,7 +17,7 @@ from utils import (check_file,
 def create_app(plot: Plot,
                keycloak_client: KeycloakOpenID,
                azure_container_client: AzureContainerClient,
-               kafka_producer: KafkaProducer
+               kafka_producer: KafkaProducer,
                ) -> Flask:
     """Creates app using runtime-resolved configuration.
 

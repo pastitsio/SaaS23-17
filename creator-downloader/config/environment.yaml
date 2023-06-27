@@ -1,0 +1,15 @@
+app_port: "$saas_APP_PORT"
+app_run_type: "$saas_APP_RUN_TYPE"
+
+azure_conn_str: "$saas_AZURE_CONN_STR"
+azure_container_name: "$saas_AZURE_CONTAINER_NAME"
+azure_credential: "$saas_AZURE_CREDENTIAL"
+
+kafka_host: "$saas_KAFKA_HOST"
+kafka_port: "$saas_KAFKA_PORT"
+
+keycloak_host: "$saas_KEYCLOAK_HOST"
+keycloak_port: "$saas_KEYCLOAK_PORT"
+keycloak_realm_name: "$saas_KEYCLOAK_REALM_NAME"
+keycloak_client_id: "$saas_KEYCLOAK_CLIENT_ID"
+keycloak_client_secret_key: "$saas_KEYCLOAK_CLIENT_SECRET_KEY"

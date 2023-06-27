@@ -13,7 +13,6 @@ from utils import preflight_OPTIONS_method
 def download_app(keycloak_client: KeycloakOpenID,
                  azure_container_client: AzureContainerClient
                  ) -> Flask:
-            #    kafka_producer: KafkaProducer
     """Download app using runtime-resolved configuration.
 
     Raises:
@@ -34,13 +33,14 @@ def download_app(keycloak_client: KeycloakOpenID,
         try:
             token_email = kc_introspect_token(
                 kc_client=keycloak_client).get('email')
-            
+
             img_format = request.args.get('format')
-            
+
             if token_email != user_email:
                 return 'Not authorized for this resource!', 401
 
-            url = f'{user_email}/{blob_filepath}/{img_format}' # preview is jpeg
+            # preview is jpeg
+            url = f'{user_email}/{blob_filepath}/{img_format}'
             image = azure_container_client.read_from_blob(url)
 
             return Response(image, mimetype=f'image/{img_format}'), 200
@@ -48,5 +48,5 @@ def download_app(keycloak_client: KeycloakOpenID,
         except Exception as exc:
             print(exc)
             return jsonify({"msg": str(exc)}), 500
-    
+
     return app

@@ -37,7 +37,6 @@ const creditsUpdate = async (email, credits) => {
       )
     );
     console.log(`User spent ${credits} credits`);
-    fetchUserInfo(email, true) // update sessionStorage
     return Promise.resolve(response.data.result)
   } catch (err) {
     if (err.response) { // API Error
@@ -249,7 +248,6 @@ const saveUserToDB = async (email) => {
         })
     );
     console.log('response :>> ', response.data.msg);
-    fetchUserInfo(email, true) // update sessionStorage
   } catch (err) {
     let errorMessage;
     if (err.response) { // API Error
