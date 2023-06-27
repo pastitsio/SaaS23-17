@@ -17,7 +17,8 @@ from utils import (check_file,
 def create_app(plot: Plot,
                keycloak_client: KeycloakOpenID,
                azure_container_client: AzureContainerClient,
-               kafka_producer: KafkaProducer
+               chart_data_producer: KafkaProducer,
+               credit_data_producer: KafkaProducer,
                ) -> Flask:
     """Creates app using runtime-resolved configuration.
 
@@ -57,6 +58,7 @@ def create_app(plot: Plot,
                 return Response(response=image, mimetype="image/jpeg", status=200)
 
             elif mode == "save":
+
                 # generate new image uuid
                 images = _plot.create_chart(img_format="all", mode=mode)
                 img_id = generate_uuid(distinct=user_email)
@@ -71,7 +73,7 @@ def create_app(plot: Plot,
                     )
 
                 # kafkify chart creation
-                kafka_producer.send(
+                chart_data_producer.send(
                     topic='chart-data',
                     value={
                         'email': user_email,
@@ -82,10 +84,21 @@ def create_app(plot: Plot,
                     }
                 )
 
+                # kafkify user charge
+                charge = int(request.args.get("charge"))
+
+                credit_data_producer.send(
+                    topic='credit-data',
+                    value={
+                        'email': user_email,
+                        'credits': - charge
+                    }
+                )
+
                 return jsonify({"msg": "Success"}), 201
 
             else:
-                raise ValueError("Mode should either be 'save' or 'preview'.")
+                raise ValueError("Mode should either be 'save' or 'preview'")
 
         except Exception as exc:
             return jsonify({"msg": str(exc)}), 500

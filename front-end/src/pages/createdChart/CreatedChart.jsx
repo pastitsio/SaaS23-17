@@ -48,10 +48,10 @@ const CreatedChart = () => {
   const handleConfirmButton = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await BackendService.creditsUpdate(userInfo.email, state.plot.charge);
+        // await BackendService.creditsUpdate(userInfo.email, state.plot.charge);
         await BackendService.createChart(
           state.inputFile,
-          state.plot.name,
+          state.plot,
           state.chartData,
           'save');
         setUserInfo({

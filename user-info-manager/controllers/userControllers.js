@@ -11,7 +11,7 @@ const stream = Producer.createTopicStream("user-data");
 const creditConsumer = Consumer.create("kafka12", "credit-data");
 const syncCreditsDB = async (msg) => {
   const filter = { email: msg.email };
-  const update = { credits: msg.credits };
+  const update = { $inc: {credits: msg.credits} }
   await User.findOneAndUpdate(filter, update); // add argument `{ new: true }` to return updated entry.
 };
 Consumer.consume(creditConsumer, CreditsKafkaEvent, syncCreditsDB);

@@ -13,6 +13,7 @@ from config_setup import config
 from create_app import create_app
 from download_app import download_app
 from kafka_setup.kafka_producer import KafkaProducer
+from kafka_setup.kafka_event import chart_data_kafka_event, credit_data_event
 from keycloak import KeycloakOpenID
 from plot import BarLabelPlot, ScatterPlot, SimplePlot
 from utils import check_run_plot_type
@@ -59,11 +60,16 @@ def main():
         credential=az_config['CREDENTIAL'],
     )
 
-    ########################
-    # Setup Kafka producer #
-    ########################
+    #########################
+    # Setup Kafka producers #
+    #########################
     kafka_config = config['KAFKA']
-    kafka_producer = KafkaProducer(
+    chart_data_producer = KafkaProducer(
+        kafka_event=chart_data_kafka_event,
+        bootstrap_servers=f"{kafka_config['HOST']}:{kafka_config['PORT']}",
+    )
+    credit_data_producer = KafkaProducer(
+        kafka_event=credit_data_event,
         bootstrap_servers=f"{kafka_config['HOST']}:{kafka_config['PORT']}",
     )
 
@@ -72,7 +78,7 @@ def main():
     ###########################
     kc_config = config['KEYCLOAK']
     keycloak_client = KeycloakOpenID(
-        server_url=kc_config['SERVER_URL'],
+        server_url=f"{kc_config['HOST']}:{kc_config['PORT']}",
         realm_name=kc_config['REALM_NAME'],
         client_id=kc_config[run_type]['CLIENT_ID'],
         client_secret_key=kc_config[run_type]['CLIENT_SECRET_KEY']
@@ -88,7 +94,8 @@ def main():
         app = create_app(plot=plot,
                          keycloak_client=keycloak_client,
                          azure_container_client=azure_container_client,
-                         kafka_producer=kafka_producer
+                         chart_data_producer=chart_data_producer,
+                         credit_data_producer=credit_data_producer
                          )
 
     port = args.port

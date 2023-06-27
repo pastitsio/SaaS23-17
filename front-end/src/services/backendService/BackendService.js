@@ -76,12 +76,12 @@ const creditsValidate = async (email, credits) => {
 };
 
 
-const createChart = async (inputFile, plotType, chartData, mode) => {
+const createChart = async (inputFile, plot, chartData, mode) => {
   mode = mode.toLowerCase();
   try {
     // plot type creators are on diff servers-ms's
     const plotTypes = process.env['REACT_APP_plot_types'].split(',');
-    if (!plotTypes.includes(plotType)) {
+    if (!plotTypes.includes(plot.name)) {
       throw new Error(`__type__ should be on of [${plotTypes}]`);
     }
 
@@ -89,9 +89,9 @@ const createChart = async (inputFile, plotType, chartData, mode) => {
     postData.append('file', inputFile);
     postData.append('data', JSON.stringify(chartData));
 
-    const create_server_url = process.env[`REACT_APP_${plotType}_api_url`];
+    const create_server_url = process.env[`REACT_APP_${plot.name}_api_url`];
     // ! "save/preview" distinguishment is done through <mode>
-    const url = `${create_server_url}/create?mode=${mode}`;
+    const url = `${create_server_url}/create?mode=${mode}&charge=${plot.charge}`;
     const response = await withTimeout(
       api.post(url, postData,
         {

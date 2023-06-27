@@ -76,7 +76,7 @@ const NewChart = () => {
 
         const previewImg = await BackendService.createChart(
           inputFile,
-          selectedPlot.name,
+          selectedPlot,
           chartData,
           'preview'
         );

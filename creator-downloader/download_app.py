@@ -46,7 +46,6 @@ def download_app(keycloak_client: KeycloakOpenID,
             return Response(image, mimetype=f'image/{img_format}'), 200
 
         except Exception as exc:
-            print(exc)
             return jsonify({"msg": str(exc)}), 500
     
     return app
