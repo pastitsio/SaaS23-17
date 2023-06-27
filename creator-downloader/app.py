@@ -12,28 +12,32 @@ from config_setup import config
 from create_app import create_app
 from download_app import download_app
 from kafka_setup.kafka_producer import KafkaProducer
-from kafka_setup.kafka_event import kafka_event
+from kafka_setup.kafka_event import chart_data_kafka_event, credit_data_kafka_event
 from keycloak import KeycloakOpenID
 from plot import BarLabelPlot, ScatterPlot, SimplePlot
 
 
 def main():
-    print(config.items(), sep='\n')
+
+    #########################
+    # Setup Kafka producers #
+    #########################
+    chart_data_producer = KafkaProducer(
+        kafka_event=chart_data_kafka_event,
+        bootstrap_servers=f"{config['HOST']}:{config['PORT']}",
+    )
+    credit_data_producer = KafkaProducer(
+        kafka_event=credit_data_kafka_event,
+        bootstrap_servers=f"{config['HOST']}:{config['PORT']}",
+    )
+
     ##########################################
     # Setup Azure storage for created images #
     ##########################################
     azure_container_client = AzureContainerClient(
         conn_str=config["azure_conn_str"],
         container_name=config["azure_container_name"],
-        credential=config["azure_credential"],
-    )
-
-    ########################
-    # Setup Kafka producer #
-    ########################
-    kafka_producer = KafkaProducer(
-        kafka_event,
-        bootstrap_servers=f'{config["kafka_host"]}:{config["kafka_port"]}',
+        credential=config["azure_credential"]
     )
 
     ###########################
@@ -49,7 +53,7 @@ def main():
     #############################
     # Setup runtime environment #
     #############################
-    
+
     run_type = config["app_run_type"]
     if run_type == 'BarLabelPlot':
         plot = BarLabelPlot
@@ -71,7 +75,8 @@ def main():
         app = create_app(plot=plot,
                          keycloak_client=keycloak_client,
                          azure_container_client=azure_container_client,
-                         kafka_producer=kafka_producer,
+                         chart_data_producer=chart_data_producer,
+                         credit_data_producer=credit_data_producer
                          )
 
     port = config["app_port"]

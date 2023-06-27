@@ -12,18 +12,16 @@ function syncDB(topic, group, parseMessage) {
   readMessage(consumer, parseMessage);
 }
 
-syncDB("credit-data", "kafka", async (msg) => {
-  const user = await Credits.findOne({ email: msg.email });
-  user.credits = msg.credits;
-  await user.save();
+// credits update => update with credits diff from message
+syncDB("credit-data", "kafka15", async (msg) => {
+  const filter = { email: msg.email };
+  const update = { $inc: { credits: msg.credits}}
+  await Credits.findOneAndUpdate(filter, update);
 });
+
+// user creation => create entry with 0 credits.
 syncDB("user-data", "kafka15", async (msg) => {
-  const user = await Credits.findOne({ email: msg.email });
-  if (!user) {
-    return await Credits.create({ ...msg });
-  }
-  user.credits = msg.credits;
-  await user.save();
+  await Credits.create({ ...msg });
 });
 
 

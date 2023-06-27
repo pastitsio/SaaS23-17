@@ -3,7 +3,18 @@ import json
 from typing import Dict
 
 import avro.io as avro_io
+from avro import schema
 from kafka import KafkaProducer as _KafkaProducer
+
+_MSG_VALID_KEYS = {'chart-data': ['email',
+                                  'chart_name',
+                                  'chart_type',
+                                  'chart_url',
+                                  'created_on'],
+                   'credit-data': ['email',
+                                   'credits']
+                   }
+
 
 class KafkaProducer(_KafkaProducer):
     """KafkaProdcuer with extra func for 
@@ -11,16 +22,8 @@ class KafkaProducer(_KafkaProducer):
     See super class for config.
     """
 
-    def __init__(self, kafka_event, encoding='avro', **configs):
+    def __init__(self, kafka_event: schema, encoding: str = 'avro', **configs):
 
-        self._msg_valid_keys = {'chart-data': ['email',
-                                               'chart_name',
-                                               'chart_type',
-                                               'chart_url',
-                                               'created_on'],
-                                'credit-data': ['email',
-                                                'credits']
-                                }
         if encoding == 'avro':
             def _serializer(v):
                 writer = avro_io.DatumWriter(kafka_event)
@@ -41,9 +44,8 @@ class KafkaProducer(_KafkaProducer):
         return self._topic
 
     # override
-    def send(self, topic: str, value: Dict, **kwargs):
-        valid_keys = self._msg_valid_keys[topic]
+    def send(self, topic: str, value: Dict):
+        valid_keys = _MSG_VALID_KEYS[topic]
         assert all(key in valid_keys
                    for key in value.keys()), 'Missing key.'
-
-        super().send(topic=topic, value=value, **kwargs)
+        super().send(topic=topic, value=value)  

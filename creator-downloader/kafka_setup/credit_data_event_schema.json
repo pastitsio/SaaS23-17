@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "credit_data",
+  "fields": [
+    {
+      "name": "email",
+      "type": "string"
+    },
+    {
+      "name": "credits",
+      "type": "int"
+    }
+  ]
+}
