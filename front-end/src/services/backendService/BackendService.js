@@ -242,7 +242,6 @@ const saveUserToDB = async (email) => {
 
 export {
   creditsBuy,
-  creditsUpdate,
   creditsValidate,
   createChart,
   downloadPreset,
