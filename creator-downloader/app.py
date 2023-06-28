@@ -24,11 +24,11 @@ def main():
     #########################
     chart_data_producer = KafkaProducer(
         kafka_event=chart_data_kafka_event,
-        bootstrap_servers=f"{config['HOST']}:{config['PORT']}",
+        bootstrap_servers=f"{config['kafka_host']}:{config['kafka_port']}",
     )
     credit_data_producer = KafkaProducer(
         kafka_event=credit_data_kafka_event,
-        bootstrap_servers=f"{config['HOST']}:{config['PORT']}",
+        bootstrap_servers=f"{config['kafka_host']}:{config['kafka_port']}",
     )
 
     ##########################################
@@ -36,51 +36,51 @@ def main():
     ##########################################
     azure_container_client = AzureContainerClient(
         conn_str=config["azure_conn_str"],
-        container_name=config["azure_container_name"],
-        credential=config["azure_credential"]
+        container_name=config["azure_container_name"]
     )
 
     ###########################
     # Setup Keycloak for auth #
     ###########################
     keycloak_client = KeycloakOpenID(
-        server_url=f'{config["keycloak_host"]}:{config["keycloak_port"]}',
+        server_url=f'http://{config["keycloak_host"]}:{config["keycloak_port"]}',
         realm_name=config["keycloak_realm_name"],
         client_id=config["keycloak_client_id"],
         client_secret_key=config["keycloak_client_secret_key"]
     )
 
-    #############################
-    # Setup runtime environment #
-    #############################
-
-    run_type = config["app_run_type"]
-    if run_type == 'BarLabelPlot':
-        plot = BarLabelPlot
-    elif run_type == 'ScatterPlot':
-        plot = ScatterPlot
-    elif run_type == 'SimplePlot':
-        plot = SimplePlot
-    elif run_type == 'Downloader':
+    ##############################
+    # Create runtime environment #
+    ##############################
+    
+    run_type = config["app_container_name"]
+    if run_type == 'downloader':
         pass
-
-    #####################
-    # Create app and run#
-    #####################
-    if run_type == 'Downloader':
         app = download_app(keycloak_client=keycloak_client,
                            azure_container_client=azure_container_client,
                            )
     else:
+        if run_type == 'bar-label-plot':
+            plot = BarLabelPlot
+        elif run_type == 'scatter-plot':
+            plot = ScatterPlot
+        elif run_type == 'simple-plot':
+            plot = SimplePlot
+
         app = create_app(plot=plot,
                          keycloak_client=keycloak_client,
                          azure_container_client=azure_container_client,
                          chart_data_producer=chart_data_producer,
                          credit_data_producer=credit_data_producer
                          )
-
-    port = config["app_port"]
-    app.run(debug=True, port=port)
+                         
+    ###########
+    # Run app #
+    ###########
+    
+    app.run(host=config["app_container_name"],
+            debug=True,
+            port=config["app_port"])
 
 
 if __name__ == "__main__":

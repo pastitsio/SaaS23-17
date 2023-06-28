@@ -7,12 +7,11 @@ class AzureContainerClient:
     """
     AzureContainerClient connects to an Azure blob Container.
     """
-    def __init__(self, conn_str, container_name, credential):
+    def __init__(self, conn_str, container_name):
         # account_url = f'https://{account_name}.blob.core.windows.net'
         self.container_client = ContainerClient.from_connection_string(
             conn_str=conn_str,
-            container_name=container_name,
-            credential=credential,
+            container_name=container_name
             )
 
     def list_blobs(self, name_starts_with=None):

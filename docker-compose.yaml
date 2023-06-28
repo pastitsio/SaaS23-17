@@ -25,7 +25,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /mnt/c/Users/Yanis/Downloads/uncategorised/realm-export.json:/opt/keycloak/data/import/realm.json
+      - /home/dimitris/Desktop/ECE/10o/SaaS/SaaS23-17/keycloak-authenticator/realm-export.json:/opt/keycloak/data/import/realm.json
     command: start-dev --import-realm
     
   zookeeper:
@@ -52,6 +52,22 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    restart: unless-stopped
+
+  downloader:
+    build:
+      context: ./creator-downloader
+      args:
+        - APP_PORT=6020
+    container_name: downloader
+    ports:
+      - "6020:6020"
+    depends_on:
+      - broker
+      - keycloak
+    env_file:
+      - ./creator-downloader/.env.app
+      - ./creator-downloader/.env.downloader
     restart: unless-stopped
 
     

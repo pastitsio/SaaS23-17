@@ -27,8 +27,10 @@ def kc_introspect_token(kc_client):
     """
     token = _get_token_from_request()
     introspection_result = kc_client.introspect(token)
+
     if not introspection_result.get("active"):
-        raise keycloak.exceptions.KeycloakInvalidTokenError('Invalid Token.')
+        raise keycloak.exceptions.KeycloakInvalidTokenError('Invalid Token')
     if not ('user' in introspection_result.get('realm_access').get('roles')):
-        raise keycloak.exceptions.KeycloakInvalidTokenError('"user" role not assigned.')
+        raise keycloak.exceptions.KeycloakInvalidTokenError('"user" role not assigned')
+
     return introspection_result

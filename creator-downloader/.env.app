@@ -1,0 +1,9 @@
+saas_AZURE_CONN_STR=DefaultEndpointsProtocol=https;AccountName=mycharts;AccountKey=Up1AEVwRPpipg4Eh+6vl8d6460/5QjI+xX/4Q8RGCCnLBrs4ru62DyjgShsFnMSycmLAZm6E+ffU+AStkPWVUQ==;EndpointSuffix=core.windows.net
+saas_AZURE_CONTAINER_NAME=images
+
+saas_KAFKA_HOST=broker
+saas_KAFKA_PORT=9092
+
+saas_KEYCLOAK_HOST=172.18.0.2
+saas_KEYCLOAK_PORT=8080
+saas_KEYCLOAK_REALM_NAME=my-charts
