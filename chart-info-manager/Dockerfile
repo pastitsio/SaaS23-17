@@ -27,9 +27,9 @@ EXPOSE $APP_PORT
 CMD ["npm", "start"]
 
 # build image: 
-# docker build --env-file .env -t userInfoManager .
+# docker build --env-file .env -t saas-ntua/chart-info-manager .
 
 # run image:
-# docker run -d --env-file .env -p 8080:$APP_PORT userInfoManager
+# docker run -d --env-file .env -p 8080:$APP_PORT saas-ntua/chart-info-manager
 #      \ --network=saas23-17_default
 #      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [if run outside of docker-compose]

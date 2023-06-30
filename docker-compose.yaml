@@ -12,6 +12,11 @@ services:
     volumes:
       - /home/dimitris/Desktop/ECE/10o/SaaS/SaaS23-17/keycloak-authenticator/realm-export.json:/opt/keycloak/data/import/realm.json
     command: start-dev --import-realm
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.20
+
+
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
@@ -20,6 +25,11 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.11
+
+
 
   broker:
     image: confluentinc/cp-kafka:7.3.2
@@ -38,6 +48,11 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
     restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.10
+
+
 
   downloader:
     build:
@@ -55,6 +70,11 @@ services:
       - ./creator-downloader/.env.app
       - ./creator-downloader/.env.downloader
     restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.30
+
+
 
   user-info-manager:
     build:
@@ -71,6 +91,11 @@ services:
       - zookeeper
       - keycloak
     restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.40
+
+
 
   chart-info-manager:
     build:
@@ -87,6 +112,11 @@ services:
       - zookeeper
       - keycloak
     restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.50
+
+
 
   front-end:
     build:
@@ -103,3 +133,15 @@ services:
       - zookeeper
       - keycloak
     restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.60
+
+
+
+networks:
+  saas_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16

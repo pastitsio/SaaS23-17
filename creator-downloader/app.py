@@ -42,7 +42,7 @@ def main():
     # Setup Keycloak for auth #
     ###########################
     keycloak_client = KeycloakOpenID(
-        server_url=f'http://{config["keycloak_host"]}:{config["keycloak_port"]}',
+        server_url=f'{config["keycloak_host"]}:{config["keycloak_port"]}',
         realm_name=config["keycloak_realm_name"],
         client_id=config["keycloak_client_id"],
         client_secret_key=config["keycloak_client_secret_key"]
@@ -75,6 +75,7 @@ def main():
     ###########
     # Run app #
     ###########
+    print(config, flush=True)
     app.run(host=config["app_container_name"],
             debug=True,
             port=config["app_port"])
