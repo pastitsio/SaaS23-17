@@ -1,17 +1,21 @@
-FROM node:20-alpine3.16
+FROM node:18-alpine
 
-# Create app directory
+
 WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-COPY package*.json ./
+COPY package*.json .
 RUN npm install
 
-# Bundle app source
 COPY . .
+# RUN npbm ci --omit=dev
 
-EXPOSE 3000
+ARG APP_PORT
+EXPOSE $APP_PORT
+CMD ["npm", "start"]
 
-CMD [ "npm", "start" ]
+# build image: 
+# docker build --env-file .env -t userInfoManager .
 
+# run image:
+# docker run -d --env-file .env -p 8080:$APP_PORT userInfoManager
+#      \ --network=saas23-17_default
+#      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ [if run outside of docker-compose]

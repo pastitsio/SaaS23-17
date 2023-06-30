@@ -1,20 +1,5 @@
 version: "3.0"
 services:
-  # user-info-manager:
-  #   build:
-  #     context: ./user-info-manager
-  #     dockerfile: Dockerfile
-  #   image: userinfomanager
-  #   container_name: userinfomanager
-  #   ports:
-  #     - "5000:${APP_PORT}"
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - broker
-  #     - zookeeper
-  #     - keycloak-ready
-  #   restart: unless-stopped
 
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.0
@@ -27,7 +12,7 @@ services:
     volumes:
       - /home/dimitris/Desktop/ECE/10o/SaaS/SaaS23-17/keycloak-authenticator/realm-export.json:/opt/keycloak/data/import/realm.json
     command: start-dev --import-realm
-    
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
     container_name: zookeeper
@@ -64,16 +49,57 @@ services:
       - "6020:6020"
     depends_on:
       - broker
+      - zookeeper
       - keycloak
     env_file:
       - ./creator-downloader/.env.app
       - ./creator-downloader/.env.downloader
     restart: unless-stopped
 
-    
-  
+  user-info-manager:
+    build:
+      context: ./user-info-manager
+      args:
+        - APP_PORT=3010
+    container_name: user-info-manager
+    ports:
+      - "3010:3010"
+    env_file:
+      - ./user-info-manager/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
 
-  # frontend:
-  #   build:
-  #   container_name: 
-  #   environment:
+  chart-info-manager:
+    build:
+      context: ./chart-info-manager
+      args:
+        - APP_PORT=3000
+    container_name: chart-info-manager
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./chart-info-manager/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+
+  front-end:
+    build:
+      context: ./front-end
+      args:
+        - APP_PORT=4007
+    container_name: front-end
+    ports:
+      - "4007:4007"
+    env_file:
+      - ./front-end/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped

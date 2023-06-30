@@ -173,9 +173,12 @@ const fetchChartTableData = async (email) => {
     return Promise.resolve(response.data.result);
 
   } catch (err) {
+    console.log('err :>> ', err);
     if (err.response) {
-      if (!err.response.data.success) { // API error
+      if (err.response.data.success !== undefined) { // API error
         throw new Error(`No charts found! Create one`);
+      } else {
+        throw new Error(err.response.data);
       }
     }
     // Network Error

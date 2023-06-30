@@ -2,9 +2,9 @@
   "name": "chart-info-manager",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon -L app.js"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",

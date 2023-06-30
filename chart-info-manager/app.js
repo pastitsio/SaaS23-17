@@ -12,7 +12,7 @@ const cors = require("cors");
 const Keycloak = require("keycloak-connect");
 const session = require("express-session");
 
-const host = process.env.HOST || "localhost";
+const host = process.env.APP_HOST || "localhost";
 const port = process.env.APP_PORT || 3000;
 const memoryStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: memoryStore });

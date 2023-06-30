@@ -18,7 +18,6 @@ from plot import BarLabelPlot, ScatterPlot, SimplePlot
 
 
 def main():
-
     #########################
     # Setup Kafka producers #
     #########################
@@ -55,7 +54,6 @@ def main():
     
     run_type = config["app_container_name"]
     if run_type == 'downloader':
-        pass
         app = download_app(keycloak_client=keycloak_client,
                            azure_container_client=azure_container_client,
                            )
@@ -77,7 +75,6 @@ def main():
     ###########
     # Run app #
     ###########
-    
     app.run(host=config["app_container_name"],
             debug=True,
             port=config["app_port"])
