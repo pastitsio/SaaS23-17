@@ -20,7 +20,7 @@ const createTopicStream = (topic) => {
   // Handle error
   stream.on("error", (err) => {
     throw new CustomAPIError(
-      "Something went wrong with the connection to Kafka",
+      err,
       StatusCodes.INTERNAL_SERVER_ERROR
     );
   });

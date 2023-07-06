@@ -16,8 +16,6 @@ services:
       saas_network:
         ipv4_address: 172.18.0.20
 
-
-
   zookeeper:
     image: confluentinc/cp-zookeeper:7.3.2
     container_name: zookeeper
@@ -27,9 +25,7 @@ services:
     restart: unless-stopped
     networks:
       saas_network:
-        ipv4_address: 172.18.0.11
-
-
+        ipv4_address: 172.18.0.10
 
   broker:
     image: confluentinc/cp-kafka:7.3.2
@@ -42,7 +38,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_INTERNAL://broker:29092
       KAFKA_CREATE_TOPICS: user-data:1:1, credit-data:1:1, chart-data:1:1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -50,9 +46,7 @@ services:
     restart: unless-stopped
     networks:
       saas_network:
-        ipv4_address: 172.18.0.10
-
-
+        ipv4_address: 172.18.0.11
 
   downloader:
     build:
@@ -71,10 +65,26 @@ services:
       - ./creator-downloader/.env.downloader
     restart: unless-stopped
     networks:
-      saas_network:
-        ipv4_address: 172.18.0.30
+      - saas_network
 
-
+  simple-plot:
+    build:
+      context: ./creator-downloader
+      args:
+        - APP_PORT=601
+    container_name: simple-plot
+    ports:
+      - "601:601"
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    env_file:
+      - ./creator-downloader/.env.app
+      - ./creator-downloader/.env.simple-plot
+    restart: unless-stopped
+    networks:
+      - saas_network
 
   user-info-manager:
     build:
@@ -92,10 +102,7 @@ services:
       - keycloak
     restart: unless-stopped
     networks:
-      saas_network:
-        ipv4_address: 172.18.0.40
-
-
+      - saas_network
 
   chart-info-manager:
     build:
@@ -113,10 +120,43 @@ services:
       - keycloak
     restart: unless-stopped
     networks:
-      saas_network:
-        ipv4_address: 172.18.0.50
+      - saas_network
 
+  credit-manager:
+    build:
+      context: ./credit-manager
+      args:
+        - APP_PORT=3030
+    container_name: credit-manager
+    ports:
+      - "3030:3030"
+    env_file:
+      - ./credit-manager/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
 
+  credit-validator:
+    build:
+      context: ./credit-validator
+      args:
+        - APP_PORT=3031
+    container_name: credit-validator
+    ports:
+      - "3031:3031"
+    env_file:
+      - ./credit-validator/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
 
   front-end:
     build:
@@ -134,10 +174,7 @@ services:
       - keycloak
     restart: unless-stopped
     networks:
-      saas_network:
-        ipv4_address: 172.18.0.60
-
-
+      - saas_network
 
 networks:
   saas_network:

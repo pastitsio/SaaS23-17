@@ -18,7 +18,7 @@
     "http-status-codes": "^2.2.0",
     "keycloak-connect": "^21.1.1",
     "mongoose": "^7.1.1",
-    "node-rdkafka": "^2.16.0"
+    "node-rdkafka": "^2.16.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

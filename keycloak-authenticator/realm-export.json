@@ -318,7 +318,7 @@
         }
       ],
       "security-admin-console": [],
-      "simple-plot-creator-ms": [
+      "simple-plot-ms": [
         {
           "id": "1a1d1792-3465-4cd0-a5c8-5dc6a4b6516f",
           "name": "uma_protection",
@@ -620,18 +620,18 @@
     {
       "id": "99df7056-45e8-4614-a491-a41d6f8ae73f",
       "createdTimestamp": 1685893277489,
-      "username": "service-account-simple-plot-creator-ms",
+      "username": "service-account-simple-plot-ms",
       "enabled": true,
       "totp": false,
       "emailVerified": false,
-      "serviceAccountClientId": "simple-plot-creator-ms",
+      "serviceAccountClientId": "simple-plot-ms",
       "disableableCredentialTypes": [],
       "requiredActions": [],
       "realmRoles": [
         "default-roles-my-charts"
       ],
       "clientRoles": {
-        "simple-plot-creator-ms": [
+        "simple-plot-ms": [
           "uma_protection"
         ]
       },
@@ -1337,7 +1337,7 @@
       "frontchannelLogout": false,
       "protocol": "openid-connect",
       "attributes": {
-        "post.logout.redirect.uris": "+"
+        "post.logout.redirect.uris": "http://localhost:4007/*"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
@@ -1521,7 +1521,7 @@
     },
     {
       "id": "b9b3ea55-7ee6-4cf2-a276-474c8e7b04c4",
-      "clientId": "simple-plot-creator-ms",
+      "clientId": "simple-plot-ms",
       "name": "Simple Plot Creator MS",
       "description": "",
       "rootUrl": "http://localhost:6013",

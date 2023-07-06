@@ -11,7 +11,7 @@ const Keycloak = require("keycloak-connect");
 require("dotenv").config();
 
 const port = process.env.APP_PORT || 3000;
-const host = process.env.HOST || "localhost";
+const host = process.env.APP_HOST || "localhost";
 
 const memoryStore = new session.MemoryStore();
 const keycloak = new Keycloak({ store: memoryStore });

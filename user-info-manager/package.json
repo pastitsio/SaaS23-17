@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "## (name)",
   "main": "app.js",
-    "scripts": {
+  "scripts": {
     "start": "node app.js",
     "start:populateDB": "node ./db/dev/populateDB.js",
     "start:clearDB": "node ./db/dev/clearDB.js"
