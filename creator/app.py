@@ -73,7 +73,6 @@ def main():
     ###########
     # Run app #
     ###########
-    print(config, flush=True)
     app.run(host=config["app_container_name"],
             debug=True,
             port=config["app_port"])
