@@ -25,30 +25,6 @@ const creditsBuy = async (email, credits) => {
 }
 
 
-const creditsUpdate = async (email, credits) => {
-  try {
-    const url = `${process.env.REACT_APP_credit_manager_api_url}/updateBalance`;
-    const response = await withTimeout(
-      api.post(url,
-        {
-          email: email,
-          credits: credits
-        }
-      )
-    );
-    console.log(`User spent ${credits} credits`);
-    fetchUserInfo(email, true) // update sessionStorage
-    return Promise.resolve(response.data.result)
-  } catch (err) {
-    if (err.response) { // API Error
-      throw new Error(err.response.data.msg);
-    } else { // Network Error
-      throw new Error(err.message);
-    }
-  }
-}
-
-
 const creditsValidate = async (email, credits) => {
   try {
     const url = `${process.env.REACT_APP_credit_validator_api_url}/creditValidation`;
@@ -197,9 +173,12 @@ const fetchChartTableData = async (email) => {
     return Promise.resolve(response.data.result);
 
   } catch (err) {
+    console.log('err :>> ', err);
     if (err.response) {
-      if (!err.response.data.success) { // API error
+      if (err.response.data.success !== undefined) { // API error
         throw new Error(`No charts found! Create one`);
+      } else {
+        throw new Error(err.response.data);
       }
     }
     // Network Error
@@ -249,7 +228,6 @@ const saveUserToDB = async (email) => {
         })
     );
     console.log('response :>> ', response.data.msg);
-    fetchUserInfo(email, true) // update sessionStorage
   } catch (err) {
     let errorMessage;
     if (err.response) { // API Error
@@ -267,7 +245,6 @@ const saveUserToDB = async (email) => {
 
 export {
   creditsBuy,
-  creditsUpdate,
   creditsValidate,
   createChart,
   downloadPreset,

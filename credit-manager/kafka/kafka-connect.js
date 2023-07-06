@@ -8,7 +8,7 @@ const producerCreate = (topic) => {
   const stream = Kafka.Producer.createWriteStream(
     {
       "client.id": "kafka1",
-      "metadata.broker.list": `${process.env.HOST || "localhost"}:${process.env.KAFKA_PORT || 9092
+      "metadata.broker.list": `${process.env.KAFKA_HOST || "localhost"}:${process.env.KAFKA_PORT || 9092
         }`,
     },
     {},
@@ -30,7 +30,7 @@ const producerCreate = (topic) => {
 const consumerCreate = (group, topic) => {
   const consumer = new Kafka.KafkaConsumer({
     "group.id": group,
-    "metadata.broker.list": `${process.env.HOST || "localhost"}:${process.env.KAFKA_PORT || 9092
+    "metadata.broker.list": `${process.env.KAFKA_HOST || "localhost"}:${process.env.KAFKA_PORT || 9092
       }`,
   });
 

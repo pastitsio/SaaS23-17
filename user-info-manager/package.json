@@ -2,9 +2,9 @@
   "name": "user-info-manager",
   "version": "1.0.0",
   "description": "## (name)",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "nodemon -L app.js",
+    "start": "node app.js",
     "start:populateDB": "node ./db/dev/populateDB.js",
     "start:clearDB": "node ./db/dev/clearDB.js"
   },

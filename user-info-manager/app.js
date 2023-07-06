@@ -7,12 +7,7 @@ const { errorHandlerMiddleware, pageNotFound } = require("./middleware/");
 const keycloak = require('./keycloak-config').initKeycloak();
 const router = require("./routes/");
 
-const dotenvFilePath = `${path.dirname(__filename)}/.env`
 require("dotenv").config();
-
-
-const port = process.env.APP_PORT || 5000;
-const host = process.env.HOST || "localhost";
 
 
 const app = express();
@@ -28,6 +23,8 @@ app.use("*", pageNotFound);
 app.use(errorHandlerMiddleware);
 
 // server spin-up + connection to db
+const host = process.env.APP_HOST || "localhost";
+const port = process.env.APP_PORT || 5000;
 const spinServer = async () => {
   try {
     await db.connect(process.env.MONGO_URI);
