@@ -1,0 +1,184 @@
+version: "3.0"
+services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.0
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - /home/dimitris/Desktop/ECE/10o/SaaS/SaaS23-17/keycloak-authenticator/realm-export.json:/opt/keycloak/data/import/realm.json
+    command: start-dev --import-realm
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.20
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.10
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://172.18.0.11:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_CREATE_TOPICS: user-data:1:1, credit-data:1:1, chart-data:1:1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    restart: unless-stopped
+    networks:
+      saas_network:
+        ipv4_address: 172.18.0.11
+
+  downloader:
+    build:
+      context: ./downloader
+      args:
+        - APP_PORT=6020
+    container_name: downloader
+    ports:
+      - "6020:6020"
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    env_file:
+      - ./downloader/.env.app
+      - ./downloader/.env.downloader
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+  simple-plot:
+    build:
+      context: ./creator
+      args:
+        - APP_PORT=6013
+    container_name: simple-plot
+    ports:
+      - "6013:6013"
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    env_file:
+      - ./creator/.env.app
+      - ./creator/.env.simple-plot
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+  user-info-manager:
+    build:
+      context: ./user-info-manager
+      args:
+        - APP_PORT=3010
+    container_name: user-info-manager
+    ports:
+      - "3010:3010"
+    env_file:
+      - ./user-info-manager/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+  chart-info-manager:
+    build:
+      context: ./chart-info-manager
+      args:
+        - APP_PORT=3000
+    container_name: chart-info-manager
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./chart-info-manager/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+  credit-manager:
+    build:
+      context: ./credit-manager
+      args:
+        - APP_PORT=3030
+    container_name: credit-manager
+    ports:
+      - "3030:3030"
+    env_file:
+      - ./credit-manager/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+  credit-validator:
+    build:
+      context: ./credit-validator
+      args:
+        - APP_PORT=3031
+    container_name: credit-validator
+    ports:
+      - "3031:3031"
+    env_file:
+      - ./credit-validator/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+  front-end:
+    build:
+      context: ./front-end
+      args:
+        - APP_PORT=4007
+    container_name: front-end
+    ports:
+      - "4007:4007"
+    env_file:
+      - ./front-end/.env
+    depends_on:
+      - broker
+      - zookeeper
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - saas_network
+
+networks:
+  saas_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16

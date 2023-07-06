@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "chart_data",
+  "fields": [
+    {
+      "name": "email",
+      "type": "string"
+    },
+    {
+      "name": "chart_name",
+      "type": "string"
+    },
+    {
+      "name": "chart_type",
+      "type": "string"
+    },
+    {
+      "name": "chart_url",
+      "type": "string"
+    },
+    {
+      "name": "created_on",
+      "type": "int"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+[
+    {
+        "email": "giannismitis@gmail.com",
+        "chart_url": "www.google.com",
+        "chart_type": "Bar Label",
+        "chart_name": "mitsos"
+    },
+    {
+        "email": "giannismitis@gmail.com",
+        "chart_url": "www.lera.com",
+        "chart_type": "Bar Label",
+        "chart_name": "antiprosopos"
+    },
+    {
+        "email": "giannismitis@gmail.com",
+        "chart_url": "www.harrypotter.com",
+        "chart_type": "Scatter Plot",
+        "chart_name": "Anada Kedavra"
+    },
+    {
+        "email": "gi.muths@gmail.com",
+        "chart_url": "www.iamgay.com",
+        "chart_type": "Simple Plot",
+        "chart_name": "whyareyourunning"
+    },
+    {
+        "email": "gi.muths@gmail.com",
+        "chart_url": "www.imegooffygooper.com",
+        "chart_type": "Bar Label",
+        "chart_name": "Toniothetetorakiriekavouri"
+    },
+    {
+        "email": "mitsos@gmail.com",
+        "chart_url": "www.youaregay.ass",
+        "chart_type": "Scatter Plot",
+        "chart_name": "whosaysimgay"
+    }
+]

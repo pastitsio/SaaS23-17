@@ -1,0 +1,8 @@
+azure-core==1.27.0
+azure-identity==1.13.0
+azure-storage-blob==12.16.0
+confuse==1.5.0
+Flask==2.3.2
+Flask-Cors==3.0.10
+python-keycloak==3.0.0
+PyYAML==6.0

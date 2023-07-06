@@ -1,0 +1,13 @@
+#continue-button {
+    background-color: var(--color-button);
+    border: none;
+}
+
+#continue-button:hover {
+    background-color: var(--color-button-hover);
+    color: var(--color-button);
+}
+
+.offcanvas {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
