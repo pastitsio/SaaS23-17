@@ -1,20 +1,7 @@
 """Various utilities"""
 import os
 
-from datetime import datetime
-
 from flask import jsonify, request
-from shortuuid import uuid
-
-
-def check_file():
-    """Check request file exists and is json"""
-    file = request.files.get("file")
-    if not file:
-        return jsonify({"message": "No file uploaded. Expected CSV."}), 400
-
-    if file.content_type != "text/csv":
-        return jsonify({"message": "Unsupported file format. Expected CSV."}), 415
 
 
 def preflight_OPTIONS_method():
@@ -30,14 +17,10 @@ def preflight_OPTIONS_method():
         return response
 
 
-def generate_uuid(distinct=None):
-    """Generate random uuid, with datetime.now().timestamp as seed."""
-    return uuid(name=f'{distinct}{str(round(datetime.now().timestamp() * 1000))}')
-
-
 def configuration_obj_to_dict(value):
     """
     Converts Configuration object to Python dict
+    IMPORTANT NOTE: Environment variables should start with '$' symbol
     """
     if isinstance(value, str):
         return os.environ.get(value[1:], '') if value.startswith('$') else value.replace('$', '')

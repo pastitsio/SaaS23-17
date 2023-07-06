@@ -10,7 +10,6 @@ Distinction is done with cmd args.
 from azure.azure_container_client import AzureContainerClient
 from config_setup import config
 from create_app import create_app
-from download_app import download_app
 from kafka_setup.kafka_producer import KafkaProducer
 from kafka_setup.kafka_event import chart_data_kafka_event, credit_data_kafka_event
 from keycloak import KeycloakOpenID
@@ -51,27 +50,26 @@ def main():
     ##############################
     # Create runtime environment #
     ##############################
-    
-    run_type = config["app_container_name"]
-    if run_type == 'downloader':
-        app = download_app(keycloak_client=keycloak_client,
-                           azure_container_client=azure_container_client,
-                           )
-    else:
-        if run_type == 'bar-label-plot':
-            plot = BarLabelPlot
-        elif run_type == 'scatter-plot':
-            plot = ScatterPlot
-        elif run_type == 'simple-plot':
-            plot = SimplePlot
 
-        app = create_app(plot=plot,
-                         keycloak_client=keycloak_client,
-                         azure_container_client=azure_container_client,
-                         chart_data_producer=chart_data_producer,
-                         credit_data_producer=credit_data_producer
-                         )
-                         
+    run_type = config["app_container_name"]
+    if run_type == 'bar-label-plot':
+        plot = BarLabelPlot
+    elif run_type == 'scatter-plot':
+        plot = ScatterPlot
+    elif run_type == 'simple-plot':
+        plot = SimplePlot
+    else:
+        raise ValueError("""env var `app_container_name` must be one of \
+                            `bar-label-plot` | `scatter-plot` | `simple-plot`
+                         """)
+
+    app = create_app(plot=plot,
+                     keycloak_client=keycloak_client,
+                     azure_container_client=azure_container_client,
+                     chart_data_producer=chart_data_producer,
+                     credit_data_producer=credit_data_producer
+                     )
+
     ###########
     # Run app #
     ###########

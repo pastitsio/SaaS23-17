@@ -6,7 +6,6 @@ from keycloak import KeycloakOpenID
 
 from azure.azure_container_client import AzureContainerClient
 from keycloak_auth.keycloak import kc_introspect_token
-# from kafka_setup.kafka_producer import KafkaProducer
 from utils import preflight_OPTIONS_method
 
 

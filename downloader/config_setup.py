@@ -8,7 +8,7 @@ import confuse
 from settings import ENVIRONMENT_CONF_FILEPATH
 from utils import configuration_obj_to_dict
 # Load YAML default configurations
-configuration_obj = confuse.Configuration('creator', __name__)
+configuration_obj = confuse.Configuration('downloader', __name__)
 configuration_obj.set_file(ENVIRONMENT_CONF_FILEPATH)
 
 # Convert Configuration object to Python dict
